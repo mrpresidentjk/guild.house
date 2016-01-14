@@ -1,0 +1,13 @@
+{% extends "base.html"%}
+
+{% block title %}500 Internal Server Error - {{ block.super }}{% endblock %}
+
+{% block meta %}
+  {{ block.super }}
+  <meta name="robots" content="noindex" />
+{% endblock %}
+
+{% block content %}
+  <h1>Something went wrong</h1>
+  <p>An error occured whilst processing your request. Please try again later.</p>
+{% endblock %}
