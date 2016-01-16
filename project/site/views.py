@@ -14,10 +14,15 @@ class HomepageDetailView(generic.DetailView):
         return self.object.site.library_categories.featured().active()[
             :settings.HOMEPAGE_CATEGORIES]
 
+    def get_entries(self):
+        return self.object.site.blog_entries.featured().active()[
+            :settings.HOMEPAGE_ENTRIES]
+
     def get_context_data(self, *args, **kwargs):
         context_data = super(HomepageDetailView, self).get_context_data(
             *args, **kwargs)
         context_data.update({'category_list': self.get_categories(),
+                             'entry_list': self.get_entries(),
                              'game_list': self.get_games()})
         return context_data
 

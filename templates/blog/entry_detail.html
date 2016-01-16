@@ -1,0 +1,20 @@
+{% extends "blog/base.html" %}
+
+
+{% block title %}{{ entry.title }} - {{ block.super }}{% endblock %}
+
+
+{% block meta %}
+  {{ block.super }}
+  {% if entry.meta_description %}<meta name="description" content="{{ entry.meta_description }}" />{% endif %}
+{% endblock %}
+
+
+{% block content %}
+
+  <h1>{{ entry.heading|default:entry.title }}</h1>
+
+  {% if entry.featured_content %}<div>{{ entry.featured_content }}</div>{% endif %}
+  {% if entry.content %}<div>{{ entry.content|safe }}</div>{% endif %}
+
+{% endblock %}

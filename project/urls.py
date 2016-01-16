@@ -12,6 +12,9 @@ urlpatterns = [
     # Site
     url(r'^', include('project.site.urls')),
 
+    # Blog
+    url(r'^blog/', include('project.blog.urls')),
+
     # Library
     url(r'^library/', include('project.library.urls')),
 
