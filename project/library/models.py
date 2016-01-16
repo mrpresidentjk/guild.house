@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, unicode_literals
-from . import querysets, utils
+from . import querysets
 from django.contrib.sites.models import Site
 from django.core.urlresolvers import reverse
-from django.utils.encoding import python_2_unicode_compatible
 from django.db import models
+from django.utils.encoding import python_2_unicode_compatible
+from project import utils
 from taggit.managers import TaggableManager
 
 

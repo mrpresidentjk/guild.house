@@ -5,4 +5,6 @@ from django.conf import settings
 
 HOMEPAGE_CATEGORIES = getattr(settings, 'SITE_HOMEPAGE_CATEGORIES', 10)
 
+HOMEPAGE_ENTRIES = getattr(settings, 'SITE_HOMEPAGE_ENTRIES', 10)
+
 HOMEPAGE_GAMES = getattr(settings, 'SITE_HOMEPAGE_GAMES', 10)

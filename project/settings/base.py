@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'tinymce',
 
     'project.admin',
+    'project.blog',
     'project.library',
     'project.site',
 ]

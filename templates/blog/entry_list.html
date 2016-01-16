@@ -1,0 +1,42 @@
+{% extends "blog/base.html" %}
+
+
+{% block title %}Blog entries - {{ block.super }}{% endblock %}
+
+
+{% block extrahead %}
+
+  {{ block.super }}
+
+  <link rel="alternate" href="{% url "blog:entry_feed" %}" type="application/atom+xml" title="Latest blog entries" />
+
+  {% if page_obj.paginator.num_pages > 1 %}{% spaceless %}
+    {% if page_obj.has_previous %}<link rel="prev" href="{% if page_obj.previous_page_number == 1 %}{% url "blog:entry_list" %}{% else %}{% url "blog:entry_list" page=page_obj.previous_page_number %}{% endif %}" />{% endif %}
+    {% if page_obj.has_next %}<link rel="next" href="{% url "blog:entry_list" page=page_obj.next_page_number %}" />{% endif %}
+  {% endspaceless %}{% endif %}
+
+{% endblock %}
+
+
+{% block content %}
+
+  <h1>Blog entries</h1>
+
+  {% for entry in entry_list %}
+    {% if forloop.first %}<ul>{% endif %}
+      <li>
+        <a href="{{ entry.get_absolute_url }}">{{ entry.publish_at|date:"SHORT_DATE_FORMAT" }} {{ entry }}</a>
+        <p>{{ entry.summary }}</p>
+      </li>
+    {% if forloop.last %}</ul>{% endif %}
+  {% endfor %}
+
+  {% if page_obj.paginator.num_pages > 1 %}
+  <p>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</p>
+  <ul>
+    {% if page_obj.has_previous %}<a href="{% if page_obj.previous_page_number == 1 %}{% url "blog:entry_list" %}{% else %}{% url "blog:entry_list" page=page_obj.previous_page_number %}{% endif %}" rel="previous">Previous</a>{% endif %}
+    {% if page_obj.has_next %}<li><a href="{% url "blog:entry_list" page_obj.next_page_number %}" rel="next">Next</a></li>{% endif %}
+  </ul>
+  {% endif %}
+
+{% endblock %}
