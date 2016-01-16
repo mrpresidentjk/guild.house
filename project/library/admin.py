@@ -27,6 +27,8 @@ class CategoryAdmin(admin.ModelAdmin):
 
     readonly_fields = ['created_at', 'updated_at']
 
+    search_fields = ['name']
+
 
 @admin.register(Game)
 class GameAdmin(admin.ModelAdmin):
@@ -52,3 +54,5 @@ class GameAdmin(admin.ModelAdmin):
     prepopulated_fields = {'slug': ['name']}
 
     readonly_fields = ['created_at', 'updated_at']
+
+    search_fields = ['name']
