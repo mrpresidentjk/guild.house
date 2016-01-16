@@ -14,7 +14,7 @@ ALLOWED_HOSTS = ['guild.house', 'guild.clients.mattaustin.com.au']
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'guild',
+        'NAME': 'guild.house',
         'CONN_MAX_AGE': 600,
     }
 }
