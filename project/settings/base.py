@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
+    'django.contrib.messages',
     'django.contrib.redirects',
     'django.contrib.sessions',
     'django.contrib.sitemaps',
@@ -43,9 +44,12 @@ INSTALLED_APPS = [
     'robots',
     # 'sorl.thumbnail',
     'storages',
+    'taggit',
     'tinymce',
 
     'project.admin',
+    'project.library',
+    'project.site',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -57,6 +61,7 @@ MIDDLEWARE_CLASSES = [
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.redirects.middleware.RedirectFallbackMiddleware',
@@ -178,18 +183,6 @@ LOGGING = {
             'propagate': False,
         },
     },
-}
-
-
-# TinyMCE
-
-TINYMCE_DEFAULT_CONFIG = {
-    'body_class': 'content',
-    # 'content_css': STATIC_URL + 'stylesheets/tinymce.css',
-    'plugins': 'charmap code contextmenu fullscreen link paste wordcount',
-    'relative_urls': False,
-    'statusbar': False,
-    'toolbar': 'undo redo | styleselect | bold italic | bullist numlist',
 }
 
 

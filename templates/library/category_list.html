@@ -1,0 +1,17 @@
+{% extends "library/base.html" %}
+
+
+{% block title %}Categories - {{ block.super }}{% endblock %}
+
+
+{% block content %}
+
+  <h1>Categories</h1>
+
+  {% for category in category_list %}
+    {% if forloop.first %}<ul>{% endif %}
+      <li><a href="{{ category.get_absolute_url }}">{{ category }}</a></li>
+    {% if forloop.last %}</ul>{% endif %}
+  {% endfor %}
+
+{% endblock %}

@@ -1,0 +1,40 @@
+{% extends "library/base.html" %}
+
+
+{% block title %}{{ game.title|default:game.name }} - {{ block.super }}{% endblock %}
+
+
+{% block meta %}
+  {{ block.super }}
+  {% if game.meta_description %}<meta name="description" content="{{ game.meta_description }}" />{% endif %}
+{% endblock %}
+
+
+{% block content %}
+
+  <h1>{{ game.heading|default:game.name }}</h1>
+  {% if game.is_expansion %}<p>Expansion for <a href="{{ game.expansion_for.get_absolute_url }}">{{ game.expansion_for }}</a>.</p>{% endif %}
+
+  {% if game.publisher %}<p>{{ game.publisher }}</p>{% endif %}
+  {% if game.boardgamegeek_link %}<p><a href="{{ game.boardgamegeek_link }}">{{ game }} on Board Game Geek</a></p>{% endif %}
+  {% if not game.minimum_players == None %}<p>Minimum players: {{ game.minimum_players }}</p>{% endif %}
+  {% if not game.maximum_players == None %}<p>Maximum players: {{ game.maximum_players }}</p>{% endif %}
+  {% if not game.minimum_playtime == None %}<p>Minimum playtime: {{ game.minimum_playtime }} minutes</p>{% endif %}
+  {% if not game.maximum_playtime == None %}<p>Maximum playtime: {{ game.maximum_playtime }} minutes</p>{% endif %}
+
+  {% if game.featured_content %}<div>{{ game.featured_content }}</div>{% endif %}
+  {% if game.content %}<div>{{ game.content|safe }}</div>{% endif %}
+
+  {% for expansion in game.expansions.current_site.active %}
+    {% if forloop.first %}<h2>Expansions</h2><ul>{% endif %}
+      <li><a href="{{ expansion.get_absolute_url }}">{{ expansion }}</a></li>
+    {% if forloop.last %}</ul>{% endif %}
+  {% endfor %}
+
+  {% for category in game.categories.current_site.active %}
+    {% if forloop.first %}<h2>Categories</h2><ul>{% endif %}
+      <li><a href="{{ category.get_absolute_url }}">{{ category }}</a></li>
+    {% if forloop.last %}</ul>{% endif %}
+  {% endfor %}
+
+{% endblock %}

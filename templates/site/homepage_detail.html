@@ -1,0 +1,31 @@
+{% extends "site/base.html" %}
+
+
+{% block title %}{{ homepage.title }} - {{ block.super }}{% endblock %}
+
+
+{% block meta %}
+  {{ block.super }}
+  {% if homepage.meta_description %}<meta name="description" content="{{ homepage.meta_description }}" />{% endif %}
+{% endblock %}
+
+
+{% block content %}
+
+  <h1>{{ homepage.heading|default:homepage.title }}</h1>
+  {% if homepage.featured_content %}<div>{{ homepage.featured_content }}</div>{% endif %}
+  {% if homepage.content %}<div>{{ homepage.content|safe }}</div>{% endif %}
+
+  {% for game in game_list %}
+    {% if forloop.first %}<h2>Featured games</h2><ul>{% endif %}
+      <li><a href="{{ game.get_absolute_url }}">{{ game }}</a></li>
+    {% if forloop.last %}</ul>{% endif %}
+  {% endfor %}
+
+  {% for category in category_list %}
+    {% if forloop.first %}<h2>Featured categories</h2><ul>{% endif %}
+      <li><a href="{{ category.get_absolute_url }}">{{ category }}</a></li>
+    {% if forloop.last %}</ul>{% endif %}
+  {% endfor %}
+
+{% endblock %}

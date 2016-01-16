@@ -9,6 +9,12 @@ from project.sitemaps import sitemaps
 
 urlpatterns = [
 
+    # Site
+    url(r'^', include('project.site.urls')),
+
+    # Library
+    url(r'^library/', include('project.library.urls')),
+
     # Robots
     url(r'^robots.txt$', include('robots.urls')),
 
