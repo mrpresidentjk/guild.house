@@ -44,9 +44,11 @@ INSTALLED_APPS = [
     'robots',
     # 'sorl.thumbnail',
     'storages',
+    'taggit',
     'tinymce',
 
     'project.admin',
+    'project.library',
     'project.site',
 ]
 

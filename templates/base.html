@@ -14,8 +14,15 @@
   </head>
 
   <body>
+
+    <ul>
+      <li><a href="{% url "site:homepage_detail" %}">Home</a></li>
+      <li><a href="{% url "library:category_list" %}">Game library</a></li>
+    </ul>
+
     {% block content %}
     {% endblock %}
+
   </body>
 
 </html>
