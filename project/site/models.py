@@ -42,7 +42,7 @@ class Homepage(models.Model):
         ordering = ['title']
 
     def __str__(self):
-        return self.title
+        return self.site.name
 
     def get_absolute_url(self):
         return reverse('site:homepage_detail')

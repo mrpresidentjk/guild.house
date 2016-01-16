@@ -9,15 +9,15 @@ from django.contrib import admin
 class HomepageAdmin(admin.ModelAdmin):
 
     fieldsets = [
-        (None, {'fields': ['title', 'heading', 'featured_content', 'content',
-                           'meta_description']}),
-        ('Publishing', {'fields': ['site', 'is_enabled',
+        ('Content', {'fields': ['title', 'heading', 'featured_content',
+                                'content', 'meta_description']}),
+        ('Publishing', {'fields': ['is_enabled', 'site',
                                    ('created_at', 'updated_at')],
                         'classes': ['collapse']}),
     ]
 
     form = HomepageAdminForm
 
-    list_display = ['title', 'site', 'is_active']
+    list_display = ['__str__', 'is_active']
 
     readonly_fields = ['created_at', 'updated_at']
