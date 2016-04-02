@@ -22,7 +22,8 @@ BASE_DIR = os.path.join(
 SECRET_KEY = 'd16bx=+!594*6x(v^ba=qj#8u)=zr19c202(6(mu26!rk)vfr3'
 
 ADMINS = (
-    ('Matt Austin', 'devops@mattaustin.com.au'),
+    # ('Matt Austin', 'devops@mattaustin.com.au'),
+    ('Elena Williams', 'elena@guild.house'),
 )
 
 
@@ -132,11 +133,11 @@ SITE_ID = 1
 
 # Email
 
-DEFAULT_FROM_EMAIL = 'devops@mattaustin.com.au'
+DEFAULT_FROM_EMAIL = 'web@guild.house'
 
 EMAIL_SUBJECT_PREFIX = '[Guild] '
 
-SERVER_EMAIL = 'devops@mattaustin.com.au'
+SERVER_EMAIL = 'web@guild.house'
 
 
 # Logging
