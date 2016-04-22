@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+
+{% block title %}
+{{event.event_name}} // {{event.time|time:"fA"}} {{event.date|date:"l"}} {{event.date|date:"j F Y"}}
+{% endblock %}
+
+{% block head_end %}
+<script type="text/javascript" src="{{MEDIA_URL}}js/jquery.lightbox-0.5.js"></script>
+<script type="text/javascript">
+$(function() {$('#gallery a, #poster').lightBox();});
+var disqus_developer = 1;
+</script>
+{% endblock %}
+
+{% block content %}
+<table id="event" cellpadding="0" cellspacing="0" style="border:0; padding:0; margin:0;">  
+    {# --------------------- SPOTLIGHT --------------------- #}
+    <tr>
+        <td class="block_dark" valign="top" colspan="2">
+{% include 'include_spotlight.html' %}
+        </td>
+    </tr>
+    <tr><td colspan="2"><br />{{check}}</td></tr>
+    <tr>
+		<td valign="top">
+{# -- youtube vids -- #}
+{% for video in event.eventvideo_set.all %}
+<object width="325" height="260" style="margin: 0;">
+<param value="http://www.youtube.com/v/{{video.video}}&hl=en&fs=1" name="movie"></param>
+<param name="allowFullScreen" value="true"></param>
+<param name="allowscriptaccess" value="always"></param>
+<param name="wmode" value="transparent" /></param>
+<embed src="http://www.youtube.com/v/{{video.video}}&hl=en&fs=1" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" width="325" height="260"></embed>
+</object><br /><br />
+{% endfor %}
+
+{# -- comments -- #}
+{% include 'events/extract_fb_like.html' %}
+{% include 'events/extract_disqus.html' %}
+        </td>
+        <td width="300" valign="top">
+{# -- text details -- #}
+<div style="padding: 0 15px 0 25px;">
+    <p> {% if event.extra_details %}{{event.extra_details|safe}}{% endif %}                  
+        {% if event.extra_URLs %}<br /><div style="text-transform: uppercase; font-weight: bold;">{{event.extra_URLs|safe|urlize}}</div>{% endif %}
+
+    <h2>{% if event.door_cost %}<br />+{{event.door_cost|upper}}{% endif %}
+        {% if event.ticket_url %}<br /><a target="_blank" href="{{event.ticket_url}}">+BUY TICKETS</a>{% endif %}
+    </h2>
+<br />
+{% if event.twitter_account %}
+{% include 'events/extract_twitter.html' %}
+{% endif %}
+</p>
+</div>	
+
+
+{# -- mini-gallery -- #}
+<div id="gallery" class="event" style="margin: 0 8px 0 12px;">
+{% for thumb in event.post_event_gallery.photos.all %}
+    <a href="/media/{{thumb.image}}" title="{{event.event_name}} {{thumb.caption}} //">
+<img class="thumb" src="{{thumb.get_gallery_thumb_url}}" style="padding:0 {% cycle '5px' '5px' '0'  %} 5px 0;" border="0" />
+    </a>
+{% endfor %}
+
+</div>
+
+        </td>
+    </tr>
+</table>
+{% endblock %}
+

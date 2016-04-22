@@ -1,0 +1,28 @@
+{% for event in events %}
+{% cycle '  </tr>' '' %}
+    <td width="300" valign="top">
+    <a href="{% include 'url_event.html' %}" style="color:#ccc;">
+    <img class="event" src="{% if event.main_image %}{{event.main_image.get_home_week_url}}{% else %}{{event.poster.get_home_week_url}}{% endif %}" align="middle"></a>
+	<blockquote>
+        <h1>{{event.date|date:"l"|upper}} {{event.time|time:"fA"}}<br />
+          {{event.date|date:"F j"|upper}} {% if event.date|date:"Y" == year %}{{event.date|date:"Y"}}{% endif %}<br />
+          <span class="white"><a href="{% include 'url_event.html' %}">{{event.event_name|upper|safe}}</a></span>
+        </h1>
+        {% if event.recurring %}
+            {% if recur %}
+            {% include 'events/recur_event.html' %}
+            {% else %}
+                {% for recur in event.eventdate_set.all %}
+				{% if event.date == recur.date %}{% include 'events/recur_event.html' %}{% endif %}
+                {% endfor %}
+	        {% endif %}
+        {% endif %}
+        <p>{{event.gig_details|safe}}</p>
+        <h2><a href="{% include 'url_event.html' %}" style="color:#CCC;">//MORE INFO</a>
+            {% if event.door_cost %}<br />+{{event.door_cost|upper|safe}}{% endif %}
+            {% if event.ticket_url %}<br /><a target="_blank" href="{{event.ticket_url}}" style="color:#CCC;">+BUY TICKETS</a>{% endif %}
+        </h2>
+    </blockquote>
+    </td>
+{% cycle '' '  </tr>' %}
+{% endfor %}

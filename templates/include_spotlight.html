@@ -1,0 +1,34 @@
+
+<div class="wrapper">
+{% if event_detail %}
+    <a id="poster" href="/media/{{event.poster.image}}" title="{{event.event_name}} //">
+{% else %}
+    <a href="{% include 'url_event.html' %}" style="color:#ccc;">
+{% endif %}
+	    <img class="left" style="clear: both; position: relative; z-index: 1" src="{% if event.poster %}{{event.poster.get_spotlight_main_url}}{% else %}{{event.main_image.get_home_week_url}}{% endif %}">
+    </a>
+    <div class="right">
+        <h1>{% if spotlights %}SPOTLIGHT<br>{% endif %}
+            <a style="color: #fff;" href="{% include 'url_event.html' %}">{{event.event_name|upper|safe}}</a><br>
+			<a style="color: #ccc;" href="/events/{{event.date|date:'Y/m/d/'}}">
+            {{event.date|date:"l"|upper}} {{event.time|time:"fA"}}<br />
+            {{event.date|date:"F j"|upper}} {% if event.date|date:"Y" == year %}{{event.date|date:"Y"}}{% endif %}</a><br />
+        </h1>
+        {% if event.recurring %}
+            {% if recur %}
+            {% include 'events/recur_event.html' %}
+            {% else %}
+                {% for recur in event.eventdate_set.all %}
+				{% if event.date == recur.date %}{% include 'events/recur_event.html' %}{% endif %}
+                {% endfor %}
+	        {% endif %}
+        {% endif %}
+        <p>{{event.gig_details|safe}}</p>
+        {% if spotlights or day %}
+        <h1><a href="{% include 'url_event.html' %}" style="color:#ccc;">//MORE INFO</a>
+    {% if event.door_cost %}<br />+{{event.door_cost|upper|safe}}{% endif %}
+    {% if event.ticket_url %}<br /><a target="_blank" href="{{event.ticket_url}}" style="color: #fff;">+BUY TICKETS</a>{% endif %}
+        </h1>
+        {% endif %}
+    </div>
+</div>

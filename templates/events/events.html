@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<table cellpadding="0" cellspacing="0" style="border:0; padding:0; margin:0;">  
+{% for event in events %}
+    <tr>
+        <td class="{% cycle 'block_reda' 'block_dark' %}" valign="top">
+    {% include 'include_spotlight.html' %}
+        </td>
+    </tr>
+{% endfor %}
+</table>
+{% endblock %}

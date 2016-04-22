@@ -1,0 +1,21 @@
+<script src="http://connect.facebook.net/en_US/all.js#appId=220817504602860&amp;xfbml=1"></script>
+<fb:like style="margin-left: 10px;" href="{{ request.build_absolute_uri }}" send="false" layout="button_count" width="150" show_faces="true" font="arial"></fb:like>
+<div class="fb_like"><div id="fb-root"></div></div>
+
+<script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid=xa-4dfed48b58927ce5"></script>
+<script type="text/javascript">/* var addthis_config = {ui_offset_top: 0} */
+var addthis_config = {ui_offset_left: 200}
+</script>
+<style type="text/css">
+#at16p {margin-top: 0; margin-left: 120px;}
+</style>
+
+<div class="addthis_toolbox addthis_default_style "
+       addthis:url="{{ request.build_absolute_uri }}"
+       addthis:title="{{event.event_name}}"
+       style="float: right; margin-top: -19px; margin-right: -2px;">
+ <a class="addthis_button_email"></a>
+ <a class="addthis_button_twitter"></a>
+ <a class="addthis_button_google"></a>
+ <a class="addthis_button_compact"></a>
+</div>

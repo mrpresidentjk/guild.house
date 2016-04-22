@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block head_end %}
+{% include 'include_spotlight_js.html' %}
+<script type="text/javascript" src="{{MEDIA_URL}}js/jquery.lightbox-0.5.js"></script>
+<script type="text/javascript">
+$(function() {$('.poster').lightBox();});
+</script>
+{% endblock %}
+
+{% block content %}
+<table cellpadding="0" cellspacing="0" style="border:0; padding:0; margin:0;">  
+{% include 'include_spotlight_td.html' %}
+{% include 'include_events.html' %}
+<tr>
+    <td valign="top">
+<p><br /></p>
+<h1 class="centre white">
+    TRANSIT<br />
+    UPCOMING GIGS{#month_text|date:"F Y"|upper#}<br />
+    CALENDAR
+</h1>
+<p>
+{% for event in month_events %}
+<div class="centre white" style="font-size:10px; {% if event.event.pk == 17 %}margin-top:10px;{% endif %}">
+    <a class="white" href="/events/{{event.event.date|date:'Y/m/d/'}}">{{event.date|date:"D j F"}}: </a>
+    <a class="white" href="/events/{{event.event.date|date:'Y/m/d/'}}{{event.event.slug}}/">{{event.event.event_name|safe}}</a>
+</div>
+{% endfor %}
+</p>
+    </td>
+
+    <td valign="top">
+<p><br /></p>
+<p><br /></p>
+{% for event in entertains %}
+<a class="poster" href="/media/{{event.poster.image}}" title="{{event.event_name}} //">
+    <img width="280px" style="padding: 0 10px 10px 10px;" src="{{MEDIA_URL}}{{event.poster.image}}" alt="{{event}}" align="right" />
+{% endfor %}
+    </td>
+</tr>
+
+</table>
+{% endblock %}

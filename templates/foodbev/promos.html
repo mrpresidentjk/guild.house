@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block title %}Food and Beverage Promotions{% endblock %}
+
+{% block head_end %}
+<script type="text/javascript" src="{{MEDIA_URL}}js/jquery.lightbox-0.5.js"></script>
+<script type="text/javascript">
+$(function() {$('#promos a').lightBox();});
+var disqus_developer = 1;
+</script>
+{% endblock %}
+
+
+{% block content %}
+<table id="promos" cellpadding="0" cellspacing="0" style="border:0; padding:0; margin:0; width: 100%;">  
+{% for object in objects %}
+    <tr>
+        <td class="{% cycle 'block_dark' 'block_reda' %}" valign="top" style="padding: 10px 10px 10px 15px;">
+<div class="left">
+{% if object.poster %}
+	<a href="/media/{{object.poster.image}}" title="{{object.name}}">
+		<img src="{{object.poster.get_promo_poster_url}}">
+    </a>
+{% else %}
+	<a href="/media/{{object.banner.image}}" title="{{object.name}}">
+	    <img src="{{object.banner.get_promo_banner_url}}">
+	</a>
+{% endif %}
+</div>
+
+<div class="right promo_rhs" style="{% if object.poster %}width: 380px;{% else %}{% if object.banner %}width: 260px;{% endif %}{% endif %}">
+<h1 style="color: #fff;">{{object.name|upper}}</h1>
+<p>{{object.text|safe}}</p>
+</div>
+        </td>
+    </tr>
+{% endfor %}
+</table>
+<p class=centre>IT IS AN OFFENCE TO SUPPLY ALCOHOL TO A PERSON UNDER THE AGE OF 18 YEARS.
+PENALTIES APPLY.</p>
+{% endblock %}
+
+{% block ad_btm %}{% endblock %}

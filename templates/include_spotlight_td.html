@@ -1,0 +1,23 @@
+{# --------------------- SPOTLIGHT --------------------- #}
+<tr>
+    <td class="block_dark" valign="top" colspan="2">
+<div id="spotlight">
+<div class="slider-wrap">
+    <div id="main-photo-slider" class="csw">
+        <div class="panelContainer">
+{% for event in spotlights %}
+<div class="panel spotlight" title="{{event.event_name}}">
+{% include 'include_spotlight.html' %}
+</div>
+{% endfor %}
+        </div>
+    </div>
+    <div id="movers-row">
+    {% for event in spotlights %}
+      <div><a href="#{{forloop.counter}}" class="cross-link"><img src="{% if event.main_image %}{{event.main_image.get_spotlight_thumb_url}}{% else %}{{event.poster.get_spotlight_thumb_url}}{% endif %}" class="nav-thumb" alt="{{event.event_name}}" /></a></div>
+    {% endfor %}
+    </div>
+</div>
+</div>
+    </td>
+</tr>

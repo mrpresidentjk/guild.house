@@ -1,0 +1,22 @@
+<table style="color: #fff; display: block; font-family: Arial, Helvetica, sans-serif; background-color: #330000;" >
+  <tr>
+    <td valign="top" style="padding: 10px 0 10px 10px;">
+<img align="left" src="{% if event.main_image %}{{event.main_image.get_feed_thumb_url}}{% else %}{{event.poster.get_feed_thumb_url}}{% endif %}" border="0" >    </td>
+    <td valign="top" style="padding: 10px;">
+<h1 style="font-size: 22px; line-height: 18px; color: #ccc;">
+  {{event.date|date:"l"|upper}} {{event.time|time:"fA"}}<br />
+  {{event.date|date:"F j"|upper}} {% if event.date|date:"Y" == year %}{{event.date|date:"Y"}}{% endif %}<br />
+  <a href="{% include 'url_event.html' %}" style="color: #fff; text-decoration: none;">{{event.event_name|upper|safe}}</a>
+</h1>
+<p style="color:#fff; font-size: .8em;">{{event.gig_details|safe}}</p>
+<h2 style="font-size: 18px; line-height: 16px; color: #fff;">
+	<a href="{% include 'url_event.html' %}" style="text-decoration: none; color: #ccc;">//MORE INFO</a>
+    {% if event.door_cost %}<br />+{{event.door_cost|upper|safe}}{% endif %}
+    {% if event.ticket_url %}<br /><a target="_blank" href="{{event.ticket_url}}" style="color:#fff;">+BUY TICKETS</a>{% endif %}
+</h2>
+    </td>
+  </tr>
+  <tr style="background-color: #250101;">
+    <td colspan="2">&nbsp;</td>
+  </tr> 
+</table>
