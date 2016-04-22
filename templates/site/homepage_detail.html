@@ -10,7 +10,20 @@
 {% endblock %}
 
 
+{% block box %}
+        <div class="row">
+            <div class="box">
+                <div class="col-lg-12 text-center">
+
+                </div>
+            </div>
+        </div>
+{% endblock %}
+
 {% block content %}
+
+
+
 
   <h1>{{ homepage.heading|default:homepage.title }}</h1>
   {% if homepage.featured_content %}<div>{{ homepage.featured_content }}</div>{% endif %}
