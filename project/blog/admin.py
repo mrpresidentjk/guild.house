@@ -11,10 +11,10 @@ class EntryAdmin(admin.ModelAdmin):
     date_hierarchy = 'publish_at'
 
     fieldsets = [
-        ('Content', {'fields': ['title', 'heading', 'summary',
-                                'featured_content', 'content',
+        ('Content', {'fields': ['title', 'heading', 'summary', 'is_featured',
+                                'featured_image', 'featured_content', 'content',
                                 'meta_description']}),
-        ('Publishing', {'fields': ['is_enabled', 'is_featured', 'site', 'slug',
+        ('Publishing', {'fields': ['is_enabled', 'site', 'slug',
                                    'publish_at', 'tags',
                                    ('created_at', 'updated_at')],
                         'classes': ['collapse']}),

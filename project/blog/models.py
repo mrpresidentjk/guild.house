@@ -26,6 +26,10 @@ class Entry(models.Model):
 
     summary = models.TextField(blank=True, default='')
 
+    featured_image = models.ImageField(max_length=1024,
+                                       upload_to='entry_featured',
+                                       blank=True, default='')
+
     featured_content = models.TextField(blank=True, default='')
 
     content = models.TextField(blank=True, default='')
@@ -73,7 +77,6 @@ class Entry(models.Model):
         return reverse('blog:entry_detail',
                        kwargs={'year': '%04d' % (publish_at.year),
                                'month': '%02d' % (publish_at.month),
-                               'day': '%02d' % (publish_at.day),
                                'slug': self.slug})
 
     def get_next(self):
