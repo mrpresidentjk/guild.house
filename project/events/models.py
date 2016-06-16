@@ -1,10 +1,12 @@
 import datetime
+from . import querysets
+from django.contrib.auth.models import User
 from django.db import models
-from photologue.models import Photo, Gallery
 from django.template.defaultfilters import slugify
+from django.utils.encoding import python_2_unicode_compatible
+from photologue.models import Photo, Gallery
+from taggit.managers import TaggableManager
 
-
-## return Photo.object.filter(galleries=None, eventgallery=None, main_image=None, poster=None)
 
 def photo_default_main(self=None):
     if self:
@@ -14,68 +16,63 @@ def photo_default_poster(self=None):
     if self:
         return self.poster
 
-try:
-    DEFAULT_IMAGE = Photo.objects.get(pk=56)
-except: pass
-PHOTO_MAIN = {'galleries': None, 'event':None}#, 'main_image': None}#, 'eventgallery': None, 'poster': None}
-PHOTO_POSTER = {}#{'galleries': None, 'eventgallery': None, 'main_image': None}
-PHOTO_EXTRA = {}#{'galleries': None, 'eventgallery': None, 'poster': None, 'main_image': None}
-GALLERY = {'galleries': None, 'eventgallery': None, 'poster': None, 'main_image': None}
 
+@python_2_unicode_compatible
 class Event(models.Model):
+    is_enabled  = models.BooleanField(default=True)
+
     spotlight   = models.BooleanField(default=False)
     spotlight_order = models.IntegerField(default=0)
     recurring   = models.BooleanField(default=False)
     recur_description  = models.CharField(max_length=255, verbose_name="Date Description",
-                                          help_text="eg, 'Every Thursday'", blank=True, null=True)
+                                          help_text="eg, 'Every Thursday'", blank=True, default='')
     event_image = models.ForeignKey(
         Photo,
         blank=True, null=True,
         related_name="event_image",
-        ## default=photo_default_main,
-        )
+    )
     main_image  = models.ForeignKey(
         Photo,
         blank=True, null=True,
         related_name="main_image",
-        ## limit_choices_to = PHOTO_MAIN,
-        ## verbose_name="Square Event Image",
-        ## default=photo_default_main,
-        )
+    )
     poster      = models.ForeignKey(
         Photo,
         blank=True, null=True,
         related_name="poster",
-        ## default=photo_default_poster,
-        ## limit_choices_to = PHOTO_POSTER,
-        )
+    )
 
     event_name  = models.CharField(max_length=255)
-    slug        = models.SlugField(max_length=255, blank=True, null=True)
+    slug        = models.SlugField(max_length=255, blank=True, default='')
     date        = models.DateField(blank=True, null=True, help_text="Events without dates aren't displayed, except if recurring.")
     time        = models.TimeField(blank=True, null=True,
                                    help_text="24 HOUR TIME. Add a usual time for recurring events. This will be over-ridden if specific time added.")
-    door_cost   = models.CharField(max_length=255, blank=True, null=True, verbose_name='cost')
-    ticket_url  = models.URLField(blank=True, null=True,
+
+    expires = models.DateField(blank=True, null=True, help_text="Optional.")
+
+    paypal = models.CharField(max_length=65, blank=True, default='',
+                              help_text="Paypal provided hosted_button_id")
+    door_cost   = models.CharField(max_length=255, blank=True, default='', verbose_name='cost')
+    ticket_url  = models.URLField(blank=True, default='',
         help_text="External ticket URL (if applicable)")
     gig_details = models.TextField(max_length=999, verbose_name="Snippet Text",
         help_text="Short text. LIMITED TO 175 words.")
-    extra_details = models.TextField(blank=True, null=True,
+    content = models.TextField(blank=True, default='',
         help_text="More artist info / bio.")
-    extra_URLs  = models.TextField(blank=True, null=True,
+    extra_URLs  = models.TextField(blank=True, default='',
         help_text="eg. artist Myspace / website, separate multiple urls  with commas.")
     post_event_gallery = models.ForeignKey(Gallery, blank=True, null=True)
 
     extra_images = models.ManyToManyField(
         Photo, blank=True,
-        ## related_name="extra_images",
-        ## help_text="eg. album images, bio shots",
-        ## limit_choices_to = PHOTO_EXTRA,
-        )
+    )
 
-    twitter_account = models.CharField(max_length=100, blank=True, null=True)
-    facebook_event = models.CharField(max_length=255, blank=True, null=True)
+    twitter_account = models.CharField(max_length=100, blank=True, default='')
+    facebook_event = models.CharField(max_length=255, blank=True, default='')
 
+    tags = TaggableManager(blank=True)
+
+    objects = querysets.QuerySet.as_manager()
 
     def save(self):
         self.slug = slugify(self.event_name)
@@ -90,7 +87,6 @@ class Event(models.Model):
                 self.event_image = self.poster
             else:
                 pass
-                #self.event_image = DEFAULT_IMAGE
 
         super(Event, self).save()
         ## handle date object: ~ add if not || ~ correct image
@@ -108,7 +104,7 @@ class Event(models.Model):
             e.save()
         super(Event, self).save()
 
-    def __unicode__(self):
+    def __str__(self):
         return self.event_name
 
 
@@ -120,18 +116,13 @@ class EventDate(models.Model):
     event = models.ForeignKey(Event)
     date  = models.DateField()
     time  = models.TimeField(blank=True, null=True)
-    additional = models.CharField(max_length=999, blank=True, null=True, help_text="Make it special.")
+    additional = models.CharField(max_length=999, blank=True,
+                                  default='', help_text="Make it special.")
     date_image  = models.ForeignKey(
         Photo,
         blank=True, null=True,
         related_name="date_image",
-        ## verbose_name="Square Event Image",
-        ## limit_choices_to = PHOTO_MAIN,
         )
-
-    ## def save(self):
-    ##     super(EventDate, self).save()
-    ##     #self.event.save()
 
     def __unicode__(self):
         return '%s -- %s' % (self.date, self.event.event_name)
@@ -139,26 +130,6 @@ class EventDate(models.Model):
 
     class Meta:
         ordering = ['-date']
-
-
-class ComingEvent(models.Model):
-    active = models.BooleanField(default=True)
-    coming_event = models.CharField(max_length=255)
-    url = models.URLField(blank=True, null=True)
-    expires = models.DateField(blank=True, null=True, help_text="Optional.")
-    order = models.IntegerField(default=0)
-
-    def __unicode__(self):
-        return self.coming_event
-
-    def save(self):
-        if not self.order:
-            self.order = '999'
-        super(ComingEvent, self).save()
-
-
-    class Meta:
-        ordering = ['active', 'order']
 
 
 class EventGallery(models.Model):
@@ -172,7 +143,9 @@ class EventGallery(models.Model):
 
 class EventVideo(models.Model):
     event = models.ForeignKey(Event)
-    video = models.CharField(max_length=255, verbose_name="Youtube video", help_text="YouTube video link.")
+    video = models.CharField(max_length=255,
+                             verbose_name="Youtube video",
+                             help_text="YouTube video link.")
     order = models.IntegerField(default=0)
 
     ## s.find('v=').split('&')[0]
@@ -192,3 +165,20 @@ class EventVideo(models.Model):
 
     class Meta:
         ordering = ['order']
+
+
+class EventUser(models.Model):
+    event = models.ForeignKey(Event)
+    user = models.ForeignKey(User, null=True, blank=True)
+    email = models.EmailField(null=True, blank=True)
+    phone = models.CharField(max_length=255, blank=True, default='')
+    number_tickets = models.IntegerField(null=True)
+    amount_paid = models.DecimalField(max_digits=10, decimal_places=2, null=True)
+
+    def save(self):
+        if not self.order:
+            self.order = '999'
+        super(ComingEvent, self).save()
+
+    class Meta:
+        ordering = ['event']
