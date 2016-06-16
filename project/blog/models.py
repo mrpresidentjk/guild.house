@@ -30,6 +30,8 @@ class Entry(models.Model):
                                        upload_to='entry_featured',
                                        blank=True, default='')
 
+    featured_order = models.IntegerField(default=0)
+
     featured_content = models.TextField(blank=True, default='')
 
     content = models.TextField(blank=True, default='')
