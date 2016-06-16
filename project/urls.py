@@ -15,6 +15,9 @@ urlpatterns = [
     # Blog
     url(r'^blog/', include('project.blog.urls')),
 
+    # Events
+    url(r'^events/', include('project.events.urls')),
+
     # Library
     url(r'^library/', include('project.library.urls')),
 
