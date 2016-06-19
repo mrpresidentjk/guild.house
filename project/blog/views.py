@@ -6,7 +6,7 @@ from django.shortcuts import redirect
 from django.views import generic
 
 
-class EntryDetailView(generic.DateDetailView):
+class EntryDetailView(generic.DetailView):
 
     allow_future = True
 
