@@ -1,0 +1,22 @@
+{% extends "bookings/base.html" %}
+
+
+{% block title %}{{ homepage.title }} - {{ block.super }}{% endblock %}
+
+
+{% block content %}
+
+<ul>
+    {% for date in date_list %}
+        <li>{{ date|date }}</li>
+    {% endfor %}
+</ul>
+
+<div>
+    <h1>All Articles for {{ year|date:"Y" }}</h1>
+    {% for obj in object_list %}
+      {% include "bookings/_booking_list.html" %}
+    {% endfor %}
+</div>
+
+{% endblock %}

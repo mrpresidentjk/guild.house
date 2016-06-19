@@ -1,0 +1,26 @@
+{% extends "bookings/base.html" %}
+
+
+{% block title %}{{ homepage.title }} - {{ block.super }}{% endblock %}
+
+
+{% block content %}
+
+<h1>Bookings for {{ day|date:"F-j-Y" }}</h1>
+
+<ul>
+    {% for obj in object_list %}
+      {% include "bookings/_booking_list.html" %}
+    {% endfor %}
+</ul>
+
+<p>
+    {% if previous_day %}
+        Previous Day: {{ previous_day }}
+    {% endif %}
+    {% if previous_day and next_day %}--{% endif %}
+    {% if next_day %}
+        Next Day: {{ next_day }}
+    {% endif %}
+</p>
+{% endblock %}
