@@ -33,6 +33,21 @@ p {
     line-height: 1.6;
 }
 
+input, select {
+    background: rgba(12,12,12,0.8);
+    border: 0;
+    padding: 5px 10px;
+    margin: 2px;
+}
+
+button[type=submit] {
+    background-color: Transparent;
+    background-repeat:no-repeat;
+    outline:none;
+    border: 1px solid #337ab7;
+
+}
+
 .brand,
 .address-bar {
     display: none;

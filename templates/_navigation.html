@@ -1,0 +1,49 @@
+{% load static from staticfiles %}
+<!-- Navigation -->
+<nav class="navbar navbar-custom navbar-fixed-top" role="navigation">
+  <div class="container">
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse navbar-main-collapse">
+
+
+      <ul class="nav navbar-nav">
+        <!-- Hidden li included to remove active class from about link when scrolled up past about section -->
+        <li class="hidden">
+          <a href="/#page-top"></a>
+        </li>
+        <li>
+          <a href="{% url "site:homepage_detail" %}">
+            <img src="{% static "sheild-.png" %}" height=24>
+          </a>
+        </li>
+        <li><a href="/index.html">Events</a></li>
+        <li><a href="/menus/">Food/Drink</a></li>
+        <li><a href="https://boardgamegeek.com/collection/user/elequ?own=1" target="_blank">Games List</a></li> {# {% url "library:category_list" %} #}
+
+        {% comment %}
+        <li><a href="{% url "blog:entry_list" %}">News</a></li>
+        <li class="dropdown">
+          <a href="/#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">About<span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            <li><a href="/about.html">About the Guild</a></li>
+            <li><a href="/about.html">Our Team</a></li>
+            <li><a href="/contact.html">Contact</a></li>
+          </ul>
+        </li>
+        {% endcomment %}
+        <li>
+          <a href="#location" class="page-scroll">
+            Address <i class="fa fa-map-marker"></i>
+          </a>
+        </li>
+        <li>
+          <a href="https://facebook.com/guildhouse.canberra" target="_blank"><i class="fa fa-facebook-square fa-fw"></i></a>
+        </li>
+      </ul>
+
+    </div>
+    <!-- /.navbar-collapse -->
+  </div>
+  <!-- /.container -->
+</nav>
