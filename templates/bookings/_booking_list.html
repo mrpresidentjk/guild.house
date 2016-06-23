@@ -1,5 +1,6 @@
-<li>{{ article.pub_date|date:"F j, Y" }}: {{ article.title }}</li>
-
-<p>
-  {{ obj.title }} - {{ obj.pub_date|date:"F j, Y" }}
-</p>
+<tr>
+  <td class="mono">{{ obj.reserved_date|date:"F j" }} &nbsp; </td>
+  <td class="mono">{{ obj.reserved_time|date:"P" }} &nbsp; </td>
+  <td>{{ obj.party_size }}</td>
+  <td>{{ obj.name }}</td>
+</tr>

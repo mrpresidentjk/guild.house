@@ -16,7 +16,12 @@ class BookingQueryset(object):
 
     def get_context_data(self, *args, **kwargs):
         context = super(BookingQueryset, self).get_context_data(*args, **kwargs)
-        context['future_bookings_list'] = self.get_queryset().future()
+        context['future_list'] = self.get_queryset().future()
+        context['summary_list'] = self.get_queryset().values('reserved_date')\
+                                      .annotate(count=Count('id'),
+                                                pax=Sum('party_size'))\
+                                      .order_by('reserved_date')
+
         return context
 
     def get_queryset(self, *args, **kwargs):

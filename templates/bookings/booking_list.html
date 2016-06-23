@@ -6,21 +6,20 @@
 
 {% block content %}
 
-<h1>Bookings for {{ day|date:"F-j-Y" }}</h1>
+{% for obj in object_list %}
+{% if forloop.first%}
+<h1>Bookings for {{ obj.reserved_date|date:"l F-j-Y" }}</h1>
+{% endif %}
+{% endfor %}
 
 <ul>
+
+<table>
     {% for obj in object_list %}
       {% include "bookings/_booking_list.html" %}
     {% endfor %}
-</ul>
+</table>
 
-<p>
-    {% if previous_day %}
-        Previous Day: {{ previous_day }}
-    {% endif %}
-    {% if previous_day and next_day %}--{% endif %}
-    {% if next_day %}
-        Next Day: {{ next_day }}
-    {% endif %}
-</p>
+{% include "bookings/_booking_day_navigation.html" %}
+
 {% endblock %}
