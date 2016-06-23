@@ -20,8 +20,8 @@ class QuerySet(models.query.QuerySet):
 
     def past(self):
         now = timezone.now()
-        return self.filter(reserved_for__lte=now)
+        return self.filter(reserved_date__lte=now)
 
     def future(self):
         now = timezone.now()
-        return self.filter(reserved_for__gt=now)
+        return self.filter(reserved_date__gt=now)

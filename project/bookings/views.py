@@ -10,7 +10,7 @@ class BookingQueryset(object):
 
     model = Booking
     allow_future = True
-    date_field = 'reserved_for'
+    date_field = 'reserved_date'
     month_format = '%m'
 
     def get_context_data(self, *args, **kwargs):
@@ -20,12 +20,19 @@ class BookingQueryset(object):
 
     def get_queryset(self, *args, **kwargs):
         queryset = super(BookingQueryset, self).get_queryset(*args, **kwargs)
-        return queryset.active()
+        return queryset.active().future().order_by('reserved_date', 'reserved_time')
 
 
 class BookingCreateView(BookingQueryset, generic.edit.CreateView):
 
-    fields = ['reserved_for', 'name', 'party_size', 'email', 'phone']
+        # set as tomorrow if booking made later than 6pm
+        if localtime(now()).hour > 18:
+            initial['reserved_date'] = date.today()+timedelta(days=1)
+        else:
+            initial['reserved_date'] = date.today()
+
+        initial['reserved_time'] = "17:30"
+        return initial
 
 
 class BookingListView(BookingQueryset, generic.ListView):
