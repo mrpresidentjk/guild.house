@@ -12,6 +12,9 @@ urlpatterns = [
     # Site
     url(r'^', include('project.site.urls')),
 
+    # Bookings
+    url(r'^bookings/', include('project.bookings.urls')),
+
     # Blog
     url(r'^blog/', include('project.blog.urls')),
 
