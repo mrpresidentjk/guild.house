@@ -6,7 +6,9 @@ from django.conf.urls import include, url
 
 urls = [
 
-    url(r'^$', views.BookingListView.as_view(), name='booking_list'),
+    url(r'^$',
+        views.BookingListView.as_view(),
+        name='booking_list'),
 
     url(r'^(?P<page>\d+)$', views.BookingListView.as_view(), name='booking_list'),
 
@@ -26,7 +28,7 @@ urls = [
         views.BookingWeekArchiveView.as_view(),
         name="booking_week"),
 
-    url(r'^(?P<year>\d{4})/(?P<month>\d{2})/(?P<day>\d+)/$',
+    url(r'^(?P<year>\d{4})/(?P<month>\d{2})/(?P<day>\d{2})/$',
         views.BookingDayArchiveView.as_view(),
         name="booking_day"),
 

@@ -12,6 +12,7 @@ class BookingQueryset(object):
     allow_future = True
     date_field = 'reserved_date'
     month_format = '%m'
+    week_format = "%W"
 
     def get_context_data(self, *args, **kwargs):
         context = super(BookingQueryset, self).get_context_data(*args, **kwargs)
@@ -70,7 +71,7 @@ class BookingTodayArchiveView(BookingQueryset, generic.DayArchiveView):
 
 class BookingWeekArchiveView(BookingQueryset, generic.WeekArchiveView):
 
-    week_format = "%W"
+    pass
 
 
 class BookingDetailView(BookingQueryset, generic.DetailView):
