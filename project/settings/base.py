@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'project.blog',
     'project.library',
     'project.site',
+    'project.bookings',
 ]
 
 MIDDLEWARE_CLASSES = [
