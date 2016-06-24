@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% load static from staticfiles %}
+
+{% block content %}
+
+<h1>Current Menus</h1>
+<p><a href="{% static "menus/Guild_banquet.pdf" %}">Banquet</a></p>
+<p><a href="{% static "menus/Guild_cocktails.pdf" %}">Cocktails</a></p>
+<p><a href="{% static "menus/Guild_lunch.pdf" %}">Lunch</a></p>
+<p><a href="{% static "menus/Guild_menu.pdf" %}">Menu</a></p>
+
+{% endblock %}
