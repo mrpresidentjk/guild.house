@@ -142,6 +142,8 @@ EMAIL_SUBJECT_PREFIX = '[Guild] '
 
 SERVER_EMAIL = 'web@guild.house'
 
+BOOKINGS_TO_EMAILS = ['reservations@guild.house']
+
 
 # Logging
 # https://docs.getsentry.com/hosted/clients/python/integrations/django/#integration-with-logging

@@ -88,6 +88,35 @@ class BookingCreateView(CalendarMixin, BookingQueryset, generic.edit.CreateView)
 
     form_class = BookingForm
 
+    def form_valid(self, form):
+        obj = form.instance
+        obj.save()
+        message = """Link to booking: http://guild.house/bookings/{code}/
+
+        Link to day: http://guild.house{url}
+
+        Add event: {date} {time} {pax}pax {name}
+        """.format(code=obj.code, url=obj.get_absolute_url(),
+            method=form.cleaned_data.get('booking_method'),
+            date=form.cleaned_data.get('reserved_date').strftime('%a %x'),
+            time=form.cleaned_data.get('reserved_time').strftime('%H:%M'),
+            pax=form.cleaned_data.get('party_size'),
+            name=form.cleaned_data.get('name')
+        )
+        subject = "[{method}] booking added {pax}pax {date} {name}".format(
+            method=form.cleaned_data.get('booking_method'),
+            date=form.cleaned_data.get('reserved_date').strftime('%a %-d-%b'),
+            pax=form.cleaned_data.get('party_size'),
+            name=form.cleaned_data.get('name')
+        )
+        send_mail(
+            subject=subject,
+            message=message,
+            from_email=settings.FROM_EMAIL,
+            recipient_list=settings.TO_EMAILS,
+        )
+        return super(BookingCreateView, self).form_valid(form)
+
     def get_context_data(self, *args, **kwargs):
         context = super(BookingCreateView, self).get_context_data(*args, **kwargs)
         context = self.get_calendar(context)
