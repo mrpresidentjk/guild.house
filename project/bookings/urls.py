@@ -16,6 +16,14 @@ urls = [
         views.BookingCreateView.as_view(),
         name="booking_add"),
 
+    url(r'^cancelled/$',
+        views.BookingCancelledView.as_view(),
+        name="booking_list_cancelled"),
+
+    url(r'^today/$',
+        views.BookingTodayArchiveView.as_view(),
+        name="booking_today"),
+
     url(r'^(?P<year>\d{4})/$',
         views.BookingYearArchiveView.as_view(),
         name="booking_year"),
@@ -36,9 +44,9 @@ urls = [
         views.BookingDetailView.as_view(),
         name='booking_detail'),
 
-    url(r'^today/$',
-        views.BookingTodayArchiveView.as_view(),
-        name="booking_today"),
+    url(r'^(?P<code>[\w-]+)/$',
+        views.BookingUpdateView.as_view(),
+        name="booking_update"),
 ]
 
 urlpatterns = [url(r'^', include(urls, namespace='bookings'))]

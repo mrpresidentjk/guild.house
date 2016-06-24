@@ -33,11 +33,23 @@ p {
     line-height: 1.6;
 }
 
-input, select {
+input, select, textarea {
     background: rgba(12,12,12,0.8);
     border: 0;
     padding: 5px 10px;
     margin: 2px;
+}
+
+table td {
+    padding: 3px 5px;
+}
+
+table#calendar th {
+    text-align: center;
+}
+
+table#calendar {
+    width: 100%;
 }
 
 button[type=submit] {
@@ -46,6 +58,66 @@ button[type=submit] {
     outline:none;
     border: 1px solid #337ab7;
 
+}
+
+.mono {
+    font-family: monospace;
+}
+
+.date, .time, .pax {
+    text-align: center;
+    border: 1px solid #337ab7;
+    height: 25px;
+    margin: 4px;
+    padding: 2px 4px;
+    cursor: pointer;
+}
+
+.date {
+    height: 40px;
+    padding-top: 3px;
+    margin: 2px;
+}
+
+.date-inactive {
+    color: #555;
+    border: 1px solid rgba(51, 122, 183, 0.45);
+}
+
+.date .wkday {
+    font-weight: bold;
+}
+
+.date .wkday,
+.date .mth {
+    font-size: 0.6em;
+    line-height: 0.75em;
+}
+
+.time {
+    display: inline-block;
+    width: 4em;
+}
+
+.pax {
+    display: inline-block;
+    text-align: center;
+    width: 2.5em;
+    margin: 4px 8px;
+    padding: 2px 4px;
+}
+
+.active,
+.date:hover,
+.pax:hover,
+.time:hover {
+    background-color: #337ab7;
+}
+
+.date:active,
+.pax:active,
+.time:active {
+background-color: white
 }
 
 .brand,

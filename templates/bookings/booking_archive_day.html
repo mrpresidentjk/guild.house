@@ -5,41 +5,33 @@
 
 
 {% block content %}
-
-<h1>Bookings</h1>
-
-
 <div class="row">
-  <div class="col-lg-6">
-
-<h3>Bookings for {{ day|date:"l j-F-Y" }}</h3>
-
-<table>
-    {% for obj in object_list %}
+  <div class="col-lg-8">
+    <h3>Bookings for {{ day|date:"l j-F-Y" }}</h3>
+    <h4>Total: {{ total.party_size__sum }}</h4>
+    <h4>Active Bookings</h4>
+    <table>
+      {% for obj in object_list %}
       {% include "bookings/_booking_list.html" %}
-    {% endfor %}
-</table>
+      {% endfor %}
+    </table>
+    <hr>
+    <h4 style="color: rgba(156, 83, 83, 0.51);">Cancelled Bookings</h4>
+    <div style="color: rgba(156, 83, 83, 0.51);">
+    {% if cancelled_list %}
+    <table>
+      {% for obj in cancelled_list %}
+      {% include "bookings/_booking_list.html" %}
+      {% endfor %}
+    </table>
+    {% else %}
+    <em>None</em>
+    {% endif %}
+    </div>
+
   </div>
-  <div class="col-lg-6">
-
-<h3>All Future Bookings</h3>
-
-<table>
-{% for day in summary_list %}
-<tr>
-<td>
-<a href="{% url 'bookings:booking_day' year=day.reserved_date.year month=day.reserved_date|date:"m" day=day.reserved_date|date:"d" %}" class="mono">
-{{ day.reserved_date|date:"D" }}
-{{ day.reserved_date }}
-</a>
-
-</td>
-<td>{{ day.pax }}</td>
-<td>{{ day.count }}</td>
-</tr>
-{% endfor %}
-</table>
-
+  <div class="col-lg-4">
+    {% include "bookings/_bookings_summary.html" %}
   </div>
 </div>
 

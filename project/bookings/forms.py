@@ -18,6 +18,6 @@ class BookingForm(forms.ModelForm):
 
     class Meta(object):
         fields = ['name', 'reserved_time', 'reserved_date', 'party_size', 'email',
-                  'phone', 'booking_method', 'notes']
+                  'phone', 'booking_method', 'status', 'notes']
         model = Booking
         widgets = {'notes': TinyMCE()}

@@ -1,0 +1,17 @@
+<h3>Upcoming Bookings Dates</h3>
+
+<table>
+{% for day in summary_list %}
+<tr>
+<td>
+<a href="{% url 'bookings:booking_day' year=day.reserved_date.year month=day.reserved_date|date:"m" day=day.reserved_date|date:"d" %}" class="mono">
+{{ day.reserved_date|date:"D" }}
+{{ day.reserved_date }}
+</a>
+
+</td>
+<td>Total: {{ day.pax }}</td>
+<td>Bookings: {{ day.count }}</td>
+</tr>
+{% endfor %}
+</table>

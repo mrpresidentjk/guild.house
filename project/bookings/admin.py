@@ -5,6 +5,11 @@ from .models import Booking
 from django.contrib import admin
 
 
+def get_obj_link(obj):
+    return "<a href='{0}'>{1}</a>".format(obj.get_absolute_url(), obj.code)
+get_obj_link.allow_tags = True
+get_obj_link.short_description = "URL"
+
 @admin.register(Booking)
 class BookingAdmin(admin.ModelAdmin):
 
@@ -19,7 +24,7 @@ class BookingAdmin(admin.ModelAdmin):
 
     form = BookingAdminForm
 
-    list_display = ['name', 'reserved_date', 'reserved_time', 'party_size', 'status', 'phone', 'email']
+    list_display = ['name', 'reserved_date', 'reserved_time', 'party_size', 'status', 'phone', 'email', get_obj_link]
 
     list_filter = ['reserved_date', 'reserved_time', 'status']
 

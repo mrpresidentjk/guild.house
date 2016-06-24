@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, unicode_literals
+from .. import utils
 from . import querysets, settings
 from django.contrib.sites.models import Site
 from django.contrib.auth.models import User
@@ -38,6 +39,8 @@ METHOD_CHOICE = [
 @python_2_unicode_compatible
 class Booking(models.Model):
 
+    code = models.CharField(max_length=8, blank=True, default='')
+
     name = models.CharField(max_length=200)
 
     party_size = models.PositiveIntegerField()
@@ -70,25 +73,19 @@ class Booking(models.Model):
     objects = querysets.QuerySet.as_manager()
 
     class Meta(object):
-        ordering = ['-reserved_date', 'reserved_time', 'name']
-        unique_together = ['site', 'reserved_date', 'reserved_time', 'phone']
+        ordering = ['reserved_date', 'reserved_time', 'name']
         verbose_name_plural = 'bookings'
 
     def __str__(self):
         return self.name
 
     def get_absolute_url(self):
-        server_timezone = timezone.pytz.timezone(settings.TIME_ZONE)
 
-        if timezone.is_naive(self.reserved_date):
-            reserved_date = server_timezone.localize(self.reserved_date)
-        else:
-            reserved_date = server_timezone.normalize(self.reserved_date)
 
-        return reverse('bookings:booking_detail',
-                       kwargs={'year': '%04d' % (reserved_date.year),
-                               'month': '%02d' % (reserved_date.month),
-                               'slug': self.slug})
+        return reverse('bookings:booking_day',
+                       kwargs={'year': '%04d' % (self.reserved_date.year),
+                               'month': '%02d' % (self.reserved_date.month),
+                               'day': '%02d' % (self.reserved_date.day)})
 
     def get_next(self):
         queryset = self.__class__.objects.exclude(pk=self.pk).filter(
@@ -106,3 +103,8 @@ class Booking(models.Model):
         return self in self.__class__.objects.filter(pk=self.pk).active()
     is_active.boolean = True
     is_active.short_description = 'active'
+
+    def save(self,*args, **kwargs):
+        if not self.code:
+            self.code = utils.generate_unique_hex(queryset=Booking.objects.all())
+        super(Booking, self).save(*args, **kwargs)

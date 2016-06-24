@@ -9,7 +9,13 @@
 <div class="row">
   <div class="col-sm-6">
 
+{% if not object.code %}
 <h1>New Booking</h1>
+{% else %}
+<h3>{% include "bookings/_booking_list.html" with obj=object %}</h3>
+
+{% endif %}
+
 
 <form action="" method="post">
 {% csrf_token %}
@@ -35,75 +41,8 @@
 {% include "bookings/_calendar.html" %}
 
 <hr>
-    <div><b>Lunch</b><br>
-<span data-time="12:00" class="time">12:00</span>
-<span data-time="12:15" class="time">12:15</span>
-<span data-time="12:30" class="time">12:30</span>
-<span data-time="13:00" class="time">13:00</span>
-<span data-time="13:30" class="time">13:30</span>
-<span data-time="14:00" class="time">14:00</span>
-</div>
-    <div><b>Afternoon</b><br>
-<span data-time="14:30" class="time">14:30</span>
-<span data-time="15:00" class="time">15:00</span>
-<span data-time="15:30" class="time">15:30</span>
-<span data-time="16:00" class="time">16:00</span>
-<span data-time="16:30" class="time">16:30</span>
-<span data-time="17:00" class="time">17:00</span>
-<span data-time="17:15" class="time">17:15</span>
-<span data-time="17:30" class="time">17:30</span>
-<span data-time="17:45" class="time">17:45</span>
-</div>
-    <div><b>Dinner</b><br>
-<span data-time="18:00" class="time">18:00</span>
-<span data-time="18:15" class="time">18:15</span>
-<span data-time="18:30" class="time">18:30</span>
-<span data-time="18:45" class="time">18:45</span>
-<span data-time="19:00" class="time">19:00</span>
-<span data-time="19:15" class="time">19:15</span>
-<span data-time="19:30" class="time">19:30</span>
-<span data-time="19:45" class="time">19:45</span>
-<span data-time="20:00" class="time">20:00</span>
-<span data-time="20:15" class="time">20:15</span>
-<span data-time="20:30" class="time">20:30</span>
-<span data-time="21:00" class="time">21:00</span>
-</div>
 
-  </div>
-
-  <div class="col-sm-1">
-    <b>People</b><br>
-    <div data-pax="1" class="pax">1</div>
-    <div data-pax="2" class="pax">2</div>
-    <div data-pax="3" class="pax">3</div>
-    <div data-pax="4" class="pax">4</div>
-    <div data-pax="5" class="pax">5</div>
-    <div data-pax="6" class="pax">6</div>
-    <div data-pax="7" class="pax">7</div>
-    <div data-pax="8" class="pax">8</div>
-    <div data-pax="9" class="pax">9</div>
-    <div data-pax="10" class="pax">10</div>
-    <div data-pax="11" class="pax">11</div>
-    <div data-pax="12" class="pax">12</div>
-    <div data-pax="13" class="pax">13</div>
-    <div data-pax="14" class="pax">14</div>
-    <div data-pax="15" class="pax">15</div>
-    <div data-pax="16" class="pax">16</div>
-    <div data-pax="17" class="pax">17</div>
-    <div data-pax="18" class="pax">18</div>
-    <div data-pax="20" class="pax">20</div>
-    <div data-pax="21" class="pax">21</div>
-    <div data-pax="22" class="pax">22</div>
-    <div data-pax="24" class="pax">24</div>
-    <div data-pax="25" class="pax">25</div>
-    <div data-pax="28" class="pax">28</div>
-    <div data-pax="30" class="pax">30</div>
-    <div data-pax="32" class="pax">32</div>
-    <div data-pax="35" class="pax">35</div>
-    <div data-pax="40" class="pax">40</div>
-    <div data-pax="50" class="pax">50</div>
-    <div data-pax="60" class="pax">60</div>
-  </div>
+{% include "bookings/_date-pax.html" %}
 
 </div>
 
@@ -136,9 +75,6 @@ $(".pax").click(function() {
 $("#id_phone, #id_name, #id_email, #id_party_size, #id_reserved_date, #id_reserved_time, #id_booking_method, #id_notes").change(function(){
   $(this).addClass("active");
 })
-
-
-
 </script>
 
 {% endblock %}

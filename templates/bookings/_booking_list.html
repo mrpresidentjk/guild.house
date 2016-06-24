@@ -1,6 +1,20 @@
 <tr>
-  <td class="mono">{{ obj.reserved_date|date:"F j" }} &nbsp; </td>
-  <td class="mono">{{ obj.reserved_time|date:"P" }} &nbsp; </td>
-  <td>{{ obj.party_size }}</td>
-  <td>{{ obj.name }}</td>
+  <td style="white-space:nowrap">
+    {{ obj.reserved_date|date:"D" }}
+    <a href="{% url 'bookings:booking_day' year=obj.reserved_date.year month=obj.reserved_date|date:"m" day=obj.reserved_date|date:"d" %}">
+      {{ obj.reserved_date|date:"F j" }}
+    </a>
+    {{ obj.reserved_time|date:"P" }}: </td>
+
+  <td style="white-space:nowrap">{{ obj.party_size }} pax</td>
+  <td>
+    <a href="{% url "bookings:booking_update" code=obj.code %}">
+      {{ obj.name }}</a>
+      {% if obj.phone %}({{ obj.phone }}){% else %}
+        {% if obj.email %}({{ obj.email }}){% endif %}
+      {% endif %}
+  </td>
+  <td>
+    <em>{{obj.status}}</em>
+  </td>
 </tr>

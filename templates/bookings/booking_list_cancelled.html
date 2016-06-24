@@ -1,0 +1,29 @@
+{% extends "bookings/base.html" %}
+
+
+{% block title %}Cancelled Bookings{% endblock %}
+
+
+{% block content %}
+
+{% for obj in object_list %}
+{% if forloop.first%}
+<h1>Cancelled Bookings</h1>
+<p>Ordered by most recently cancelled</p>
+{% endif %}
+{% endfor %}
+
+<div class="row">
+  <div class="col-lg-12">
+    <table>
+      {% for obj in object_list %}
+      {% ifchanged obj.reserved_date %}<th>{{ obj.reserved_date }}</th>{% endifchanged %}
+      {% include "bookings/_booking_list.html" %}
+      {% endfor %}
+    </table>
+  </div>
+</div>
+
+
+
+{% endblock %}

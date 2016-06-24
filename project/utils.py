@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, unicode_literals
+import binascii
+import os
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils.text import slugify
 
@@ -22,3 +24,17 @@ def generate_unique_slug(text, queryset, slug_field='slug', iteration=0):
         iteration += 1
         return generate_unique_slug(text, queryset=queryset,
                                     slug_field=slug_field, iteration=iteration)
+
+def generate_unique_hex(length=3, check=None, queryset=None):
+    code = binascii.hexlify(os.urandom(length))
+    if check:
+        if code!=check:
+            return code
+        else:
+            generate_unique_hex(check=code)
+    if queryset:
+        if not queryset.filter(code=code):
+            return code
+        else:
+            generate_unique_hex(queryset=queryset)
+    return code
