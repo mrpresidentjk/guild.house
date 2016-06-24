@@ -1,0 +1,49 @@
+<table id="calendar" border="0" cellpadding="0" cellspacing="0">
+  <tr valign="bottom">
+    <th colspan="2" class="cal_ar_td" colspan="1" align="left" style="white-space:nowrap;">
+        <div class="cal_arl cal_arrows cal_yr" id="cal_prev_yr" onclick="loadCal('/calendar{{cal_prev_yr}}')">&nbsp; &nbsp;&nbsp;</div>
+        <div class="cal_arl cal_arrows cal_mth" id="cal_prev_mth" onclick="loadCal('/calendar{{cal_prev_mth}}')">&nbsp; &nbsp;</div></th>
+    <th colspan="3" valign="bottom"><div id="month_title">{{month|date:"F Y"}}</th>
+    <th colspan="2" class="cal_ar_td" colspan="1" align="right" style="white-space:nowrap;">
+        <div class="cal_arr cal_arrows cal_yr" id="cal_next_yr" onclick="loadCal('/calendar{{cal_next_yr}}');">&nbsp; &nbsp;&nbsp;</div>
+        <div class="cal_arr cal_arrows cal_mth" id="cal_next_mth" onclick="loadCal('/calendar{{cal_next_mth}}');">&nbsp; &nbsp;</div></th>
+  </tr>
+  <tr><th colspan="7">Today: {{today}}</th></tr>
+  <tr id="days_th">
+    <th scope="col" class="day_title">M</th>
+    <th scope="col" class="day_title">T</th>
+    <th scope="col" class="day_title">W</th>
+    <th scope="col" class="day_title">T</th>
+    <th scope="col" class="day_title">F</th>
+    <th scope="col" class="day_title">S</th>
+    <th scope="col" class="day_title">S</th>
+  </tr>
+{% for x in calendar %}
+{% cycle '  <tr>' '' '' '' '' '' '' %}
+    <td width="20" align="center" class="date-td">
+    <div class="cal_day {% if month.month != x.day.month %}non_month{% endif %}">
+	<div {% if x.day == today %}id="today"{% endif %}
+             {% if x.events %}class="event_on"{% endif %}
+             title='{% for event in x.events %}{{event.event.time|time:"fA"|lower}} {{event.event}}{% if not forloop.last %}, {% endif %}{% endfor %}'>
+
+    {% if x.events %}
+    <a class="event_a" href="/events/{{x.day|date:'Y/m/d/'}}{% if x.events|length == 1 %}{% for event in x.events %}{{event.event.slug}}/{% endfor %}{% endif %}">
+      {% endif %}
+
+      <div class="date {% if x.day >= today %}" data-date="{{x.day|date:'d/m/Y'}}"{% else %}date-inactive{% endif %}">
+        <div class="wkday">{{x.day|date:"D"}}</div>
+        {{x.day|date:"j"}}
+        <div class="mth">{{x.day|date:"M"}}</div>
+      </div>
+
+    {% if x.events %}
+    </a>
+    {% endif %}
+
+        </div>
+    </div>
+
+    </td>
+{% cycle '' '' '' '' '' '' '  <tr>' %}
+{% endfor %}
+</table>
