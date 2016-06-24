@@ -7,10 +7,12 @@ from .forms import BookingForm
 from .models import Booking
 from datetime import date, timedelta
 from dateutil.relativedelta import relativedelta
+from django.core.mail import send_mail
 from django.db.models import Count, Sum
 from django.shortcuts import redirect, get_object_or_404
 from django.utils.timezone import localtime, now
 from django.views import generic
+
 
 class CalendarMixin(object):
     """ @TD: Fri Jun 24 11:46:48 AEST 2016: This is overkill, but was useful in a past
