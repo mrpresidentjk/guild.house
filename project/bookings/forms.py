@@ -15,9 +15,15 @@ class BookingAdminForm(forms.ModelForm):
 
 
 class BookingForm(forms.ModelForm):
+    required_css_class = 'required'
 
     class Meta(object):
         fields = ['name', 'reserved_time', 'reserved_date', 'party_size', 'email',
                   'phone', 'booking_method', 'status', 'notes']
         model = Booking
         widgets = {'notes': TinyMCE()}
+
+        def __init__(self, *args, **kwargs):
+            super(BookingForm, self).__init__(*args, **kwargs)
+            self.fields['phone'].required = True
+            self.fields['email'].required = True

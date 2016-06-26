@@ -75,37 +75,41 @@ class BookingQueryset(object):
     def get_context_data(self, *args, **kwargs):
         context = super(BookingQueryset, self).get_context_data(*args, **kwargs)
         context['future_list'] = self.get_queryset().future()
-        context['summary_list'] = self.get_queryset().values('reserved_date')\
+        context['summary_list'] = self.get_queryset().future().values('reserved_date')\
                                       .annotate(count=Count('id'),
                                                 pax=Sum('party_size'))\
                                       .order_by('reserved_date')
         return context
 
-    # def get_queryset(self, *args, **kwargs):
-    #     queryset = super(BookingQueryset, self).get_queryset(*args, **kwargs)
-    #     return queryset.active().future().order_by('reserved_date', 'reserved_time')
+    def get_queryset(self, *args, **kwargs):
+        queryset = super(BookingQueryset, self).get_queryset(*args, **kwargs)
+        return queryset.order_by('reserved_date', 'reserved_time')
 
 
-class BookingCreateView(CalendarMixin, BookingQueryset, generic.edit.CreateView):
+class BookingCreateView(CalendarMixin, BookingQueryset,
+                        generic.edit.CreateView):
 
     form_class = BookingForm
 
     def form_valid(self, form):
         obj = form.instance
         obj.save()
-        message = """Link to booking: http://guild.house/bookings/{code}/
+        message = """Booking entered in to system.
+
+        Link to booking: http://guild.house/bookings/{code}/
 
         Link to day: http://guild.house{url}
 
         Add event: {date} {time} {pax}pax {name}
-        """.format(code=obj.code, url=obj.get_absolute_url(),
-            method=form.cleaned_data.get('booking_method'),
-            date=form.cleaned_data.get('reserved_date').strftime('%a %x'),
-            time=form.cleaned_data.get('reserved_time').strftime('%H:%M'),
-            pax=form.cleaned_data.get('party_size'),
+        """.format(code=str(obj.code),
+                   url=obj.get_absolute_url(),
+                   method=form.cleaned_data.get('booking_method'),
+                   date=form.cleaned_data.get('reserved_date').strftime('%a %x'),
+                   time=form.cleaned_data.get('reserved_time').strftime('%H:%M'),
+                   pax=form.cleaned_data.get('party_size'),
             name=form.cleaned_data.get('name')
         )
-        subject = "[{method}] booking added {pax}pax {date} {name}".format(
+        subject = "[{method}] {name} {pax}pax {date} ".format(
             method=form.cleaned_data.get('booking_method'),
             date=form.cleaned_data.get('reserved_date').strftime('%a %-d-%b'),
             pax=form.cleaned_data.get('party_size'),
@@ -178,8 +182,14 @@ class BookingDayArchiveView(BookingQueryset, generic.DayArchiveView):
 
     def get_context_data(self, *args, **kwargs):
         context_data = super(BookingDayArchiveView, self).get_context_data(*args,
-                                                                      **kwargs)
-        context_data['total'] = context_data['object_list'].aggregate(Sum('party_size'))
+                                                                           **kwargs)
+        context_data['total'] = kwargs.get('object_list')\
+                                      .aggregate(Sum('party_size'))
+        services = []
+        for serv in settings.SERVICE_CHOICE:
+            services.append((serv, (kwargs.get('object_list').filter(service=serv[0])\
+                            .aggregate(Sum('party_size')))))
+        context_data['services'] = services
         context_data['cancelled_list'] = self.get_dated_queryset()\
                                              .filter(status='Cancelled')\
                                              .order_by('name')

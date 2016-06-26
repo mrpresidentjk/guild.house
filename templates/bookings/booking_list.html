@@ -18,23 +18,13 @@
   </div>
   <div class="col-lg-6">
     <h3>All Future Bookings</h3>
-    <table>
+    <table id="future">
       {% for obj in future_list %}
-      {% ifchanged obj.reserved_date %}<th style="white-space:nowrap">{{ obj.reserved_date }}</th>{% endifchanged %}
+      {% ifchanged obj.reserved_date %}<th><br>{{ obj.reserved_date }}</th>{% endifchanged %}
       {% include "bookings/_booking_list.html" %}
-      {% if obj.notes %}
-      <tr>
-        <td colspan="3">
-          {{ obj.notes }}
-        </td>
-      </tr>
-      {% endif %}
-
       {% endfor %}
     </table>
   </div>
 </div>
-
-
 
 {% endblock %}

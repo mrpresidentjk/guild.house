@@ -9,19 +9,43 @@
   <div class="col-lg-8">
     <h3>Bookings for {{ day|date:"l j-F-Y" }}</h3>
     <h4>Total: {{ total.party_size__sum }}</h4>
+
+    {% for service in services %}
+    {{ service.0.1 }}: <b>{% if service.1.party_size__sum %}{{ service.1.party_size__sum }}{% else %}-{% endif %}</b><br>
+    {% endfor %}
+
+
     <h4>Active Bookings</h4>
-    <table>
+    <table id="bookings">
+      <thead>
+      <tr>
+        <th>Date/Time <i class="fa fa-angle-down"></i></th>
+        <th>Service <i class="fa fa-angle-down"></i></th>
+        <th>Pax <i class="fa fa-angle-down"></i></th>
+        <th>Contact <i class="fa fa-angle-down"></i></th>
+        <th>Status <i class="fa fa-angle-down"></i></th>
+      </tr>
+      </thead>
+      <tbody>
       {% for obj in object_list %}
       {% include "bookings/_booking_list.html" %}
       {% endfor %}
+      </tbody>
     </table>
     <hr>
-    <h4 style="color: rgba(156, 83, 83, 0.51);">Cancelled Bookings</h4>
-    <div style="color: rgba(156, 83, 83, 0.51);">
+    <h4 class="cancelled">Cancelled Bookings</h4>
+    <div class="cancelled">
     {% if cancelled_list %}
     <table>
       {% for obj in cancelled_list %}
       {% include "bookings/_booking_list.html" %}
+      {% if obj.notes %}
+      <tr>
+        <td colspan="3">
+          {{ obj.notes }}
+        </td>
+      </tr>
+      {% endif %}
       {% endfor %}
     </table>
     {% else %}
@@ -37,4 +61,17 @@
 
 {% include "bookings/_booking_day_navigation.html" %}
 
+{% endblock %}
+
+
+{% block extra_static %}
+{{ block.super }}
+
+<script src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+
+<script>
+$(document).ready(function(){
+    $('table#bookings').DataTable({"sDom": 't'});
+});
+</script>
 {% endblock %}

@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, unicode_literals
+import re
 from .. import utils
 from . import querysets, settings
 from django.contrib.sites.models import Site
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
-from django.db import models
+from django.core.exceptions import ValidationError
+from django.db import models, IntegrityError
 from django.utils import timezone
 from django.utils.encoding import python_2_unicode_compatible
 from project import utils
@@ -18,24 +20,6 @@ def get_current_site():
     except Site.DoesNotExist:
         pass
 
-STATUS_CHOICES = [
-    ('Confirmed', 'Confirmed'),
-    ('Unconfirmed', 'Unconfirmed'),
-    ('Numbers Unconfirmed', 'Numbers Unconfirmed'),
-    ('Big Booking', 'Big Booking'),
-    ('Cancelled', 'Cancelled'),
-]
-
-
-METHOD_CHOICE = [
-    ('phone', 'Phone'),
-    ('email', 'Email'),
-    ('facebook', 'Facebook'),
-    ('person', 'In Person'),
-    ('other', 'Other'),
-]
-
-
 @python_2_unicode_compatible
 class Booking(models.Model):
 
@@ -45,17 +29,19 @@ class Booking(models.Model):
 
     party_size = models.PositiveIntegerField()
 
-    status = models.CharField(max_length=50, choices=STATUS_CHOICES,
-                              default=STATUS_CHOICES[0][0])
+    status = models.CharField(max_length=50, choices=settings.STATUS_CHOICES,
+                              default=settings.STATUS_CHOICES[0][0])
 
     notes = models.TextField(blank=True, default='')
 
     email = models.EmailField(blank=True, default='')
 
-    phone = models.CharField(max_length=100, blank=True, default='')
+    phone = models.CharField(max_length=100, blank=True, default='',
+                             help_text="One phone number only. Put additional numbers in 'notes' if necessary."
+    )
 
-    booking_method = models.CharField(max_length=50, choices=METHOD_CHOICE,
-                                      default=METHOD_CHOICE[0][0])
+    booking_method = models.CharField(max_length=50, choices=settings.METHOD_CHOICE,
+                                      default=settings.METHOD_CHOICE[0][0])
 
     user = models.ForeignKey(User, blank=True, null=True)
 
@@ -65,6 +51,10 @@ class Booking(models.Model):
 
     reserved_date = models.DateField(db_index=True, default=timezone.now)
     reserved_time = models.TimeField(db_index=True, default=timezone.now)
+
+    service = models.CharField(max_length=50, choices=settings.SERVICE_CHOICE,
+                               blank=True, default=''
+    )
 
     created_at = models.DateTimeField(auto_now_add=True, editable=False)
 
@@ -78,6 +68,11 @@ class Booking(models.Model):
 
     def __str__(self):
         return self.name
+
+    def clean(self, *args, **kwargs):
+        if not self.email and not self.phone:
+            raise ValidationError('Either a phone or an email address must be provided (or both).')
+        return super(Booking, self).clean(*args, **kwargs)
 
     def get_absolute_url(self):
 
@@ -105,6 +100,43 @@ class Booking(models.Model):
     is_active.short_description = 'active'
 
     def save(self,*args, **kwargs):
+        self.clean()
+
+        # Automatically make code if doesn't already have one.
         if not self.code:
             self.code = utils.generate_unique_hex(queryset=Booking.objects.all())
+
+        # Automatically set service based upon `reserved_time`.
+        for i, t in enumerate(settings.SERVICE_TIMES):
+            if self.reserved_time >= t[0]:
+                service = settings.SERVICE_TIMES[i][1]
+        self.service = service
+
+        # Clean phone number
+        self.phone = re.sub('[^0-9]','', self.phone)
+
+        # Create a user whose username is email address if there is one, but
+        # phone number if there is not.
+        if not self.user:
+            if self.email:
+                email = username = self.email
+                try:
+                    user = User.objects.create_user(
+                        username=username,
+                        email=email
+                    )
+                    user.first_name = self.name
+                    user.save()
+                except IntegrityError:
+                    user =  User.objects.get(username=username, email=email)
+            elif self.phone:
+                username = password = self.phone
+                try:
+                    user = User.objects.create_user(username=username)
+                    user.first_name = self.name
+                    user.save()
+                except IntegrityError:
+                    user = User.objects.get(username=username)
+                    self.user = user
+
         super(Booking, self).save(*args, **kwargs)

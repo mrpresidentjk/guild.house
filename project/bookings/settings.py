@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, unicode_literals
+from datetime import time
 from django.conf import settings
 
 
@@ -19,3 +20,32 @@ DEFAULT_CALENDAR_LENGTH = getattr(settings, 'BOOKINGS_DEFAULT_CALENDAR_LENGTH', 
 FROM_EMAIL = getattr(settings, 'DEFAULT_FROM_EMAIL')
 
 TO_EMAILS = getattr(settings, 'BOOKINGS_TO_EMAILS')
+
+STATUS_CHOICES = [
+    ('Confirmed', 'Confirmed'),
+    ('Unconfirmed', 'Unconfirmed'),
+    ('Numbers Unconfirmed', 'Numbers Unconfirmed'),
+    ('Big Booking', 'Big Booking'),
+    ('Cancelled', 'Cancelled'),
+]
+
+METHOD_CHOICE = [
+    ('phone', 'Phone'),
+    ('email', 'Email'),
+    ('website', 'Online'),
+    ('facebook', 'Facebook Messenger'),
+    ('person', 'In Person'),
+    ('other', 'Other'),
+]
+
+SERVICE_CHOICE = [
+    ('lunch', 'Lunch'),
+    ('afternoon', 'Afternoon'),
+    ('main', 'Main'),
+]
+
+SERVICE_TIMES = [
+    (time(12), 'lunch'),
+    (time(15), 'afternoon'),
+    (time(17,30), 'main'),
+]
