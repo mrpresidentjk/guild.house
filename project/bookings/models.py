@@ -34,7 +34,7 @@ class Booking(models.Model):
 
     notes = models.TextField(blank=True, default='')
 
-    email = models.EmailField(blank=True, default='')
+    email = models.EmailField(max_length=150, blank=True, default='')
 
     phone = models.CharField(max_length=100, blank=True, default='',
                              help_text="One phone number only. Put additional numbers in 'notes' if necessary."
@@ -68,11 +68,6 @@ class Booking(models.Model):
 
     def __str__(self):
         return self.name
-
-    def clean(self, *args, **kwargs):
-        if not self.email and not self.phone:
-            raise ValidationError('Either a phone or an email address must be provided (or both).')
-        return super(Booking, self).clean(*args, **kwargs)
 
     def get_absolute_url(self):
 

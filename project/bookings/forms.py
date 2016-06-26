@@ -27,3 +27,9 @@ class BookingForm(forms.ModelForm):
             super(BookingForm, self).__init__(*args, **kwargs)
             self.fields['phone'].required = True
             self.fields['email'].required = True
+
+    def clean(self, *args, **kwargs):
+        cleaned_data = super(BookingForm, self).clean(*args, **kwargs)
+        if not cleaned_data.get('email') and not cleaned_data.get('phone'):
+            raise forms.ValidationError('Either a phone or an email address must be provided (or both).')
+        return super(BookingForm, self).clean(*args, **kwargs)
