@@ -44,12 +44,26 @@ table td {
     padding: 3px 5px;
 }
 
+table th {
+    white-space: nowrap;
+}
+
 table#calendar th {
     text-align: center;
 }
 
 table#calendar {
     width: 100%;
+}
+
+table#bookings th {
+    cursor: pointer;
+    color: #337ab7;
+}
+
+table#future th {
+    white-space:nowrap;
+    border-bottom: 1px solid white;
 }
 
 button[type=submit] {
@@ -62,6 +76,27 @@ button[type=submit] {
 
 .mono {
     font-family: monospace;
+}
+
+.errorlist li {
+    color: #d9534f;
+    list-style-type: none;
+}
+
+.errorlist {
+    padding-left: 0;
+}
+
+.errorlist li:before {
+    content: '**';
+}
+
+.required label:after {
+    content: '*';
+}
+
+.cancelled {
+    color: rgba(156, 83, 83, 0.51);
 }
 
 .date, .time, .pax {
