@@ -1,8 +1,7 @@
 {% extends "base.html" %}
 
 {% block box_above %}
-{{ block.super }}
-{% if user.is_authenticated %}
+{% if not user.is_anonymous %}
       <ul>
         <li style="display: inline; list-style-type: none; padding-right: 20px">
           <a href="{% url "bookings:booking_today" %}">Today</a>

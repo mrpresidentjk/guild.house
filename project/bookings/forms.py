@@ -21,7 +21,7 @@ class BookingForm(forms.ModelForm):
         fields = ['name', 'reserved_time', 'reserved_date', 'party_size', 'email',
                   'phone', 'booking_method', 'status', 'notes']
         model = Booking
-        widgets = {'notes': TinyMCE()}
+        widgets = {'notes': forms.Textarea(attrs={'rows':4, 'cols':22})}
 
         def __init__(self, *args, **kwargs):
             super(BookingForm, self).__init__(*args, **kwargs)

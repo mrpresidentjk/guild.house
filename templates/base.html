@@ -33,6 +33,8 @@
 
   {% include "_navigation.html" %}
 
+  {% if not user.is_anonymous %}<div style="float: right; margin-top:70px;">Logged in: <a href="/admin/">{{ user }}</a> (<a href="/admin/logout/">Log out</a>)</div>{% endif %}
+
     <!-- Branding -->
     <div class="brand"><a href="{% url "site:homepage_detail" %}"><img src="{% static "img/guild_white.png" %}" alt="Guild, Canberra's Board games beer restaurant cafe"></a></div>
     <div class="address-bar">
@@ -60,11 +62,16 @@
     {# <!-- /.container --> #}
     <div class="container">
 
-    <p>
-      <div style="float: right">Logged in: <a href="/admin/">{{ user }}</a></div>
+
+
+    {% block sub_nav %}
+    {% endblock %}
+
+    {% if not user.is_anonymous %}{% endif %}
+
+
     {% block box_above %}
     {% endblock %}
-    </p>
 
         <div class="row">
             <div class="box">

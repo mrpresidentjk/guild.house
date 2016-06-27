@@ -34,7 +34,7 @@ p {
 }
 
 input, select, textarea {
-    background: rgba(12,12,12,0.8);
+    background: rgba(220, 220, 120, 0.64); /*rgba(12,12,12,0.8);*/
     border: 0;
     padding: 5px 10px;
     margin: 2px;
