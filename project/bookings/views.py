@@ -86,7 +86,6 @@ class BookingQueryset(object):
         return queryset.order_by('reserved_date', 'reserved_time')
 
 
-@python_2_unicode_compatible
 class BookingCreateView(CalendarMixin, BookingQueryset,
                         generic.edit.CreateView):
 
@@ -101,13 +100,15 @@ class BookingCreateView(CalendarMixin, BookingQueryset,
 
         Link to day: http://guild.house{url}
 
-        Add event to calendar (only if big event): {day} {time} {date} {pax}pax {name}
-        """.format(code=obj.code,
+        Add event to calendar (only if big event)
+        What: {pax}pax {name}
+        When: {time} {date} {day}
+        """.format(code=obj.code.decode('utf-8'),
                    url=obj.get_absolute_url(),
                    method=form.cleaned_data.get('booking_method'),
                    day=form.cleaned_data.get('reserved_date').strftime('%a'),
-                   time=form.cleaned_data.get('reserved_time').strftime('%H:%M'),
-                   date=form.cleaned_data.get('reserved_date').strftime('%-d-%m-%Y'),
+                   time=form.cleaned_data.get('reserved_time').strftime('%H:%M%p'),
+                   date=form.cleaned_data.get('reserved_date').strftime('%-d-%b-%Y'),
                    pax=form.cleaned_data.get('party_size'),
             name=form.cleaned_data.get('name')
         )
