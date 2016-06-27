@@ -19,7 +19,8 @@ class BookingAdmin(admin.ModelAdmin):
         ('Content', {'fields': ['reserved_date', 'reserved_time', 'name',
                                 'party_size', 'status', 'service', 'email',
                                 'phone']}),
-        ('Publishing', {'fields': ['site', ('created_at', 'updated_at')],
+        ('Publishing', {'fields': ['site', ('created_at', 'updated_at'),
+                               'user'],
                         'classes': ['collapse']}),
     ]
 
@@ -29,8 +30,6 @@ class BookingAdmin(admin.ModelAdmin):
                     'service', 'status', 'phone', 'email', get_obj_link]
 
     list_filter = ['reserved_date', 'reserved_time', 'status']
-
-    #prepopulated_fields = {'slug': ['name']}
 
     readonly_fields = ['created_at', 'updated_at']
 
