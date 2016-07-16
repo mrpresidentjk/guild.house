@@ -142,7 +142,7 @@ button[type=submit] {
     padding: 2px 4px;
 }
 
-.active,
+.selected,
 .date:hover,
 .pax:hover,
 .time:hover {
@@ -223,10 +223,6 @@ background-color: white
 
 .navbar-custom .nav li.active {
     outline: 0;
-}
-
-.navbar-custom .nav li.active a {
-    background-color: rgba(255,255,255,.3);
 }
 
 .navbar-custom .nav li.active a:hover {
