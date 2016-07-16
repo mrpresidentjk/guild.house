@@ -32,7 +32,7 @@ CACHES = {
 
 # Email
 
-DEFAULT_TO_EMAIL = 'devops@mattaustin.com.au'
+DEFAULT_TO_EMAIL = 'web@guild.house'
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
