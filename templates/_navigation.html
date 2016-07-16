@@ -13,11 +13,13 @@
     </div>
 
     <!-- Collect the nav links, forms, and other content for toggling -->
-    <div class="navbar-collapse navbar-right navbar-main-collapse collapse" aria-expanded="false" style="height: 1px;">
+    <div class="navbar-collapse navbar-center navbar-main-collapse collapse" aria-expanded="false" style="height: 1px;">
       <ul class="nav navbar-nav">
         <!-- Hidden li included to remove active class from about link when scrolled up past about section -->
-        <li class="hidden active">
-          <a href="/"></a>
+        <li class="active">
+          <a href="{% url "site:homepage_detail" %}">
+            <img src="{% static "sheild-.png" %}" height=24>
+          </a>
         </li>
 
 
