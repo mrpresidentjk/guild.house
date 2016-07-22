@@ -138,7 +138,7 @@ class BookingCreateView(CalendarMixin, BookingQueryset,
             from_email=settings.FROM_EMAIL,
             recipient_list=settings.TO_EMAILS,
         )
-        return super(BookingCreateView, self).form_valid(form)
+        return redirect('bookings:booking_success', code=form.instance.code)
 
     def get_context_data(self, *args, **kwargs):
         context = super(BookingCreateView, self).get_context_data(*args, **kwargs)
