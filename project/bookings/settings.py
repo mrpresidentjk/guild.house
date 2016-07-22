@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from __future__ import absolute_import, unicode_literals
 from datetime import time
 from django.conf import settings
 
@@ -22,9 +21,9 @@ FROM_EMAIL = getattr(settings, 'DEFAULT_FROM_EMAIL')
 TO_EMAILS = getattr(settings, 'BOOKINGS_TO_EMAILS')
 
 STATUS_CHOICES = [
+    ('Added', 'Added'),
     ('Confirmed', 'Confirmed'),
-    ('Unconfirmed', 'Unconfirmed'),
-    ('Numbers Unconfirmed', 'Numbers Unconfirmed'),
+    ('Numbers Confirmed', 'Numbers Confirmed'),
     ('Big Booking', 'Big Booking'),
     ('Cancelled', 'Cancelled'),
 ]

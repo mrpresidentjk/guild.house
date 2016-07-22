@@ -3,12 +3,14 @@ from __future__ import absolute_import, unicode_literals
 import calendar
 import datetime
 from . import settings
-from .forms import BookingForm
+from .forms import BookingForm, NewBookingForm
 from .models import Booking
 from datetime import date, timedelta
 from dateutil.relativedelta import relativedelta
 from django.core.mail import send_mail
+from django.core.urlresolvers import reverse_lazy
 from django.db.models import Count, Sum
+from django.http import Http404
 from django.shortcuts import redirect, get_object_or_404
 from django.utils.timezone import localtime, now
 from django.views import generic
@@ -83,13 +85,25 @@ class BookingQueryset(object):
 
     def get_queryset(self, *args, **kwargs):
         queryset = super(BookingQueryset, self).get_queryset(*args, **kwargs)
-        return queryset.order_by('reserved_date', 'reserved_time')
+        return queryset.active().order_by('reserved_date', 'reserved_time')
+
+
+class BookingSuccessView(BookingQueryset, generic.DetailView):
+
+    template_name = 'bookings/booking_success.html'
+
+    def get_object(self):
+        return get_object_or_404(Booking, code=self.kwargs.get('code'))
 
 
 class BookingCreateView(CalendarMixin, BookingQueryset,
                         generic.edit.CreateView):
 
-    form_class = BookingForm
+    form_class = NewBookingForm
+
+    def get_object(self):
+        return get_object_or_404(Booking, code=self.kwargs.get('code'))
+
 
     def form_valid(self, form):
         obj = form.instance
@@ -141,8 +155,8 @@ class BookingCreateView(CalendarMixin, BookingQueryset,
         else:
             initial['reserved_date'] = date.today()
         initial['reserved_time'] = settings.DEFAULT_BOOKING_TIME
-        return initial
 
+        return initial
 
 
 class BookingUpdateView(CalendarMixin, BookingQueryset, generic.edit.UpdateView):
@@ -151,7 +165,19 @@ class BookingUpdateView(CalendarMixin, BookingQueryset, generic.edit.UpdateView)
     form_class = BookingForm
 
     def get_object(self):
-        return get_object_or_404(Booking, code=self.kwargs.get('code'))
+        if not self.request.user.is_authenticated():
+            raise Http404()
+        else:
+            return get_object_or_404(Booking, code=self.kwargs.get('code'))
+
+    def get_context_data(self, *args, **kwargs):
+        context_data = super(BookingUpdateView, self).get_context_data(*args,
+                                                                      **kwargs)
+        obj = self.get_object()
+        unique = self.get_queryset().filter(reserved_date=obj.reserved_date,
+                                            phone=obj.phone)
+        return context_data
+
 
 class BookingListView(BookingQueryset, generic.ListView):
 

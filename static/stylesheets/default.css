@@ -34,10 +34,18 @@ p {
 }
 
 input, select, textarea {
-    background: rgba(220, 220, 120, 0.64); /*rgba(12,12,12,0.8);*/
+    color: whitesmoke;
     border: 0;
     padding: 5px 10px;
     margin: 2px;
+}
+
+select, input {
+    background: rgba(175, 151, 100, 0.55); /*rgba(216, 181, 120, 0.55); /*rgba(220, 175, 120, 0.64); /*rgba(220, 220, 120, 0.64); /*rgba(12,12,12,0.8);*/
+}
+
+textarea {
+    background: rgba(105, 98, 98, 0.57);
 }
 
 table td {
@@ -46,6 +54,7 @@ table td {
 
 table th {
     white-space: nowrap;
+    vertical-align: top;
 }
 
 table#calendar th {
@@ -89,10 +98,6 @@ button[type=submit] {
 
 .errorlist li:before {
     content: '**';
-}
-
-.required label:after {
-    content: '*';
 }
 
 .cancelled {

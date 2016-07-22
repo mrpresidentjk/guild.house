@@ -11,6 +11,25 @@
       <h2>New Booking</h2>
     {% endif %}
 
+{% if form.errors %}
+<div class="btn btn-danger">
+Woah! Your booking wasn't saved.</div><br>
+At a minimum we need: Name, Date/Time, Party size and some contact details.
+
+<p>
+{% for k, v in form.errors.items %}
+<div class="btn btn-primary">
+{% if k == '__all__' %}
+Please supply both email address and phone number.
+{% else %}
+{{ k }} is incomplete.
+{% endif %}
+</div>
+</p>
+
+{% endfor %}
+{% endif %}
+
   <div class="col-sm-5">
     {% include "bookings/_calendar.html" %}
     <hr>

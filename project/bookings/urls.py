@@ -44,6 +44,10 @@ urls = [
         views.BookingDetailView.as_view(),
         name='booking_detail'),
 
+    url(r'^(?P<code>[\w-]+)/success/$',
+        views.BookingSuccessView.as_view(),
+        name="booking_success"),
+
     url(r'^(?P<code>[\w-]+)/$',
         views.BookingUpdateView.as_view(),
         name="booking_update"),

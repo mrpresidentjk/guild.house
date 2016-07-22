@@ -21,15 +21,34 @@ class BookingForm(forms.ModelForm):
         fields = ['name', 'reserved_time', 'reserved_date', 'party_size', 'email',
                   'phone', 'booking_method', 'status', 'notes']
         model = Booking
-        widgets = {'notes': forms.Textarea(attrs={'rows':4, 'cols':22})}
+        widgets = {
+            'notes': forms.Textarea(attrs={'rows':4,  'width':185, 'cols':0}),
+            'email': forms.TextInput(attrs={'placeholder': '**', }),
+            'phone': forms.TextInput(attrs={'placeholder': '**'}),
+            'name': forms.TextInput(attrs={'placeholder': '**'}),
+            'party_size': forms.TextInput(attrs={'placeholder': '**'}),
+        }
 
-        def __init__(self, *args, **kwargs):
-            super(BookingForm, self).__init__(*args, **kwargs)
-            self.fields['phone'].required = True
-            self.fields['email'].required = True
+    def __init__(self, *args, **kwargs):
+        super(BookingForm, self).__init__(*args, **kwargs)
+        self.fields['phone'].required = True
+        self.fields['email'].required = True
+
 
     def clean(self, *args, **kwargs):
         cleaned_data = super(BookingForm, self).clean(*args, **kwargs)
         if not cleaned_data.get('email') and not cleaned_data.get('phone'):
-            raise forms.ValidationError('Either a phone or an email address must be provided (or both).')
+            raise forms.ValidationError('Both a phone number and an email address are necessary for online bookings.')
         return super(BookingForm, self).clean(*args, **kwargs)
+
+
+class NewBookingForm(BookingForm):
+
+    def __init__(self, *args, **kwargs):
+        super(BookingForm, self).__init__(*args, **kwargs)
+        self.fields['booking_method'].widget = forms.HiddenInput()
+        self.fields['status'].widget = forms.HiddenInput()
+
+
+# Have to be logged in to make changes to booking.
+#

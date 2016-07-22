@@ -1,0 +1,39 @@
+{% extends "bookings/base.html" %}
+
+
+{% block title %}{{ homepage.title }} - {{ block.super }}{% endblock %}
+
+
+{% block content %}
+
+<div class="row">
+
+  <div class="col-md-12">
+
+    <div class="btn btn-success">
+      Booked!
+    </div>
+
+    <h2>Booking for <em>{{ object.name }}</em></h2>
+
+    Thank you, booking was successful.<br><br>
+
+    <p>
+    Number of people: {{ object.party_size }} pax<br>
+    Date: <b>{{ object.reserved_date|date:"l" }}</b>, {% if user.is_authenticated %}<a href="{% url 'bookings:booking_day' year=object.reserved_date.year month=object.reserved_date|date:"m" day=object.reserved_date|date:"d" %}">{% endif %}
+{{ object.reserved_date|date:"F j, Y" }}</a><br>
+    Time: {{ object.reserved_time|time:"P" }} ({{ object.service }})<br>{# "H:i" #}
+    </p>
+
+      {% if user.is_authenticated %}
+        <a href="{% url "bookings:booking_update" code=object.code %}">
+      {% endif %}
+      <b>{{ object.name }}</b></a><br>
+      Contact phone: {{ object.phone }}<br>
+      Contact email: {{ object.email }}<br>
+    <em>{{object.status}}</em>
+
+  </div>
+</div>
+
+{% endblock %}
