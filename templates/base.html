@@ -33,7 +33,7 @@
 
   {% include "_navigation.html" %}
 
-  {% if not user.is_anonymous %}<div style="float: right; margin-top:70px;">Logged in: <a href="/admin/">{{ user }}</a> (<a href="/admin/logout/">Log out</a>)</div>{% endif %}
+  {% if not user.is_anonymous %}<div class="hidden-print" style="float: right; margin-top:70px;">Logged in: <a href="/admin/">{{ user }}</a> (<a href="/admin/logout/">Log out</a>)</div>{% endif %}
 
     <!-- Branding -->
     <div class="brand"><a href="{% url "site:homepage_detail" %}"><img src="{% static "img/guild_white.png" %}" alt="Guild, Canberra's Board games beer restaurant cafe"></a></div>
@@ -85,7 +85,7 @@
     {% block box_below %}
     {% endblock %}
 
-        <div class="row" id="location">
+        <div class="row hidden-print" id="location">
             <div class="box">
                 <div class="col-lg-12">
                   <iframe width="100%" height="400" frameborder="0" scrolling="no" marginheight="0" marginwidth="0"
@@ -95,7 +95,7 @@
             </div>
         </div>
 
-    <footer>
+    <footer class="hidden-print">
         <div class="container">
             <div class="row">
                 <div class="col-lg-12 text-center">
@@ -105,9 +105,6 @@
                 <p><a href="mailto:hello@guild.house">hello@guild.house</a><br>
                   <a href="tel:+61262572727">02 6257 2727</a></p>
                 <ul class="list-inline banner-social-buttons">
-                    <li>
-                        <a href="https://twitter.com/_guildhouse" class="btn btn-default btn-lg"><i class="fa fa-twitter fa-fw"></i> <span class="network-name">Twitter</span></a>
-                    </li>
                     <li>
                         <a href="https://facebook.com/guildhouse.canberra" class="btn btn-default btn-lg"><i class="fa fa-facebook fa-fw"></i> <span class="network-name">Facebook</span></a>
                     </li>

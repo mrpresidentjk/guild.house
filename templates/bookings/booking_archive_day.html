@@ -33,33 +33,16 @@
       </tbody>
     </table>
     <hr>
-    <h4 class="cancelled">Cancelled Bookings</h4>
-    <div class="cancelled">
-    {% if cancelled_list %}
-    <table>
-      {% for obj in cancelled_list %}
-      {% include "bookings/_booking_list.html" %}
-      {% if obj.notes %}
-      <tr>
-        <td colspan="3">
-          {{ obj.notes }}
-        </td>
-      </tr>
-      {% endif %}
-      {% endfor %}
-    </table>
-    {% else %}
-    <em>None</em>
-    {% endif %}
-    </div>
 
   </div>
-  <div class="col-lg-4">
+  <div class="col-lg-4 hidden-print">
     {% include "bookings/_bookings_summary.html" %}
   </div>
 </div>
 
-{% include "bookings/_booking_day_navigation.html" %}
+<div class="hidden-print">
+  {% include "bookings/_booking_day_navigation.html" %}
+</div>
 
 {% endblock %}
 

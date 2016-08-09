@@ -1,9 +1,7 @@
 <tr>
   <td style="white-space:nowrap">
     {{ obj.reserved_date|date:"D" }}
-    <a href="{% url 'bookings:booking_day' year=obj.reserved_date.year month=obj.reserved_date|date:"m" day=obj.reserved_date|date:"d" %}">
       {{ obj.reserved_date|date:"F j" }}
-    </a>
     {{ obj.reserved_time|time:"H:i" }} </td>
 
   <td style="white-space:nowrap">{{ obj.service }}</td>
@@ -17,5 +15,8 @@
   </td>
   <td>
     <em>{{obj.status}}</em>
+  </td>
+  <td>
+    {{ obj.notes }}
   </td>
 </tr>

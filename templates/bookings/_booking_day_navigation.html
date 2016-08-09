@@ -1,6 +1,5 @@
 <br><br>
 
-<p>
     {% if previous_day %}
 
     <a href="{% url 'bookings:booking_day' previous_day.year previous_day|date:"m" previous_day|date:"d" %}" ><< {{ previous_day }}</a> Previous
@@ -11,4 +10,3 @@
     Next <a href="{% url 'bookings:booking_day' year=next_day.year month=next_day|date:"m" day=next_day|date:"d" %}" >{{ next_day }} >></a>
 
     {% endif %}
-</p>
