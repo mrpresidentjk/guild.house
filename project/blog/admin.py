@@ -22,9 +22,11 @@ class EntryAdmin(admin.ModelAdmin):
 
     form = EntryAdminForm
 
-    list_display = ['title', 'publish_at', 'is_active', 'is_featured']
+    list_display = ['title', 'publish_at', 'is_enabled', 'is_featured', 'is_active']
 
     list_filter = ['is_enabled', 'is_featured']
+
+    list_editable = ['is_enabled', 'is_featured']
 
     prepopulated_fields = {'slug': ['title']}
 
