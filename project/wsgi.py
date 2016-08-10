@@ -9,9 +9,19 @@ https://docs.djangoproject.com/en/1.8/howto/deployment/wsgi/
 """
 
 from django.core.wsgi import get_wsgi_application
-from raven.contrib.django.raven_compat.middleware.wsgi import Sentry
+#from raven.contrib.django.raven_compat.middleware.wsgi import Sentry
 import os
 
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'project.settings')
-application = Sentry(get_wsgi_application())
+#application = Sentry(get_wsgi_application())
+application = get_wsgi_application()
+
+## def application(environ, start_response):
+##     status = '200 OK'
+##     output = b'Hello World!'
+##     response_headers = [('Content-type', 'text/plain'),
+##                         ('Content-Length', str(len(output)))]
+##     start_response(status, response_headers)
+##     return [output]
+ 

@@ -31,9 +31,9 @@ EMAIL_PORT = 25
 
 # Sessions
 
-CSRF_COOKIE_SECURE = True
+## CSRF_COOKIE_SECURE = True
 
-SESSION_COOKIE_SECURE = True
+## SESSION_COOKIE_SECURE = True
 
 # Storage
 

@@ -1,7 +1,7 @@
 import datetime
 from django.shortcuts import render_to_response, redirect#, get_object_or_404, get_list_or_404
 from django.template import RequestContext
-from models import Event, EventDate
+from .models import Event, EventDate
 
 
 def home(request, context={}, template='home.html'):
