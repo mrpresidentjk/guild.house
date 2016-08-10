@@ -1,8 +1,70 @@
-import datetime
-from django.shortcuts import render_to_response, redirect#, get_object_or_404, get_list_or_404
+# -*- coding: utf-8 -*-
+from __future__ import absolute_import, unicode_literals
+from . import settings
+from .models import Event, EventDate, EventUser
+from django.shortcuts import redirect
+from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
-from .models import Event, EventDate
+from django.views import generic
+import datetime
 
+
+class EventDetailView(generic.DateDetailView):
+
+    allow_future = True
+
+    date_field = 'publish_at'
+
+    model = Event
+
+    month_format = '%m'
+
+    def get_queryset(self, *args, **kwargs):
+        queryset = super(EventDetailView, self).get_queryset(*args, **kwargs)
+        return queryset.active()
+
+
+class EventTicketView(generic.DetailView):
+    """ Not using built-in CBV model form!
+
+    2x things going on:
+    - Displaying Event
+    - Using Paypal form button on page
+
+    **IF** Paypal successful redirects to create User/Event.
+
+    """
+
+    model = Event
+
+    template_name = "events/event_ticket_detail.html"
+
+    # def get_context_data(self, **kwargs):
+    #     context = super(EventTicketView, self).get_context_data(**kwargs)
+    #     print dict(kwargs)
+    #     context['event'] = Event.objects.get(slug=kwargs['slug'])
+    #     return context
+
+
+class EventUserCreateView(generic.edit.CreateView):
+    model = EventUser
+
+
+class EventListView(generic.ListView):
+
+    model = Event
+
+    paginate_by = settings.EVENTS_PAGINATE_BY
+
+    # def get(self, *args, **kwargs):
+    #     page = self.kwargs.get('page', None)
+    #     if page is not None and int(page) < 2:
+    #         return redirect('blog:entry_list', permanent=True)
+    #     return super(EventListView, self).get(*args, **kwargs)
+
+    def get_queryset(self, *args, **kwargs):
+        queryset = super(EventListView, self).get_queryset(*args, **kwargs)
+        return queryset.active()
 
 def home(request, context={}, template='home.html'):
     ## spotlight
