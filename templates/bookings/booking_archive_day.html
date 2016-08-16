@@ -11,7 +11,7 @@
     <h4>Total: {{ total.party_size__sum }}</h4>
 
     {% for service in services %}
-    {{ service.0.1 }}: <b>{% if service.1.party_size__sum %}{{ service.1.party_size__sum }}{% else %}-{% endif %}</b><br>
+    {{ service.0.1 }}: {% if service.1.party_size__sum %}<b>{{ service.1.party_size__sum }}</b> pax{% else %}-{% endif %}<br>
     {% endfor %}
 
 
