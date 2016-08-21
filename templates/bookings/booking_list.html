@@ -20,7 +20,7 @@
     <h3>All Future Bookings</h3>
     <table id="future">
       {% for obj in future_list %}
-      {% ifchanged obj.reserved_date %}<th colspan=6><br>{{ obj.reserved_date|date:"l j M Y" }}</th>{% endifchanged %}
+      {% ifchanged obj.reserved_date %}<th><br>{{ obj.reserved_date }}</th>{% endifchanged %}
       {% include "bookings/_booking_list.html" %}
       {% endfor %}
     </table>
