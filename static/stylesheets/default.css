@@ -421,9 +421,9 @@ footer,
 }
 
 .carousel-text {
-    position: fixed;
+    position: relative;
     z-index: 999;
-    top: 300px;
+    top: -180px;
     float: left;
     margin-left: 95px;
 }
@@ -432,4 +432,15 @@ footer,
 .carousel-text h2 {
     background: rgba(12,12,12,0.8);
     padding: 2px 20px;
+}
+.carousel-indicators {
+    bottom: 4.5em;
+}
+
+#carousel-homepage {
+    margin-bottom: -6.5em;
+}
+
+.home-link:hover {
+    opacity: 0.85;
 }

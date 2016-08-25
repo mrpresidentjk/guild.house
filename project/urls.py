@@ -18,6 +18,9 @@ urlpatterns = [
     # Blog
     url(r'^blog/', include('project.blog.urls')),
 
+    # Menu
+    url(r'^menus/', include('project.menus.urls')),
+
 ##     # Events
 ##     url(r'^events/', include('project.events.urls')),
 

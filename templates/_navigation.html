@@ -17,13 +17,14 @@
       <ul class="nav navbar-nav">
         <!-- Hidden li included to remove active class from about link when scrolled up past about section -->
         <li class="active">
-          <a href="{% url "site:homepage_detail" %}">
+          <a class="home-link" href="{% url "site:homepage_detail" %}">
             <img src="{% static "sheild-.png" %}" height=24>
           </a>
         </li>
 
 
-        <li><a href="https://boardgamegeek.com/collection/user/elequ?own=1" target="_blank">Games</a></li> {# {% url "library:category_list" %} #}
+        <li><a href="/games/" target="_blank">Games</a></li> {# {% url "library:category_list" %} #}
+        <li><a href="/menus/" target="_blank">Menu</a></li> {# {% url "library:category_list" %} #}
 
         {% comment %}
         <li><a href="{% url "blog:entry_list" %}">News</a></li>
