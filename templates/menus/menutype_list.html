@@ -1,0 +1,23 @@
+{% extends "menus/base.html" %}
+
+
+{% block title %}Menus - {{ block.super }}{% endblock %}
+
+
+{% block content %}
+
+  <h1>Menus</h1>
+
+  {% for object in object_list %}
+    {% if forloop.first %}<ul class="list-inline menus">{% endif %}
+      <li>
+        <h1><a href="">{{ object.title }}</a></h1>
+        <p>{{ object.summary|safe }}</p>
+{{ object.menu_file.size|filesizeformat }} PDF
+{{ object.menu_file }}
+        <br>
+      </li>
+    {% if forloop.last %}</ul>{% endif %}
+  {% endfor %}
+
+{% endblock %}

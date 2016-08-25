@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'taggit',
     'tinymce',
 
+    'project.menus',
     'project.admin',
     'project.blog',
     'project.library',
