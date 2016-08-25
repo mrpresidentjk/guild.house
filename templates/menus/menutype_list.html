@@ -8,12 +8,13 @@
 
   <h1>Menus</h1>
 
+
   <ul class="list-inline menus">
   {% for object in object_list %}
       <li>
-        <h2><a href="http://static.guild.house/public/media/{{ object.menu_file }}">{{ object.title }}</a></h2>
-        <p><a href="http://static.guild.house/public/media/{{ object.menu_file }}">{{ object.summary|safe }}</a></p>
-        <a href="http://static.guild.house/public/media/{{ object.menu_file }}">{{ object.menu_file.size|filesizeformat }} PDF</a>
+        <h2><a href="{{MEDIA_URL}}{{ object.menu_file }}">{{ object.title }}</a></h2>
+        <p><a href="{{MEDIA_URL}}{{ object.menu_file }}">{{ object.summary|safe }}</a></p>
+        <a href="{{MEDIA_URL}}{{ object.menu_file }}">{{ object.menu_file.size|filesizeformat }} PDF</a>
         <br>
       </li>
   {% endfor %}

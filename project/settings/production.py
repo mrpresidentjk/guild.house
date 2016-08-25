@@ -52,3 +52,6 @@ DEFAULT_FROM_EMAIL = 'hello@guild.house'
 
 STATIC_URL = 'http://static.guild.house/public/'
 STATIC_ROOT = os.path.join(BASE_DIR, '../guild_static/public')
+
+MEDIA_URL = 'http://static.guild.house/public/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, '../guild_static/public/media')

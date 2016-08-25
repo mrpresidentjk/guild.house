@@ -12,7 +12,7 @@
     <div class="item {% if forloop.first %}active{% endif %}">
 
           <a class="carousel-img" href="{{ entry.get_absolute_url }}">
-            <img class="img-responsive img-full" src="{{ entry.featured_image.url }}" alt="">
+            <img class="img-responsive img-full" src="{{MEDIA_URL}}{{ entry.featured_image }}" alt="">
           </a>
           <div class="carousel-text">
             <h2>{{ entry.title }}</h2>
