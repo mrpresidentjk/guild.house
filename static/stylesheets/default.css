@@ -441,6 +441,31 @@ footer,
     margin-bottom: -6.5em;
 }
 
+
+.menus ul {
+    background: none;
+}
+
+.menus li {
+    display: table-cell;
+    width: 20%;
+    text-align: center;
+    padding-bottom: 20px;
+    margin: 2%;
+}
+
+.menus li:hover {
+    background: rgba(12,32,52,0.6);
+}
+
+.menus,
+.menus a,
+.menus:hover,
+.menus:hover a,
+.menus a:hover {
+    color: #ddd;
+}
+
 .home-link:hover {
     opacity: 0.85;
 }

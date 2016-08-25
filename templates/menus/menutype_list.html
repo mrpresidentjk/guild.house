@@ -8,16 +8,19 @@
 
   <h1>Menus</h1>
 
+  <ul class="list-inline menus">
   {% for object in object_list %}
-    {% if forloop.first %}<ul class="list-inline menus">{% endif %}
       <li>
-        <h1><a href="">{{ object.title }}</a></h1>
-        <p>{{ object.summary|safe }}</p>
-{{ object.menu_file.size|filesizeformat }} PDF
-{{ object.menu_file }}
+        <h2><a href="http://static.guild.house/public/media/{{ object.menu_file }}">{{ object.title }}</a></h2>
+        <p><a href="http://static.guild.house/public/media/{{ object.menu_file }}">{{ object.summary|safe }}</a></p>
+        <a href="http://static.guild.house/public/media/{{ object.menu_file }}">{{ object.menu_file.size|filesizeformat }} PDF</a>
         <br>
       </li>
-    {% if forloop.last %}</ul>{% endif %}
   {% endfor %}
+      <li>
+        <h2><a href="https://boardgamegeek.com/collection/user/elequ?own=1" target="_blank">Games</a></h2>
+        <p><a href="https://boardgamegeek.com/collection/user/elequ?own=1" target="_blank">Link to our<br>BoardGameGeek<br>profile</a></p>
+      </li>
+  </ul>
 
 {% endblock %}
