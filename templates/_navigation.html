@@ -23,20 +23,10 @@
         </li>
 
 
-        <li><a href="/games/" target="_blank">Games</a></li> {# {% url "library:category_list" %} #}
-        <li><a href="/menus/" target="_blank">Menus</a></li> {# {% url "library:category_list" %} #}
+        {% load tree_menu_tags %}
+        {% show_menu "MainNavigation" %}
 
-        {% comment %}
-        <li><a href="{% url "blog:entry_list" %}">News</a></li>
-        <li class="dropdown">
-          <a href="/#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">About<span class="caret"></span></a>
-          <ul class="dropdown-menu">
-            <li><a href="/about.html">About the Guild</a></li>
-            <li><a href="/about.html">Our Team</a></li>
-            <li><a href="/contact.html">Contact</a></li>
-          </ul>
-        </li>
-        {% endcomment %}
+
         <li>
           <a href="#location" class="page-scroll">
             Find Us <i class="fa fa-map-marker"></i>

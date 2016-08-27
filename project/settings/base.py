@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'storages',
     'taggit',
     'tinymce',
+    'treemenus',
 
     'project.menus',
     'project.admin',
