@@ -37,5 +37,10 @@ class MenuType(models.Model):
                                  upload_to='menu_file',
                                  blank=True, default='')
 
+    class Meta(object):
+        ordering = ['-publish_at', 'title']
+        verbose_name_plural = 'menus'
+
+
     def __str__(self):
         return self.title

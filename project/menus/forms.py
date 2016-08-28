@@ -5,9 +5,18 @@ from django import forms
 from tinymce.widgets import TinyMCE
 
 
+# class MenuAdminForm(forms.ModelForm):
+
+#     class Meta(object):
+#         fields = ['title', 'heading', 'summary', 'menu_file',
+#                   'is_enabled', 'is_featured', 'site', 'publish_at']
+#         model = Menu
+#         widgets = {'content': TinyMCE()}
+
+
 class MenuTypeAdminForm(forms.ModelForm):
 
     class Meta(object):
-        fields = ['is_enabled', 'title', 'summary', 'menu_image', 'menu_file', ]
+        fields = ['is_enabled', 'order',  'title', 'summary', 'menu_file', ]
         model = MenuType
         widgets = {'summary': TinyMCE()}

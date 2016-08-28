@@ -10,4 +10,5 @@ class MenuTypeAdmin(admin.ModelAdmin):
 
     form = MenuTypeAdminForm
 
-    list_display = ['title', 'updated_at']
+    list_display = ['title', 'order',  'updated_at']
+    list_editable = ['order']
