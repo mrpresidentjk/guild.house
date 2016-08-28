@@ -15,7 +15,7 @@ ALLOWED_HOSTS = ['guild.house',
 DATABASES = {
     'default': {
     'ENGINE': 'django.db.backends.postgresql_psycopg2',
-    'NAME': 'guild_www',
+    'NAME': 'guild_django',
     'USER': 'guild_dev',
     'PASSWORD': 'StcpbP5ulyZt',                  # Not used with sqlite3.
     'HOST': '127.0.0.1',
