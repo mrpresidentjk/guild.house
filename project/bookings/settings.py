@@ -8,7 +8,7 @@ BOOKINGS_PAGINATE_BY = getattr(settings, 'BOOKINGS_BOOKING_PAGINATE_BY', 100)
 BOOKINGS_FEED = getattr(settings, 'BOOKINGS_BOOKING_FEED', 10)
 
 # If a booking is greater or equal to this number it is treated as a larger sized booking.
-BIG_BOOKING = getattr(settings, 'BOOKINGS_BIG_BOOKING', 10)
+BIG_BOOKING = getattr(settings, 'BOOKINGS_BIG_BOOKING', 7)
 
 TIME_ZONE = settings.TIME_ZONE
 
