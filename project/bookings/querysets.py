@@ -18,6 +18,10 @@ class QuerySet(models.query.QuerySet):
         site = Site.objects.get_current()
         return self.filter(site=site)
 
+    def today(self):
+        now = timezone.now()
+        return self.active().filter(reserved_date=now)
+
     def past(self):
         now = timezone.now()
         return self.filter(reserved_date__lte=now)
