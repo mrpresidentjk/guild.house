@@ -155,6 +155,7 @@ class BookingCreateView(CalendarMixin, BookingQueryset,
         else:
             initial['reserved_date'] = date.today()
         initial['reserved_time'] = settings.DEFAULT_BOOKING_TIME
+        initial['booking_duration'] = settings.DEFAULT_BOOKING_DURATION
 
         return initial
 
