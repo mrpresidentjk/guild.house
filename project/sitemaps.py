@@ -7,5 +7,4 @@ from project.site.sitemaps import sitemaps as site
 
 sitemaps = {}
 sitemaps.update(blog)
-sitemaps.update(library)
 sitemaps.update(site)
