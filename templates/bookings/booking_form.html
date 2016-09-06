@@ -1,5 +1,5 @@
 {% extends "bookings/base.html" %}
-
+{% load static from staticfiles %}
 
 {% block title %}{{ homepage.title }} - {{ block.super }}{% endblock %}
 
@@ -102,6 +102,17 @@ $("#id_phone, #id_name, #id_email, #id_party_size, #id_reserved_date, #id_reserv
 })
 $("#remove").click(function() {$("id_status".val(""))})
 
+</script>
+
+<link href="{% static "stylesheets/clockpicker.css" %}" type="text/css" rel="stylesheet" />
+<script src="{% static "scripts/clockpicker.js" %}" type="text/javascript"></script>
+
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.0/themes/base/jquery-ui.css">
+  <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
+
+<script>
+  $('#id_reserved_time').clockpicker({donetext: 'done'});
+  $('#id_reserved_date').datepicker({dateFormat: 'dd/mm/yy', minDate: 0});
 </script>
 
 {% endblock %}
