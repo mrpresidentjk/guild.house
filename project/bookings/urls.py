@@ -6,13 +6,15 @@ from django.conf.urls import include, url
 
 urls = [
 
-    url(r'^$',
+    url(r'^show/$',
         views.BookingListView.as_view(),
         name='booking_list'),
 
-    url(r'^(?P<page>\d+)$', views.BookingListView.as_view(), name='booking_list'),
+    url(r'^show/(?P<page>\d+)$',
+        views.BookingListView.as_view(),
+        name='booking_list_pagination'),
 
-    url(r'^new/$',
+    url(r'^$',
         views.BookingCreateView.as_view(),
         name="booking_add"),
 
