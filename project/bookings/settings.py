@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from datetime import time
+from datetime import time, timedelta
 from django.conf import settings
 
 
@@ -13,9 +13,6 @@ BIG_BOOKING = getattr(settings, 'BOOKINGS_BIG_BOOKING', 7)
 TIME_ZONE = settings.TIME_ZONE
 
 DEFAULT_BOOKING_TIME = getattr(settings, 'BOOKINGS_DEFAULT_BOOKING_TIME', "18:00")
-
-DEFAULT_BOOKING_DURATION = getattr(settings, 'BOOKINGS_DEFAULT_BOOKING_DURATION',
-                                   "00:01:45")
 
 DEFAULT_CALENDAR_LENGTH = getattr(settings, 'BOOKINGS_DEFAULT_CALENDAR_LENGTH', 42)
 
@@ -46,24 +43,29 @@ SERVICE_CHOICE = [
     ('main', 'Main'),
 ]
 
-SERVICE_TIMES = [
-    (time(12), 'lunch'),
-    (time(15), 'afternoon'),
-    (time(17,30), 'main'),
-]
+SERVICE_TIMES = {
+    time(12,0): SERVICE_CHOICE[0][0],
+    time(14,0): SERVICE_CHOICE[1][0],
+    time(17,0): SERVICE_CHOICE[2][0],
+}
+
+BOOKING_TIMES = (time(12), time(22))
+BOOKING_INTERVAL = timedelta(minutes=15)
+
+DEFAULT_BOOKING_DURATION = getattr(settings, 'BOOKINGS_DEFAULT_BOOKING_DURATION',
+                                   "01:45:00")
 
 DURATION_SELECTION = [
-    ('00:00:15', '15 minutes'),
-    ('00:00:30', '30 minutes'),
-    ('00:00:45', '45 minutes'),
-    ('00:01:00', '1 hour'),
-    ('00:01:15', '1 hour and 15 minutes'),
-    ('00:01:30', '1 and a half hours'),
-    ('00:01:45', '1 hour and 45 minutes'),
-    ('00:02:00', '2 hour'),
-    ('00:02:30', '2 and a half hours'),
-    ('00:03:00', '3 hours'),
-    ('00:23:59', 'more than 3 hours')
+    ('00:15:00', '15 minutes'),
+    ('00:30:00', '30 minutes'),
+    ('00:45:00', '45 minutes'),
+    ('01:00:00', '1 hour'),
+    ('01:15:00', '1 hour and 15 minutes'),
+    ('01:30:00', '1 and a half hours'),
+    ('01:45:00', '1 hour and 45 minutes'),
+    ('02:00:00', '2 hours'),
+    ('02:30:00', '2 and a half hours'),
+    ('03:00:00', 'more than 2 and a half hours')
 ]
 
 HEAR_CHOICE = [
