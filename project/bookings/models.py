@@ -86,12 +86,7 @@ class Booking(models.Model):
         return self.name
 
     def get_absolute_url(self):
-
-
-        return reverse('bookings:booking_day',
-                       kwargs={'year': '%04d' % (self.reserved_date.year),
-                               'month': '%02d' % (self.reserved_date.month),
-                               'day': '%02d' % (self.reserved_date.day)})
+        return reverse('bookings:booking_update', kwargs={'code': self.code})
 
     def get_next(self):
         queryset = self.__class__.objects.exclude(pk=self.pk).filter(
