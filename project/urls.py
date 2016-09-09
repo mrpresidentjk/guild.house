@@ -34,6 +34,9 @@ urlpatterns = [
     url(r'^sitemap.xml$', sitemap, {'sitemaps': sitemaps},
         name='django.contrib.sitemaps.views.sitemap'),
 
+    ## Admin Docs
+    url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
+
     # Admin
     url(r'^admin/', include(admin.site.urls)),
 
