@@ -37,11 +37,15 @@ class Booking(models.Model):
     email = models.EmailField(max_length=150, blank=True, default='')
 
     phone = models.CharField(max_length=100, blank=True, default='',
-                             help_text="One phone number only. Put additional numbers in 'notes' if necessary."
+                             help_text="One phone number only. Put additional numbers in 'notes' if necessary. We may need to confirm details so be sure to provide a good number."
     )
 
+    postcode = models.CharField(max_length=16, blank=True, default='')
+
     booking_method = models.CharField(max_length=50, choices=settings.METHOD_CHOICE,
-                                      default=settings.METHOD_CHOICE[0][0])
+                                      default=settings.METHOD_CHOICE[0][0],
+                                      help_text="Only logged in people can see booking method."
+    )
 
     user = models.ForeignKey(User, blank=True, null=True)
 
@@ -49,7 +53,7 @@ class Booking(models.Model):
                              related_name='bookings_booking',
                              on_delete=models.PROTECT)
 
-    reserved_date = models.DateField(db_index=True, default=timezone.now)
+    reserved_date = models.DateField(db_index=True)
     reserved_time = models.TimeField(db_index=True, default=timezone.now)
 
     booking_duration = models.DurationField(blank=True, null=True)
@@ -61,6 +65,16 @@ class Booking(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, editable=False)
 
     updated_at = models.DateTimeField(auto_now=True, editable=False)
+
+    hear_choices = models.CharField(max_length=56, blank=True, default='',
+                                    choices=settings.HEAR_CHOICE,
+                                    verbose_name="Choices",
+                                    help_text="How did you hear about us?"
+    )
+    hear_other = models.TextField(blank=True, default='',
+                                  verbose_name="Other",
+                                  help_text="Tell us a story about how you heard about us ..."
+    )
 
     objects = querysets.QuerySet.as_manager()
 

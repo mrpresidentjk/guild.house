@@ -65,3 +65,12 @@ DURATION_SELECTION = [
     ('00:03:00', '3 hours'),
     ('00:23:59', 'more than 3 hours')
 ]
+
+HEAR_CHOICE = [
+    ("event", "event"),
+    ("facebook", "facebook"),
+    ("friends", "friends"),
+    ("newspaper", "newspaper"),
+    ("search", "search"),
+    ("other", "other")
+]
