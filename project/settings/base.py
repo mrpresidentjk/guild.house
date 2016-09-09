@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'raven.contrib.django.raven_compat',
     'robots',
     # 'sorl.thumbnail',
+    'sorl.thumbnail',
     'storages',
     'taggit',
     'tinymce',
