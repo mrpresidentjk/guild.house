@@ -18,6 +18,10 @@ urls = [
         views.BookingCreateView.as_view(),
         name="booking_add"),
 
+    url(r'^time/(?P<year>\d{4})/(?P<month>\d{2})/(?P<day>\d{2})/$',
+        views.BookingTimeView.as_view(),
+        name='booking_times'),
+
     url(r'^cancelled/$',
         views.BookingCancelledView.as_view(),
         name="booking_list_cancelled"),
