@@ -17,7 +17,8 @@ class BookingAdmin(admin.ModelAdmin):
     date_hierarchy = 'reserved_date'
 
     fieldsets = [
-        ('Content', {'fields': ['reserved_date', 'reserved_time', 'name',
+        ('Content', {'fields': ['reserved_date', 'reserved_time',
+                                'booking_duration', 'name',
                                 'party_size', 'status', 'service', 'email',
                                 'phone']}),
         ('Publishing', {'fields': ['site', ('created_at', 'updated_at'),
@@ -30,7 +31,7 @@ class BookingAdmin(admin.ModelAdmin):
     list_display = ['name', 'party_size', 'reserved_date', 'reserved_time',
                     'service', 'status', 'phone', 'email', 'user', get_obj_link]
 
-    list_filter = ['reserved_date', 'reserved_time', 'status']
+    list_filter = ['status', 'service', 'reserved_date', 'reserved_time']
 
     readonly_fields = ['created_at', 'updated_at']
 
