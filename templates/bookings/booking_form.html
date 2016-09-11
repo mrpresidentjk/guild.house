@@ -94,16 +94,16 @@ $(".date").click(function() {
   $("#id_reserved_date").val($(this).data("date")).addClass("selected");
   $(".date").removeClass("selected");
   $(this).addClass("selected");
-});
-$(".pax").click(function() {
-  $("#id_party_size").val($(this).data("pax")).addClass("selected");
-  $(".pax").removeClass("selected");
-  $(this).addClass("selected");
   $.ajax({
     url: "/bookings/time"+$(this).data("time"),
     success: function(result){$( "#time" ).html(result);},
     dataType : "html"
   });
+});
+$(".pax").click(function() {
+  $("#id_party_size").val($(this).data("pax")).addClass("selected");
+  $(".pax").removeClass("selected");
+  $(this).addClass("selected");
 });
 $("#id_phone, #id_name, #id_email, #id_party_size, #id_reserved_date, #id_reserved_time, #id_booking_method, #id_notes").change(function(){
   $(this).addClass("selected");
