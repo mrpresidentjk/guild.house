@@ -30,15 +30,18 @@ Please supply both email address and phone number.
 {% endfor %}
 {% endif %}
 
+  {% if not update_view %}
   <div class="col-sm-5">
     {% include "bookings/_calendar.html" %}
     <hr>
-    {% include "bookings/_date.html" %}
+    <div id="time"></div>
+    {# include "bookings/_time.html" #}
   </div>
 
   <div class="col-sm-1">
     {% include "bookings/_pax.html" %}
   </div>
+  {% endif %}
 
   <div class="col-sm-6">
     {% if object.code %}
@@ -66,10 +69,7 @@ Please supply both email address and phone number.
       </table>
     </form>
   </div>
-
-
 </div>
-
 
 <ul>
     {% for obj in object_list %}
@@ -82,11 +82,14 @@ Please supply both email address and phone number.
 
 {% block extra_static %}
 <script>
-$(".time").click(function() {
-  $("#id_reserved_time").val($(this).data("time")).addClass("selected");
-  $(".time").removeClass("selected");
-  $(this).addClass("selected");
+
+$(document).ready(function(){
+  $.ajax({
+    url: "/bookings/time{{ today|date:"/Y/m/d/" }}",
+    success: function(result){$( "#time" ).html(result);}
+  });
 });
+
 $(".date").click(function() {
   $("#id_reserved_date").val($(this).data("date")).addClass("selected");
   $(".date").removeClass("selected");
@@ -96,6 +99,11 @@ $(".pax").click(function() {
   $("#id_party_size").val($(this).data("pax")).addClass("selected");
   $(".pax").removeClass("selected");
   $(this).addClass("selected");
+  $.ajax({
+    url: "/bookings/time"+$(this).data("time"),
+    success: function(result){$( "#time" ).html(result);},
+    dataType : "html"
+  });
 });
 $("#id_phone, #id_name, #id_email, #id_party_size, #id_reserved_date, #id_reserved_time, #id_booking_method, #id_notes").change(function(){
   $(this).addClass("selected");

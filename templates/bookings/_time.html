@@ -1,0 +1,48 @@
+{% if not object.code %}
+<h5>Time:</h5>
+{% endif %}
+
+{{ pax_total }}
+
+{% for time in time_list %}
+
+{% if forloop.first %}
+{{ time.date }}
+{% endif %}
+
+{% if time.service %}
+
+{% if not forloop.first %}
+{% if time.service %}
+</div>
+{% endif %}
+{% endif %}
+
+<div><b>{{ time.service|title }}</b><br>
+{% endif %}
+  <span data-time="{{ time.time }}"
+        class="time{% if time.heat %} {{ time.heat }}{% endif %}">
+    {{ time.time }}
+    {% if user.is_authenticated %}{{ time.pax }}{% endif %}
+  </span>
+{% endfor %}
+</div>
+
+{% if user.is_authenticated %}
+<br>
+{% for booking in booking_list %}
+  {{ booking }}<br>
+{% endfor %}
+{% endif %}
+
+<script>
+$(".time").click(function() {
+  $("#id_reserved_time").val($(this).data("time")).addClass("selected");
+  $(".time").removeClass("selected");
+  $(this).removeClass("hot");
+  $(this).removeClass("warm");
+  $(this).removeClass("full");
+  $(this).addClass("selected");
+
+});
+</script>
