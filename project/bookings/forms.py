@@ -12,7 +12,7 @@ from django.utils.encoding import force_text
 from tinymce.widgets import TinyMCE
 
 
-PHONE_DIGITS_RE = re.compile(r'^(\d{8})$|^[0-1]\d{9}$')
+PHONE_DIGITS_RE = re.compile(r'^(\d{8,10})$')
 
 
 class AUPhoneNumberField(CharField):
@@ -55,21 +55,23 @@ class BookingForm(forms.ModelForm):
 
 
     class Meta(object):
-        fields = ['name', 'reserved_time', 'reserved_date', 'booking_duration',
-                  'party_size', 'email', 'phone', 'booking_method', 'status',
-                  'notes']
+        fields = ['status', 'name', 'reserved_time', 'reserved_date', 'booking_duration',
+                  'party_size', 'email', 'phone', 'postcode', 'notes','user',
+                  'hear_choices', 'hear_other', 'booking_method']
         model = Booking
         widgets = {
             'notes': forms.Textarea(attrs={'rows':4,  'width':185, 'cols':0}),
             'email': forms.TextInput(attrs={'placeholder': '**', }),
             'name': forms.TextInput(attrs={'placeholder': '**'}),
             'party_size': forms.TextInput(attrs={'placeholder': '**'}),
+            'hear_other': forms.Textarea(attrs={'rows':4,  'width':185, 'cols':0}),
         }
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, user=None, *args, **kwargs):
         super(BookingForm, self).__init__(*args, **kwargs)
         self.fields['phone'].required = True
         self.fields['email'].required = True
+        self.fields['user'].widget = forms.HiddenInput()
 
     def clean(self, *args, **kwargs):
         cleaned_data = super(BookingForm, self).clean(*args, **kwargs)
@@ -80,10 +82,11 @@ class BookingForm(forms.ModelForm):
 
 class NewBookingForm(BookingForm):
 
-    def __init__(self, *args, **kwargs):
-        super(BookingForm, self).__init__(*args, **kwargs)
-        self.fields['booking_method'].widget = forms.HiddenInput()
+    def __init__(self, user=None, *args, **kwargs):
+        super(NewBookingForm, self).__init__(*args, **kwargs)
         self.fields['status'].widget = forms.HiddenInput()
+        if not user.is_authenticated():
+            self.fields['booking_method'].widget = forms.HiddenInput()
 
 
 # Have to be logged in to make changes to booking.
