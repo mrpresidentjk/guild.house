@@ -177,6 +177,7 @@ class BookingUpdateView(CalendarMixin, BookingQueryset, generic.edit.UpdateView)
         obj = self.get_object()
         unique = self.get_queryset().filter(reserved_date=obj.reserved_date,
                                             phone=obj.phone)
+        context_data['update_view'] = True
         return context_data
 
 
@@ -187,6 +188,12 @@ class BookingListView(BookingQueryset, generic.ListView):
         if page is not None and int(page) < 2:
             return redirect('bookings:booking_list', permanent=True)
         return super(BookingListView, self).get(*args, **kwargs)
+
+    def get_context_data(self, *args, **kwargs):
+        context_data = super(BookingListView, self).get_context_data(*args,
+                                                                      **kwargs)
+        context_data['show_all'] = True
+        return context_data
 
 
 class BookingCancelledView(BookingQueryset, generic.ListView):
