@@ -5,7 +5,7 @@ import datetime
 from . import settings
 from .forms import BookingForm, NewBookingForm
 from .models import Booking
-from datetime import date, timedelta
+from datetime import time, timedelta, date
 from dateutil.relativedelta import relativedelta
 from django.core.mail import send_mail
 from django.core.urlresolvers import reverse_lazy
@@ -65,6 +65,64 @@ class CalendarMixin(object):
         return context
 
 
+class TimeMixin(object):
+
+
+    def get_time_list(self, context, this_date):
+        """requires `this_date` as :py:class:`datetime.date`
+
+        This is used to fetch bookings and to `datetime.combine` with
+        `datetime.time` to create the necessary range of times.
+        """
+
+        open_bookings, time_list = [], []
+        interval = settings.BOOKING_INTERVAL
+        booking_list = Booking.objects.filter(reserved_date=this_date)
+        this_time = datetime.datetime.combine(this_date,
+                                              settings.BOOKING_TIMES[0])-interval
+
+        """Construct bookings
+        Ensure times are constructed first, then iterate through bookings
+        for this day as likely the number of bookings will be fewer than the
+        number of intervals. """
+
+        booking_list = Booking.objects.filter(reserved_date=this_date)
+        context['booking_list'] = booking_list
+        context['pax_total'] = booking_list.pax()
+        for booking in booking_list:
+            start_time = datetime.datetime.combine(this_date, booking.reserved_time)
+            end_time = datetime.datetime.combine(this_date,
+                booking.reserved_time)+booking.booking_duration
+            open_bookings.append((start_time, end_time, booking.party_size))
+
+        while this_time<=datetime.datetime.combine(this_date,
+            settings.BOOKING_TIMES[1])-interval:
+            this_time = this_time+interval
+            this_dict = {'pax': 0,
+                         'date': this_time,
+                         'time': "{}:{:0>2}".format(this_time.hour,
+                                                    this_time.minute)}
+            # Add `party_size` totals to data_dict
+            for start, end, pax in open_bookings:
+                if start <= this_time and this_time < end:
+                    this_dict['pax'] = this_dict['pax']+pax
+
+            for tmp in settings.HEAT.keys():
+                if this_dict['pax'] < tmp:
+                    break
+                else:
+                    this_dict['heat'] = settings.HEAT[tmp]
+
+            # Add `service` to dictionary
+            for service_time, service in settings.SERVICE_TIMES:
+                if time(this_time.hour, this_time.minute)==service_time:
+                    this_dict['service'] = service
+            time_list.append(this_dict)
+
+        context['time_list'] = time_list
+        return context
+
+
 class BookingQueryset(object):
 
     model = Booking
@@ -86,6 +144,19 @@ class BookingQueryset(object):
     def get_queryset(self, *args, **kwargs):
         queryset = super(BookingQueryset, self).get_queryset(*args, **kwargs)
         return queryset.active().order_by('reserved_date', 'reserved_time')
+
+class BookingTimeView(BookingQueryset, TimeMixin, generic.ListView):
+
+    template_name = 'bookings/_time.html'
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(BookingTimeView, self).get_context_data(*args, **kwargs)
+        context = self.get_time_list(context,
+                                     this_date=date(int(self.kwargs['year']),
+                                                    int(self.kwargs['month']),
+                                                    int(self.kwargs['day']))
+        )
+        return context
 
 
 class BookingSuccessView(BookingQueryset, generic.DetailView):
@@ -144,6 +215,7 @@ class BookingCreateView(CalendarMixin, BookingQueryset,
         context = super(BookingCreateView, self).get_context_data(*args, **kwargs)
         context = self.get_calendar(context)
         context['tomorrow'] = date.today()+timedelta(days=1)
+        context = self.get_time_list(context, this_date=date.today())
         return context
 
     def get_initial(self):
@@ -179,7 +251,6 @@ class BookingUpdateView(CalendarMixin, BookingQueryset, generic.edit.UpdateView)
                                             phone=obj.phone)
         context_data['update_view'] = True
         return context_data
-
 
 class BookingListView(BookingQueryset, generic.ListView):
 
