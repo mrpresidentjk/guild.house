@@ -28,6 +28,8 @@ STATUS_CHOICES = [
     ('Cancelled', 'Cancelled'),
 ]
 
+DEFAULT_BOOKING_METHOD = getattr(settings, 'BOOKINGS_DEFAULT_BOOKING_METHOD',
+                                 'website')
 METHOD_CHOICE = [
     ('phone', 'Phone'),
     ('email', 'Email'),
@@ -37,36 +39,42 @@ METHOD_CHOICE = [
     ('other', 'Other'),
 ]
 
-SERVICE_CHOICE = [
+SERVICE_CHOICE = (
     ('lunch', 'Lunch'),
     ('afternoon', 'Afternoon'),
     ('main', 'Main'),
-]
+)
 
-SERVICE_TIMES = {
-    time(12,0): SERVICE_CHOICE[0][0],
-    time(14,0): SERVICE_CHOICE[1][0],
-    time(17,0): SERVICE_CHOICE[2][0],
-}
+SERVICE_TIMES = (
+    (time(12,0), 'lunch'),
+    (time(14,30), 'afternoon'),
+    (time(17,30), 'main'),
+)
 
-BOOKING_TIMES = (time(12), time(22))
-BOOKING_INTERVAL = timedelta(minutes=15)
+BOOKING_TIMES = (time(12), time(23))
+BOOKING_INTERVAL = timedelta(minutes=30)
 
 DEFAULT_BOOKING_DURATION = getattr(settings, 'BOOKINGS_DEFAULT_BOOKING_DURATION',
-                                   "01:45:00")
+                                   '2:30:00')
 
 DURATION_SELECTION = [
-    ('00:15:00', '15 minutes'),
-    ('00:30:00', '30 minutes'),
-    ('00:45:00', '45 minutes'),
-    ('01:00:00', '1 hour'),
-    ('01:15:00', '1 hour and 15 minutes'),
-    ('01:30:00', '1 and a half hours'),
-    ('01:45:00', '1 hour and 45 minutes'),
-    ('02:00:00', '2 hours'),
-    ('02:30:00', '2 and a half hours'),
-    ('03:00:00', 'more than 2 and a half hours')
+    ('0:15:00', '15 minutes'),
+    ('0:30:00', '30 minutes'),
+    ('0:45:00', '45 minutes'),
+    ('1:00:00', '1 hour'),
+    ('1:15:00', '1 hour and 15 minutes'),
+    ('1:30:00', '1 and a half hours'),
+    ('1:45:00', '1 hour and 45 minutes'),
+    ('2:00:00', '2 hours'),
+    ('2:30:00', '2 and a half hours'),
+    ('3:00:00', 'more than 2 and a half hours')
 ]
+
+HEAT = {
+    65: 'warm',
+    85: 'hot',
+    105: 'full',
+}
 
 HEAR_CHOICE = [
     ("event", "event"),
