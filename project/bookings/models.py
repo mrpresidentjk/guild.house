@@ -83,7 +83,18 @@ class Booking(models.Model):
         verbose_name_plural = 'bookings'
 
     def __str__(self):
-        return self.name
+        desc = "{name} {pax}pax {date} {start}".format(
+            name=self.name,
+            pax=self.party_size,
+            date=self.reserved_date.strftime("%d-%b-%Y"),
+            start=self.reserved_time.strftime("%H:%M")
+        )
+
+        if self.booking_duration:
+            desc = desc+"-{end}".format(
+                end=(datetime.datetime.combine(self.reserved_date,
+                    self.reserved_time)+self.booking_duration).strftime("%H:%M"))
+        return desc
 
     def get_absolute_url(self):
         return reverse('bookings:booking_update', kwargs={'code': self.code})
