@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, unicode_literals
 import re
+import datetime
 from .. import utils
 from . import querysets, settings
 from django.contrib.sites.models import Site
@@ -128,36 +129,31 @@ class Booking(models.Model):
             self.code = utils.generate_unique_hex(queryset=Booking.objects.all())
 
         # Automatically set service based upon `reserved_time`.
-        for i, t in enumerate(settings.SERVICE_TIMES):
-            if self.reserved_time >= t[0]:
-                service = settings.SERVICE_TIMES[i][1]
-        self.service = service
+        for service_time, service in reversed(settings.SERVICE_TIMES):
+            if self.reserved_time >= service_time:
+                this_service = service
+                break
+        self.service = this_service
 
-        # Clean phone number
-        self.phone = re.sub('[^0-9]','', self.phone)
+        # Create a user whose username is their phone number.
+        """ This was a tough decision to use phone number as username.
 
-        # Create a user whose username is email address if there is one, but
-        # phone number if there is not.
-        if not self.user:
+        This is legacy from the original system where only phone number was
+        required.
+        """
+        try:
+            self.user.username
+        except AttributeError:
+            username = password = self.phone
+            try:
+                user = User.objects.create_user(username=username)
+                user.first_name = self.name
+                user.save()
+            except IntegrityError:
+                user = User.objects.get(username=username)
+                self.user = user
             if self.email:
-                email = username = self.email
-                try:
-                    user = User.objects.create_user(
-                        username=username,
-                        email=email
-                    )
-                    user.first_name = self.name
-                    user.save()
-                except IntegrityError:
-                    user =  User.objects.get(username=username, email=email)
-            elif self.phone:
-                username = password = self.phone
-                try:
-                    user = User.objects.create_user(username=username)
-                    user.first_name = self.name
-                    user.save()
-                except IntegrityError:
-                    user = User.objects.get(username=username)
-                    self.user = user
+                user.email = self.email
+                user.save()
 
         super(Booking, self).save(*args, **kwargs)
