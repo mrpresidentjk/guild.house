@@ -1,5 +1,3 @@
-<br><br>
-
     {% if previous_day %}
 
     <a href="{% url 'bookings:booking_day' previous_day.year previous_day|date:"m" previous_day|date:"d" %}" ><< {{ previous_day }}</a> Previous
