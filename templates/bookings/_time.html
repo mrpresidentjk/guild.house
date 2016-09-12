@@ -3,8 +3,16 @@
 {% endif %}
 
 {% for time in time_list %}
-{% if time.service %}
 
+{% if time.pax > 105 %}
+<script>
+$(".booking-warning").show();
+$("#id_private_notes").val("Warned, maybe full.");
+</script>
+{% endif %}
+
+
+{% if time.service %}
 {% if not forloop.first %}
 {% if time.service %}
 </div>
@@ -14,6 +22,7 @@
 <div><b>{{ time.service|title }}</b><br>
 {% endif %}
   <span data-time="{{ time.time }}"
+        data-full="{% if time.pax > 105 %}full{% endif %}"
         class="time{% if time.heat %} {{ time.heat }}{% endif %}">
     {{ time.time }}
     <div class="howfull">
@@ -32,7 +41,7 @@
 <br><div>---</div>
 <b>Management Information</b><br>
 <br>
-Total: {{ pax_total }}pax<br>
+Total: {% if pax_total %}{{ pax_total }}{% else %}0{% endif %}pax<br>
 <br>
 All Bookings:<br>
 <br>
@@ -43,12 +52,18 @@ All Bookings:<br>
 
 <script>
 $(".time").click(function() {
-  $("#id_reserved_time").val($(this).data("time")).addClass("selected");
-  $(".time").removeClass("selected");
-  $(this).removeClass("hot");
-  $(this).removeClass("warm");
-  $(this).removeClass("full");
-  $(this).addClass("selected");
-
+  if($(this).data("full")=="full"){
+    $(".full-warning").show();
+    $(".submit-buttons").hide();
+  } else {
+    $("#id_reserved_time").val($(this).data("time")).addClass("selected");
+    $(".time").removeClass("selected");
+    $(this).removeClass("hot");
+    $(this).removeClass("warm");
+    $(this).removeClass("full");
+    $(this).addClass("selected");
+    $(".full-warning").hide();
+    $(".submit-buttons").show();
+  };
 });
 </script>

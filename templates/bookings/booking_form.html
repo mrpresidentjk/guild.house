@@ -51,7 +51,6 @@ Please supply both email address and phone number.
     {% include "bookings/_calendar.html" %}
     <hr>
     <div id="time"></div>
-    {# include "bookings/_time.html" #}
   </div>
 
   <div class="col-sm-1">
@@ -63,6 +62,28 @@ Please supply both email address and phone number.
     {% if object.code %}
       <h3>{% include "bookings/_booking_list.html" with obj=object %}</h3>
     {% endif %}
+
+<div style="display: none;" class="booking-warning">
+<div class="btn btn-warning">
+  Beware: Heavily booked on this day.</div><br><br>
+<div class="featured_text">
+It is possible that the booking you make through the
+automated booking system may occur at a time where
+we are already booked out.<br><br>
+This probably won't happen, but is technically possible (for example if someone else is making a booking for the same time <i>right now</i>)
+so we want to warn you about it.
+If this is the case we will contact you ASAP to discuss options.
+</div>
+</div>
+<br>
+<div style="display: none;" class="full-warning btn btn-danger">
+Unfortunately we're quite full at this time.<br>
+Online booking is not available.<br>
+PLEASE EMAIL: <a href="mailto:reservations@guild.house" style="color:white">reservations@guild.house</a>
+<br>to check availability.
+</div>
+<br>
+<br>
 
     <form action="" method="post">
       {% csrf_token %}
@@ -85,7 +106,7 @@ Please supply both email address and phone number.
         </tr>
   {% endif %}
 
-        <tr>
+        <tr class="submit-buttons">
           <th></th>
           <td>
             <button type="submit" class="btn btn-default btn-lg">

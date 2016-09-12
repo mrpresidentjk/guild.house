@@ -23,6 +23,13 @@
     <h2>Booking for <em>{{ object.name }}</em></h2>
 
     Thank you, booking was successful.<br><br>
+{% if object.busy_night %}
+<div class="btn btn-danger">
+ Heavily booked on this day.
+</div>
+<br>
+<br>
+{% endif %}
 
     <p>
     Number of people: {{ object.party_size }} pax<br>
@@ -40,6 +47,8 @@
       Contact phone: {{ object.phone }}<br>
       Contact email: {{ object.email }}<br>
     <em>{{object.status}}</em>
+
+
 <br>
       {% if object.reserved_date|date:"D" == "Fri" or object.reserved_date|date:"D" == "Sat" %}
       {% if object.service == "main" %}
