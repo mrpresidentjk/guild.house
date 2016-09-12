@@ -322,9 +322,14 @@ class BookingDayArchiveView(BookingQueryset, generic.DayArchiveView):
         return context_data
 
 
-class BookingTodayArchiveView(BookingQueryset, generic.TodayArchiveView):
+class BookingTodayArchiveView(generic.RedirectView):
 
-    pass
+    def get_redirect_url(self):
+        return reverse('bookings:booking_day', kwargs={
+            'year': datetime.date.today().year,
+            'month': "{:0>2}".format(datetime.date.today().month),
+            'day': "{:0>2}".format(datetime.date.today().day)
+        })
 
 
 class BookingWeekArchiveView(BookingQueryset, generic.WeekArchiveView):
