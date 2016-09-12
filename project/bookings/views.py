@@ -128,16 +128,26 @@ class BookingFormMixin(object):
         return get_object_or_404(Booking, code=self.kwargs.get('code'))
 
     def send_booking_notice_internal(self, obj, form, change="added"):
+        warning = ""
+        if "full" in form.cleaned_data.get('private_notes'):
+            warning = """Beware! This booking made during a busy time. May conflict. Please check ASAP and contact to discuss options if necessary.
+
+The customer has been warned that this is the case and may be expecting confirmation.
+
+        """
+
         message = """Booking {change} in to system.
 
-        Link to booking: http://guild.house/bookings/{code}/
+{warning}
+Link to booking: http://guild.house/bookings/{code}/
 
-        Link to day: http://guild.house{url}
+Link to day: http://guild.house{url}
 
         Add event to calendar (only if big event)
         What: {pax}pax {name}
         When: {time} {date} {day}
         """.format(change=change,
+                   warning=warning,
                    code=obj.code.decode('utf-8'),
                    url=obj.get_absolute_url(),
                    method=form.cleaned_data.get('booking_method'),
@@ -162,12 +172,20 @@ class BookingFormMixin(object):
         return True
 
     def send_booking_notice_customer(self, obj, form):
+        warning = ""
+        if "full" in form.cleaned_data.get('private_notes'):
+            warning = """
+Beware! As warned at time of booking: you have booked during a busy time it is possible that your booking may have conflicted with another.
+
+We will contact you ASAP if this is the case. Alternatively you can contact us to double-check.
+        """
+
         message = """Thank you for making a reservation at Guild!
 
 Name: {name}
 Number of people: {pax}pax
 When: {time}, {day} {date}
-
+{warning}
 Link to booking details: http://guild.house/bookings/{code}/success/
 
 If you would like to contact us for any reason:
@@ -184,6 +202,7 @@ facebook.com/guildhouse.canberra
 (02) 6257 2727
 Open 7 days, 12pm til late
         """.format(code=obj.code.decode('utf-8'),
+                   warning=warning,
                    url=obj.get_absolute_url(),
                    method=form.cleaned_data.get('booking_method'),
                    day=form.cleaned_data.get('reserved_date').strftime('%a'),

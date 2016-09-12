@@ -57,7 +57,7 @@ class BookingForm(forms.ModelForm):
     class Meta(object):
         fields = ['status', 'name', 'reserved_time', 'reserved_date', 'booking_duration',
                   'party_size', 'email', 'phone', 'postcode', 'notes','user', 'updated_by',
-                  'hear_choices', 'hear_other', 'booking_method']
+                  'hear_choices', 'hear_other', 'booking_method', 'private_notes', 'busy_night']
         model = Booking
         widgets = {
             'notes': forms.Textarea(attrs={'rows':4,  'width':185, 'cols':0}),
@@ -86,6 +86,9 @@ class NewBookingForm(BookingForm):
     def __init__(self, user=None, *args, **kwargs):
         super(NewBookingForm, self).__init__(*args, **kwargs)
         self.fields['status'].widget = forms.HiddenInput()
+        self.fields['private_notes'].widget = forms.HiddenInput()
+        self.fields['busy_night'].widget = forms.HiddenInput()
+        self.fields['reserved_time'].widget = forms.HiddenInput()
         if not user.is_authenticated():
             self.fields['booking_method'].widget = forms.HiddenInput()
 
