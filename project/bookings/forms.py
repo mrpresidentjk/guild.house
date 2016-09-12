@@ -88,10 +88,11 @@ class NewBookingForm(BookingForm):
         self.fields['status'].widget = forms.HiddenInput()
         self.fields['private_notes'].widget = forms.HiddenInput()
         self.fields['busy_night'].widget = forms.HiddenInput()
-        self.fields['reserved_time'].widget = forms.HiddenInput()
+        #self.fields['reserved_time'].widget = forms.HiddenInput()
         if not user.is_authenticated():
             self.fields['booking_method'].widget = forms.HiddenInput()
 
 
 # Have to be logged in to make changes to booking.
 #
+#PHONE_DIGITS_RE = re.compile(r'^(\d{8})$|^[0-1]\d{9}$|^\d{11}$|^[\+]\d{11}$')

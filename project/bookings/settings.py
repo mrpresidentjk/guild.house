@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from . import utils
+import datetime
 from datetime import time, timedelta
 from django.conf import settings
 
@@ -55,7 +55,21 @@ SERVICE_TIMES = (
 BOOKING_TIMES = (time(12), time(23))
 BOOKING_INTERVAL = timedelta(minutes=30)
 
-BOOKING_TIMES_CHOICES = zip(utils.generate_times(), utils.generate_times())
+
+def generate_times():
+    temp_date, time_list = datetime.date(2000,1,1), []
+    interval = BOOKING_INTERVAL
+    this_time = datetime.datetime.combine(temp_date, BOOKING_TIMES[0])-interval
+    while this_time<=datetime.datetime.combine(temp_date,BOOKING_TIMES[1])-interval:
+            this_time = this_time+interval
+            time_list.append((
+                this_time,
+                "{}:{:0>2}".format(this_time.hour, this_time.minute)
+            ))
+    return time_list
+
+
+BOOKING_TIMES_CHOICES = generate_times()
 
 DEFAULT_BOOKING_DURATION = getattr(settings, 'BOOKINGS_DEFAULT_BOOKING_DURATION',
                                    '2:30:00')

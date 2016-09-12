@@ -77,8 +77,8 @@ If this is the case we will contact you ASAP to discuss options.
 </div>
 <br>
 <div style="display: none;" class="full-warning btn btn-danger">
-Unfortunately we're quite full at this time.<br>
-Online booking is not available.<br>
+Online booking is not available<br>
+as we're getting quite full at this time<br>
 PLEASE EMAIL: <a href="mailto:reservations@guild.house" style="color:white">reservations@guild.house</a>
 <br>to check availability.
 </div>
@@ -162,6 +162,7 @@ $("#id_phone, #id_name, #id_email, #id_party_size, #id_reserved_date, #id_reserv
   $(this).addClass("selected");
 })
 $("#remove").click(function() {$("id_status".val(""))})
+$("#id_reservation_time").prop("readonly", true);
 
 </script>
 

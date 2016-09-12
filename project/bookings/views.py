@@ -67,16 +67,18 @@ class CalendarMixin(object):
 
 class TimeMixin(object):
 
+    def get_booking_list(self, this_date):
+        return Booking.objects.filter(reserved_date=this_date)
+
     def generate_time_dict(self, this_date):
         """requires `this_date` as :py:class:`datetime.date`
 
         This is used to fetch bookings and to `datetime.combine` with
         `datetime.time` to create the necessary range of times.
         """
-
+        busy_night = False
         open_bookings, time_list = [], []
         interval = settings.BOOKING_INTERVAL
-        booking_list = Booking.objects.filter(reserved_date=this_date)
         this_time = datetime.datetime.combine(this_date,
                                               settings.BOOKING_TIMES[0])-interval
 
@@ -85,20 +87,24 @@ class TimeMixin(object):
         for this day as likely the number of bookings will be fewer than the
         number of intervals. """
 
-        booking_list = Booking.objects.filter(reserved_date=this_date)
+        booking_list = self.get_booking_list(this_date)
         for booking in booking_list:
             start_time = datetime.datetime.combine(this_date, booking.reserved_time)
             end_time = datetime.datetime.combine(this_date,
                 booking.reserved_time)+booking.booking_duration
             open_bookings.append((start_time, end_time, booking.party_size))
 
+        select_time = datetime.datetime.combine(datetime.date(2000,1,1),
+                                                settings.BOOKING_TIMES[0])
         while this_time<=datetime.datetime.combine(this_date,
-            settings.BOOKING_TIMES[1])-interval:
+                                                   settings.BOOKING_TIMES[1])-interval:
             this_time = this_time+interval
             this_dict = {'pax': 0,
                          'date': this_time,
+                         'select_time': select_time,
                          'time': "{}:{:0>2}".format(this_time.hour,
                                                     this_time.minute)}
+            select_time = select_time+interval
             # Add `party_size` totals to data_dict
             for start, end, pax in open_bookings:
                 if start <= this_time and this_time < end:
@@ -110,17 +116,21 @@ class TimeMixin(object):
                 else:
                     this_dict['heat'] = settings.HEAT[tmp]
 
+            # @@TODO get value from settings.HEAT
+            if this_dict['pax'] > 104:
+                busy_night = True
+
             # Add `service` to dictionary
             for service_time, service in settings.SERVICE_TIMES:
                 if time(this_time.hour, this_time.minute)==service_time:
                     this_dict['service'] = service
             time_list.append(this_dict)
-
+        return time_list, busy_night
 
     def get_time_list(self, context, this_date):
-        context['time_list'] = self.generate_time_dict(this_date)
-        context['booking_list'] = booking_list
-        context['pax_total'] = booking_list.pax()
+        context['time_list'], context['busy_night'] = self.generate_time_dict(this_date)
+        context['booking_list'] = self.get_booking_list(this_date)
+        context['pax_total'] = self.get_booking_list(this_date).pax()
         return context
 
 

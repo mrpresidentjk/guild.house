@@ -3,15 +3,6 @@
 {% endif %}
 
 {% for time in time_list %}
-
-{% if time.pax > 105 %}
-<script>
-$(".booking-warning").show();
-$("#id_private_notes").val("Warned, maybe full.");
-</script>
-{% endif %}
-
-
 {% if time.service %}
 {% if not forloop.first %}
 {% if time.service %}
@@ -21,7 +12,7 @@ $("#id_private_notes").val("Warned, maybe full.");
 
 <div><b>{{ time.service|title }}</b><br>
 {% endif %}
-  <span data-time="{{ time.time }}"
+  <span data-time="{{ time.select_time|date:"Y-m-d H:i:s" }}"
         data-full="{% if time.pax > 105 %}full{% endif %}"
         class="time{% if time.heat %} {{ time.heat }}{% endif %}">
     {{ time.time }}
@@ -52,11 +43,12 @@ All Bookings:<br>
 
 <script>
 $(".time").click(function() {
+  $("#id_reserved_time").val($(this).data("time")).addClass("selected");
   if($(this).data("full")=="full"){
     $(".full-warning").show();
     $(".submit-buttons").hide();
+
   } else {
-    $("#id_reserved_time").val($(this).data("time")).addClass("selected");
     $(".time").removeClass("selected");
     $(this).removeClass("hot");
     $(this).removeClass("warm");
@@ -66,4 +58,16 @@ $(".time").click(function() {
     $(".submit-buttons").show();
   };
 });
+
+
+{% if busy_night %}
+$(".booking-warning").show();
+$("#id_private_notes").val("Warned, maybe full.");
+$("#id_booking_duration").parents("tr").show();
+{% else %}
+$(".booking-warning").hide().css("display: None");
+$("#id_private_notes").val("");
+$("#id_booking_duration").parents("tr").hide();
+{% endif %}
+
 </script>
