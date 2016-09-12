@@ -67,7 +67,7 @@ class CalendarMixin(object):
 
 class TimeMixin(object):
 
-    def get_time_list(self, context, this_date):
+    def generate_time_dict(self, this_date):
         """requires `this_date` as :py:class:`datetime.date`
 
         This is used to fetch bookings and to `datetime.combine` with
@@ -86,8 +86,6 @@ class TimeMixin(object):
         number of intervals. """
 
         booking_list = Booking.objects.filter(reserved_date=this_date)
-        context['booking_list'] = booking_list
-        context['pax_total'] = booking_list.pax()
         for booking in booking_list:
             start_time = datetime.datetime.combine(this_date, booking.reserved_time)
             end_time = datetime.datetime.combine(this_date,
@@ -118,7 +116,11 @@ class TimeMixin(object):
                     this_dict['service'] = service
             time_list.append(this_dict)
 
-        context['time_list'] = time_list
+
+    def get_time_list(self, context, this_date):
+        context['time_list'] = self.generate_time_dict(this_date)
+        context['booking_list'] = booking_list
+        context['pax_total'] = booking_list.pax()
         return context
 
 

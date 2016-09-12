@@ -57,7 +57,8 @@ class Booking(models.Model):
                              on_delete=models.PROTECT)
 
     reserved_date = models.DateField(db_index=True)
-    reserved_time = models.TimeField(db_index=True, default=timezone.now)
+    reserved_time = models.TimeField(db_index=True, default=timezone.now,
+                                     choices=settings.BOOKING_TIMES_CHOICES)
 
     booking_duration = models.DurationField(blank=True, null=True)
 
