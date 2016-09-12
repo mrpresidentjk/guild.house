@@ -6,11 +6,15 @@
 
 {% block content %}
 
+{% if not show_all %}
 {% for obj in object_list %}
 {% if forloop.first%}
 <h1>Bookings for {{ obj.reserved_date|date:"l F-j-Y" }}</h1>
 {% endif %}
 {% endfor %}
+{% else %}
+<h1>All Future Bookings</h1>
+{% endif %}
 
 <div class="row">
   <div class="col-lg-4">
