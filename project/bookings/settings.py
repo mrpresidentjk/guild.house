@@ -71,7 +71,7 @@ DURATION_SELECTION = [
 ]
 
 HEAT = {
-    65: 'warm',
+    60: 'warm',
     85: 'hot',
     105: 'full',
 }

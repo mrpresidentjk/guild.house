@@ -35,6 +35,8 @@ class Booking(models.Model):
 
     notes = models.TextField(blank=True, default='')
 
+    private_notes = models.TextField(blank=True, default='')
+
     email = models.EmailField(max_length=150, blank=True, default='')
 
     phone = models.CharField(max_length=100,
@@ -62,6 +64,8 @@ class Booking(models.Model):
     service = models.CharField(max_length=50, choices=settings.SERVICE_CHOICE,
                                blank=True, default=''
     )
+
+    busy_night = models.BooleanField(default=False)
 
     created_at = models.DateTimeField(auto_now_add=True, editable=False)
 
@@ -127,6 +131,11 @@ class Booking(models.Model):
         # Automatically make code if doesn't already have one.
         if not self.code:
             self.code = utils.generate_unique_hex(queryset=Booking.objects.all())
+
+            # adding on first creation. Messy, but works.
+            # @@TODO make this less crap
+            if "full" in self.private_notes:
+                self.busy_night = True
 
         # Automatically set service based upon `reserved_time`.
         for service_time, service in reversed(settings.SERVICE_TIMES):
