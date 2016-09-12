@@ -2,14 +2,7 @@
 <h5>Time:</h5>
 {% endif %}
 
-{{ pax_total }}
-
 {% for time in time_list %}
-
-{% if forloop.first %}
-{{ time.date }}
-{% endif %}
-
 {% if time.service %}
 
 {% if not forloop.first %}
@@ -29,6 +22,12 @@
 </div>
 
 {% if user.is_authenticated %}
+<br><div>---</div>
+<b>Management Information</b><br>
+<br>
+Total: {{ pax_total }}pax<br>
+<br>
+All Bookings:<br>
 <br>
 {% for booking in booking_list %}
   {{ booking }}<br>
