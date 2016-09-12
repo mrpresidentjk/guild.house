@@ -16,7 +16,7 @@ class QuerySet(models.query.QuerySet):
         return self.active().filter(party_size__gte=BIG_BOOKING)
 
     def pax(self):
-        return self.active().aggregate(Sum('party_size'))
+        return self.active().aggregate(Sum('party_size'))['party_size__sum']
 
     def current_site(self):
         site = Site.objects.get_current()
