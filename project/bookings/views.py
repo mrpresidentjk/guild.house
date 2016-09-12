@@ -141,7 +141,7 @@ The customer has been warned that this is the case and may be expecting confirma
 {warning}
 Link to booking: http://guild.house/bookings/{code}/
 
-Link to day: http://guild.house{url}
+Link to day: http://guild.house/bookings/{url_day}
 
         Add event to calendar (only if big event)
         What: {pax}pax {name}
@@ -154,6 +154,7 @@ Link to day: http://guild.house{url}
                    day=form.cleaned_data.get('reserved_date').strftime('%a'),
                    time=form.cleaned_data.get('reserved_time').strftime('%H:%M%p'),
                    date=form.cleaned_data.get('reserved_date').strftime('%-d-%b-%Y'),
+                   url_day=form.cleaned_data.get('reserved_date').strftime('%Y/%m/%d/'),
                    pax=form.cleaned_data.get('party_size'),
                    name=form.cleaned_data.get('name'),
         )
