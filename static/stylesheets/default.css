@@ -75,6 +75,21 @@ table#future th {
     border-bottom: 1px solid white;
 }
 
+span.warm { /* 70 pax */
+    background-color: rgba(10, 10, 10, 0.5);
+    color: rgba(240, 240, 240, 0.60);
+}
+
+span.hot {  /* 85 pax */
+    background-color: rgba(175, 70, 70, 0.25);
+    color: rgba(255, 255, 255, 0.55);
+}
+
+span.full { /* 115 pax */
+    background-color: rgba(175, 0, 0, 0.15);
+    color: rgba(255, 255, 255, 0.25);
+}
+
 button[type=submit] {
     background-color: Transparent;
     background-repeat:no-repeat;
