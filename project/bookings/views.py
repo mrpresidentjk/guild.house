@@ -8,7 +8,7 @@ from .models import Booking
 from datetime import time, timedelta, date
 from dateutil.relativedelta import relativedelta
 from django.core.mail import send_mail
-from django.core.urlresolvers import reverse_lazy
+from django.core.urlresolvers import reverse, reverse_lazy
 from django.db.models import Count, Sum
 from django.http import Http404
 from django.shortcuts import redirect, get_object_or_404
@@ -66,7 +66,6 @@ class CalendarMixin(object):
 
 
 class TimeMixin(object):
-
 
     def get_time_list(self, context, this_date):
         """requires `this_date` as :py:class:`datetime.date`
@@ -145,6 +144,12 @@ class BookingQueryset(object):
         queryset = super(BookingQueryset, self).get_queryset(*args, **kwargs)
         return queryset.active().order_by('reserved_date', 'reserved_time')
 
+    def get_queryset_by_day(self, *args, **kwargs):
+        queryset = super(BookingQueryset, self).get_queryset(*args, **kwargs)
+        return queryset.active().order_by('reserved_date', 'reserved_time')
+
+
+
 class BookingTimeView(BookingQueryset, TimeMixin, generic.ListView):
 
     template_name = 'bookings/_time.html'
@@ -171,10 +176,6 @@ class BookingCreateView(CalendarMixin, BookingQueryset,
                         generic.edit.CreateView):
 
     form_class = NewBookingForm
-
-    def get_object(self):
-        return get_object_or_404(Booking, code=self.kwargs.get('code'))
-
 
     def form_valid(self, form):
         obj = form.instance
@@ -214,20 +215,30 @@ class BookingCreateView(CalendarMixin, BookingQueryset,
     def get_context_data(self, *args, **kwargs):
         context = super(BookingCreateView, self).get_context_data(*args, **kwargs)
         context = self.get_calendar(context)
-        context['tomorrow'] = date.today()+timedelta(days=1)
+        context['today'] = date.today()
         context = self.get_time_list(context, this_date=date.today())
         return context
+
+    def get_form_kwargs(self, *args, **kwargs):
+        kwargs = super(BookingCreateView, self).get_form_kwargs(*args, **kwargs)
+        kwargs.update({'user': self.request.user})
+        return kwargs
 
     def get_initial(self):
         initial = super(BookingCreateView, self).get_initial()
         initial = initial.copy()
-        # set as tomorrow if booking made later than 6pm
+
+        if self.request.user.is_authenticated():
+            initial['user'] = self.request.user
+
+        # Set as tomorrow if booking made later than 6pm.
         if localtime(now()).hour > 18:
             initial['reserved_date'] = date.today()+timedelta(days=1)
         else:
             initial['reserved_date'] = date.today()
         initial['reserved_time'] = settings.DEFAULT_BOOKING_TIME
         initial['booking_duration'] = settings.DEFAULT_BOOKING_DURATION
+        initial['booking_method'] = settings.DEFAULT_BOOKING_METHOD
 
         return initial
 
@@ -236,6 +247,13 @@ class BookingUpdateView(CalendarMixin, BookingQueryset, generic.edit.UpdateView)
 
     slug_field = 'code'
     form_class = BookingForm
+
+    def form_valid(self, form):
+        obj = form.instance
+        obj.updated_by = self.request.user
+        obj.save()
+        self.send_booking_notice_internal(obj=obj, form=form, change="updated")
+        return redirect('bookings:booking_update', code=form.instance.code)
 
     def get_object(self):
         if not self.request.user.is_authenticated():
