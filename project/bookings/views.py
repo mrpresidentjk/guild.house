@@ -122,6 +122,91 @@ class TimeMixin(object):
         return context
 
 
+class BookingFormMixin(object):
+
+    def get_object(self):
+        return get_object_or_404(Booking, code=self.kwargs.get('code'))
+
+    def send_booking_notice_internal(self, obj, form, change="added"):
+        message = """Booking {change} in to system.
+
+        Link to booking: http://guild.house/bookings/{code}/
+
+        Link to day: http://guild.house{url}
+
+        Add event to calendar (only if big event)
+        What: {pax}pax {name}
+        When: {time} {date} {day}
+        """.format(change=change,
+                   code=obj.code.decode('utf-8'),
+                   url=obj.get_absolute_url(),
+                   method=form.cleaned_data.get('booking_method'),
+                   day=form.cleaned_data.get('reserved_date').strftime('%a'),
+                   time=form.cleaned_data.get('reserved_time').strftime('%H:%M%p'),
+                   date=form.cleaned_data.get('reserved_date').strftime('%-d-%b-%Y'),
+                   pax=form.cleaned_data.get('party_size'),
+                   name=form.cleaned_data.get('name'),
+        )
+        subject = "[{method}] {name} {pax}pax {date} ".format(
+            method=form.cleaned_data.get('booking_method'),
+            date=form.cleaned_data.get('reserved_date').strftime('%a %-d-%b'),
+            pax=form.cleaned_data.get('party_size'),
+            name=form.cleaned_data.get('name')
+        )
+        send_mail(
+            subject=subject,
+            message=message,
+            from_email=settings.FROM_EMAIL,
+            recipient_list=settings.TO_EMAILS,
+        )
+        return True
+
+    def send_booking_notice_customer(self, obj, form):
+        message = """Thank you for making a reservation at Guild!
+
+Name: {name}
+Number of people: {pax}pax
+When: {time}, {day} {date}
+
+Link to booking details: http://guild.house/bookings/{code}/success/
+
+If you would like to contact us for any reason:
+Call us on: 02 6257 2727
+Email: hello@guild.house
+Web: http://guild.house
+
+--
+Regards,
+Automated Bookings Robot-Machine
+-Guild Team
+
+facebook.com/guildhouse.canberra
+(02) 6257 2727
+Open 7 days, 12pm til late
+        """.format(code=obj.code.decode('utf-8'),
+                   url=obj.get_absolute_url(),
+                   method=form.cleaned_data.get('booking_method'),
+                   day=form.cleaned_data.get('reserved_date').strftime('%a'),
+                   time=form.cleaned_data.get('reserved_time').strftime('%H:%M%p'),
+                   date=form.cleaned_data.get('reserved_date').strftime('%-d-%b-%Y'),
+                   pax=form.cleaned_data.get('party_size'),
+                   name=form.cleaned_data.get('name'),
+        )
+        subject = "[{method}] {name} {pax}pax {date} ".format(
+            method=form.cleaned_data.get('booking_method'),
+            date=form.cleaned_data.get('reserved_date').strftime('%a %-d-%b'),
+            pax=form.cleaned_data.get('party_size'),
+            name=form.cleaned_data.get('name')
+        )
+        send_mail(
+            subject=subject,
+            message=message,
+            from_email=settings.FROM_EMAIL,
+            recipient_list=[form.cleaned_data.get('email')],
+        )
+        return True
+
+
 class BookingQueryset(object):
 
     model = Booking
@@ -134,7 +219,8 @@ class BookingQueryset(object):
     def get_context_data(self, *args, **kwargs):
         context = super(BookingQueryset, self).get_context_data(*args, **kwargs)
         context['future_list'] = self.get_queryset().future()
-        context['summary_list'] = self.get_queryset().future().values('reserved_date')\
+        context['summary_list'] = self.get_queryset().today()\
+                                      .values('reserved_date')\
                                       .annotate(count=Count('id'),
                                                 pax=Sum('party_size'))\
                                       .order_by('reserved_date')
@@ -172,7 +258,7 @@ class BookingSuccessView(BookingQueryset, generic.DetailView):
         return get_object_or_404(Booking, code=self.kwargs.get('code'))
 
 
-class BookingCreateView(CalendarMixin, BookingQueryset,
+class BookingCreateView(BookingFormMixin, CalendarMixin, BookingQueryset, TimeMixin,
                         generic.edit.CreateView):
 
     form_class = NewBookingForm
@@ -180,36 +266,8 @@ class BookingCreateView(CalendarMixin, BookingQueryset,
     def form_valid(self, form):
         obj = form.instance
         obj.save()
-        message = """Booking entered in to system.
-
-        Link to booking: http://guild.house/bookings/{code}/
-
-        Link to day: http://guild.house{url}
-
-        Add event to calendar (only if big event)
-        What: {pax}pax {name}
-        When: {time} {date} {day}
-        """.format(code=obj.code.decode('utf-8'),
-                   url=obj.get_absolute_url(),
-                   method=form.cleaned_data.get('booking_method'),
-                   day=form.cleaned_data.get('reserved_date').strftime('%a'),
-                   time=form.cleaned_data.get('reserved_time').strftime('%H:%M%p'),
-                   date=form.cleaned_data.get('reserved_date').strftime('%-d-%b-%Y'),
-                   pax=form.cleaned_data.get('party_size'),
-            name=form.cleaned_data.get('name')
-        )
-        subject = "[{method}] {name} {pax}pax {date} ".format(
-            method=form.cleaned_data.get('booking_method'),
-            date=form.cleaned_data.get('reserved_date').strftime('%a %-d-%b'),
-            pax=form.cleaned_data.get('party_size'),
-            name=form.cleaned_data.get('name')
-        )
-        send_mail(
-            subject=subject,
-            message=message,
-            from_email=settings.FROM_EMAIL,
-            recipient_list=settings.TO_EMAILS,
-        )
+        self.send_booking_notice_internal(obj=obj, form=form, change="added")
+        self.send_booking_notice_customer(obj=obj, form=form)
         return redirect('bookings:booking_success', code=form.instance.code)
 
     def get_context_data(self, *args, **kwargs):
@@ -243,7 +301,8 @@ class BookingCreateView(CalendarMixin, BookingQueryset,
         return initial
 
 
-class BookingUpdateView(CalendarMixin, BookingQueryset, generic.edit.UpdateView):
+class BookingUpdateView(BookingFormMixin, CalendarMixin, BookingQueryset,
+                        generic.edit.UpdateView):
 
     slug_field = 'code'
     form_class = BookingForm
@@ -253,6 +312,7 @@ class BookingUpdateView(CalendarMixin, BookingQueryset, generic.edit.UpdateView)
         obj.updated_by = self.request.user
         obj.save()
         self.send_booking_notice_internal(obj=obj, form=form, change="updated")
+        self.send_booking_notice_customer(obj=obj, form=form)
         return redirect('bookings:booking_update', code=form.instance.code)
 
     def get_object(self):
