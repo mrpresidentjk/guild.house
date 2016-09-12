@@ -151,8 +151,17 @@ button[type=submit] {
 
 .time {
     display: inline-block;
+    height: 38px;
     width: 4em;
+    padding: 7px 0 4px 0;
+    margin: 5px;
 }
+
+.time .howfull {
+    font-size: 0.7em;
+    margin-top: -6px;
+}
+
 
 .pax {
     display: inline-block;
