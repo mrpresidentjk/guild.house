@@ -36,7 +36,7 @@ class Booking(models.Model):
 
     email = models.EmailField(max_length=150, blank=True, default='')
 
-    phone = models.CharField(max_length=100, blank=True, default='',
+    phone = models.CharField(max_length=100,
                              help_text="One phone number only. Put additional numbers in 'notes' if necessary. We may need to confirm details so be sure to provide a good number."
     )
 
@@ -65,6 +65,10 @@ class Booking(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, editable=False)
 
     updated_at = models.DateTimeField(auto_now=True, editable=False)
+
+    updated_by = models.ForeignKey(User, blank=True, null=True,
+                                   related_name="booking_updated_by"
+    )
 
     hear_choices = models.CharField(max_length=56, blank=True, default='',
                                     choices=settings.HEAR_CHOICE,

@@ -21,7 +21,7 @@ FROM_EMAIL = getattr(settings, 'DEFAULT_FROM_EMAIL')
 TO_EMAILS = getattr(settings, 'BOOKINGS_TO_EMAILS')
 
 STATUS_CHOICES = [
-    ('Added', 'Added'),
+    ('Booked', 'Booked'),
     ('Confirmed', 'Confirmed'),
     ('Numbers Confirmed', 'Numbers Confirmed'),
     ('Big Booking', 'Big Booking'),

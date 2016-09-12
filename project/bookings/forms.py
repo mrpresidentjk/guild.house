@@ -56,7 +56,7 @@ class BookingForm(forms.ModelForm):
 
     class Meta(object):
         fields = ['status', 'name', 'reserved_time', 'reserved_date', 'booking_duration',
-                  'party_size', 'email', 'phone', 'postcode', 'notes','user',
+                  'party_size', 'email', 'phone', 'postcode', 'notes','user', 'updated_by',
                   'hear_choices', 'hear_other', 'booking_method']
         model = Booking
         widgets = {
@@ -72,6 +72,7 @@ class BookingForm(forms.ModelForm):
         self.fields['phone'].required = True
         self.fields['email'].required = True
         self.fields['user'].widget = forms.HiddenInput()
+        self.fields['updated_by'].widget = forms.HiddenInput()
 
     def clean(self, *args, **kwargs):
         cleaned_data = super(BookingForm, self).clean(*args, **kwargs)
