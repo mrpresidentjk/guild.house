@@ -82,6 +82,7 @@ class TimeMixin(object):
         this_time = datetime.datetime.combine(this_date,
                                               settings.BOOKING_TIMES[0])-interval
 
+
         """Construct bookings
         Ensure times are constructed first, then iterate through bookings
         for this day as likely the number of bookings will be fewer than the
@@ -101,7 +102,7 @@ class TimeMixin(object):
             this_time = this_time+interval
             this_dict = {'pax': 0,
                          'date': this_time,
-                         'select_time': select_time,
+                         'select_time': time(this_time.hour, this_time.minute),
                          'time': "{}:{:0>2}".format(this_time.hour,
                                                     this_time.minute)}
             select_time = select_time+interval

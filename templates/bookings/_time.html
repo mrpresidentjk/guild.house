@@ -12,7 +12,7 @@
 
 <div><b>{{ time.service|title }}</b><br>
 {% endif %}
-  <span data-time="{{ time.select_time|date:"Y-m-d H:i:s" }}"
+  <span data-time="{{ time.select_time|time:"H:i:s" }}"
         data-full="{% if time.pax > 105 %}full{% endif %}"
         class="time{% if time.heat %} {{ time.heat }}{% endif %}">
     {{ time.time }}
