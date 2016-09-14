@@ -324,6 +324,7 @@ class BookingCreateView(BookingFormMixin, CalendarMixin, BookingQueryset, TimeMi
 
         if self.request.user.is_authenticated():
             initial['user'] = self.request.user
+            initial['email'] = 'foh.managers@guild.house'
 
         # Set as tomorrow if booking made later than 6pm.
         if localtime(now()).hour > 18:
