@@ -134,7 +134,12 @@ class TimeMixin(object):
         context['time_list'], context['busy_night'] = self.generate_time_dict(this_date)
         context['date'] = this_date
         context['booking_list'] = self.get_booking_list(this_date)
-        context['pax_total'] = self.get_booking_list(this_date).pax()
+
+        # Sadly annotate too unreliable https://code.djangoproject.com/ticket/10060
+        total_pax = 0
+        for booking in self.get_booking_list(this_date):
+            total_pax = total_pax+booking.party_size
+        context['pax_total'] = total_pax
         return context
 
 
