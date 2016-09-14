@@ -81,19 +81,17 @@ def generate_times():
 BOOKING_TIMES_CHOICES = generate_times()
 
 DEFAULT_BOOKING_DURATION = getattr(settings, 'BOOKINGS_DEFAULT_BOOKING_DURATION',
-                                   '2:30:00')
+                                   '02:30:00')
 
 DURATION_SELECTION = [
-    ('0:15:00', '15 minutes'),
-    ('0:30:00', '30 minutes'),
-    ('0:45:00', '45 minutes'),
-    ('1:00:00', '1 hour'),
-    ('1:15:00', '1 hour and 15 minutes'),
-    ('1:30:00', '1 and a half hours'),
-    ('1:45:00', '1 hour and 45 minutes'),
-    ('2:00:00', '2 hours'),
-    ('2:30:00', '2 and a half hours'),
-    ('3:00:00', 'more than 2 and a half hours')
+    ('00:30:00', '30 minutes'),
+    ('00:45:00', '45 minutes'),
+    ('01:00:00', '1 hour'),
+    ('01:30:00', '1 and a half hours'),
+    ('02:00:00', '2 hours'),
+    ('02:30:00', '2 and a half hours'),
+    ('03:00:00', '3 hours'),
+    ('06:00:00', 'more than 3 hours')
 ]
 
 HEAT = {
