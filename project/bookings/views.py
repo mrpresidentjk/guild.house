@@ -130,6 +130,7 @@ class TimeMixin(object):
 
     def get_time_list(self, context, this_date):
         context['time_list'], context['busy_night'] = self.generate_time_dict(this_date)
+        context['date'] = this_date
         context['booking_list'] = self.get_booking_list(this_date)
         context['pax_total'] = self.get_booking_list(this_date).pax()
         return context
