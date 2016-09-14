@@ -30,8 +30,11 @@ class Booking(models.Model):
 
     party_size = models.PositiveIntegerField()
 
-    status = models.CharField(max_length=50, choices=settings.STATUS_CHOICES,
-                              default=settings.STATUS_CHOICES[0][0])
+    status = models.CharField(max_length=50, choices=settings.STATUS_CHOICE,
+                              default=settings.STATUS_CHOICE[0][0])
+
+    area = models.CharField(max_length=50, choices=settings.AREA_CHOICE,
+                            default=settings.AREA_CHOICE[0][0])
 
     notes = models.TextField(blank=True, default='')
 

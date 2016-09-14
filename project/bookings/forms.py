@@ -55,9 +55,10 @@ class BookingForm(forms.ModelForm):
 
 
     class Meta(object):
-        fields = ['status', 'name', 'reserved_time', 'reserved_date', 'booking_duration',
-                  'party_size', 'email', 'phone', 'postcode', 'notes','user', 'updated_by',
-                  'hear_choices', 'hear_other', 'booking_method', 'private_notes', 'busy_night']
+        fields = ['status', 'name', 'reserved_time', 'reserved_date',
+                  'booking_duration', 'party_size', 'area', 'email', 'phone',
+                  'postcode', 'notes','user', 'updated_by', 'hear_choices',
+                  'hear_other', 'booking_method', 'private_notes', 'busy_night']
         model = Booking
         widgets = {
             'notes': forms.Textarea(attrs={'rows':4,  'width':185, 'cols':0}),

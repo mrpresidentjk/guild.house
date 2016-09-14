@@ -21,7 +21,7 @@ FROM_EMAIL = getattr(settings, 'DEFAULT_FROM_EMAIL')
 
 TO_EMAILS = getattr(settings, 'BOOKINGS_TO_EMAILS')
 
-STATUS_CHOICES = [
+STATUS_CHOICE = [
     ('Booked', 'Booked'),
     ('Confirmed', 'Confirmed'),
     ('Numbers Confirmed', 'Numbers Confirmed'),
@@ -31,6 +31,12 @@ STATUS_CHOICES = [
 
 DEFAULT_BOOKING_METHOD = getattr(settings, 'BOOKINGS_DEFAULT_BOOKING_METHOD',
                                  'website')
+
+AREA_CHOICE = (
+    ('inside', 'Inside'),
+    ('outside', 'Outside'),
+)
+
 METHOD_CHOICE = [
     ('phone', 'Phone'),
     ('email', 'Email'),
