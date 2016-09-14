@@ -12,7 +12,7 @@ from django.utils.encoding import force_text
 from tinymce.widgets import TinyMCE
 
 
-PHONE_DIGITS_RE = re.compile(r'^(\d{8})$|^([0-1]\d{9})$')
+PHONE_DIGITS_RE = re.compile(r'^(\d{8,10})$')
 
 
 class AUPhoneNumberField(CharField):
