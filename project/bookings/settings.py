@@ -101,6 +101,7 @@ HEAT = {
     105: 'full',
 }
 
+# Note: hardcoded in booking_form.html
 HEAR_CHOICE = [
     ("event", "event"),
     ("facebook", "facebook"),

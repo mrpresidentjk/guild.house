@@ -44,6 +44,10 @@ select, input {
     background: rgba(175, 151, 100, 0.55); /*rgba(216, 181, 120, 0.55); /*rgba(220, 175, 120, 0.64); /*rgba(220, 220, 120, 0.64); /*rgba(12,12,12,0.8);*/
 }
 
+option {
+     background: rgba(10,10,10,0.5);
+}
+
 textarea {
     background: rgba(105, 98, 98, 0.57);
 }

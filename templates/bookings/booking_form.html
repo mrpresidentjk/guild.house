@@ -104,6 +104,34 @@ PLEASE EMAIL: <a href="mailto:reservations@guild.house" style="color:white">rese
             {% endif %}
           </td>
         </tr>
+  {% else %}
+
+        <tr>
+          <th>
+            <label for="id_hear_choices">How did you<br>hear about<br>us?</label>
+          </th>
+          <td>
+            <select id="id_hear_choices" name="hear_choices">
+              <option value="" selected="selected">---------</option>
+              <option value="event">event</option>
+              <option value="facebook">facebook</option>
+              <option value="friends">friends</option>
+              <option value="newspaper">newspaper</option>
+              <option value="search">search</option>
+              <option value="other">other</option>
+            </select>
+        </td></tr>
+
+        <tr>
+          <th>
+            <label for="id_hear_other">&nbsp;</label>
+          </th>
+          <td>
+            <span class="helptext">Tell us a story about how you heard about us ...</span><br>
+            <textarea cols="0" id="id_hear_other" name="hear_other" rows="4" width="185"></textarea>
+          </td>
+        </tr>
+
   {% endif %}
 
         <tr class="submit-buttons">
