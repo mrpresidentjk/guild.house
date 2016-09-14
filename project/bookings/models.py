@@ -96,7 +96,7 @@ class Booking(models.Model):
         verbose_name_plural = 'bookings'
 
     def __str__(self):
-        desc = "{name} {pax}pax {date} {start}".format(
+        desc = "{date} {start} {pax}pax {name}".format(
             name=self.name,
             pax=self.party_size,
             date=self.reserved_date.strftime("%d-%b-%Y"),
@@ -104,9 +104,14 @@ class Booking(models.Model):
         )
 
         if self.booking_duration:
-            desc = desc+"-{end}".format(
+            desc = "{date}-{end} {start} {pax}pax {name}".format(
+                name=self.name,
+                pax=self.party_size,
+                date=self.reserved_date.strftime("%d-%b-%Y"),
+                start=self.reserved_time.strftime("%H:%M"),
                 end=(datetime.datetime.combine(self.reserved_date,
-                    self.reserved_time)+self.booking_duration).strftime("%H:%M"))
+                    self.reserved_time)+self.booking_duration).strftime("%H:%M")
+            )
         return desc
 
     def get_absolute_url(self):
