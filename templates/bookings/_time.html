@@ -62,17 +62,20 @@ $(".time").click(function() {
 {% if date|date:"D" == "Fri" or date|date:"D" == "Sat" %}
   $("#id_booking_duration").parents("tr").show();
   $("#id_booking_duration").val("02:30:00");
-{% else %}
-  {% if busy_night %}
-  $(".booking-warning").show();
-  $("#id_private_notes").val("Warned, maybe full.");
-  $("#id_booking_duration").parents("tr").show();
-  {% else %}
-  $(".booking-warning").hide().css("display: None");
-  $("#id_private_notes").val("");
-  $("#id_booking_duration").parents("tr").hide();
-  {% endif %}
 {% endif %}
+
+{% if busy_night %}
+$(".booking-warning").show();
+$("#id_busy_night").val("True");
+$("#id_private_notes").val("Warned, maybe full.");
+$("#id_booking_duration").parents("tr").show();
+{% else %}
+$(".booking-warning").hide().css("display: None");
+$("#id_private_notes").val("");
+$("#id_booking_duration").parents("tr").hide();
+{% endif %}
+
+
 
 
 
