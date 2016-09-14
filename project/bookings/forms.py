@@ -3,7 +3,7 @@ from __future__ import absolute_import, unicode_literals
 import re
 from .models import Booking
 from .settings import DURATION_SELECTION
-from datetime import date, timedelta
+from datetime import date, timedelta, datetime
 from django import forms
 from django.core.validators import EMPTY_VALUES
 from django.forms import ValidationError
@@ -12,7 +12,7 @@ from django.utils.encoding import force_text
 from tinymce.widgets import TinyMCE
 
 
-PHONE_DIGITS_RE = re.compile(r'^(\d{8,10})$')
+PHONE_DIGITS_RE = re.compile(r'^(\d{8})$|^([0-1]\d{9})$')
 
 
 class AUPhoneNumberField(CharField):
@@ -89,11 +89,5 @@ class NewBookingForm(BookingForm):
         self.fields['status'].widget = forms.HiddenInput()
         self.fields['private_notes'].widget = forms.HiddenInput()
         self.fields['busy_night'].widget = forms.HiddenInput()
-        #self.fields['reserved_time'].widget = forms.HiddenInput()
         if not user.is_authenticated():
             self.fields['booking_method'].widget = forms.HiddenInput()
-
-
-# Have to be logged in to make changes to booking.
-#
-#PHONE_DIGITS_RE = re.compile(r'^(\d{8})$|^[0-1]\d{9}$|^\d{11}$|^[\+]\d{11}$')
