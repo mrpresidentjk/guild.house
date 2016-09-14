@@ -105,10 +105,12 @@ class TimeMixin(object):
                          'select_time': time(this_time.hour, this_time.minute),
                          'time': "{}:{:0>2}".format(this_time.hour,
                                                     this_time.minute)}
-            select_time = select_time+interval
+
             # Add `party_size` totals to data_dict
+            select_time = select_time+interval
             for start, end, pax in open_bookings:
-                if start <= this_time and this_time < end:
+                # Add an hour for good luck.
+                if start <= this_time and this_time < end+timedelta(minutes=60):
                     this_dict['pax'] = this_dict['pax']+pax
 
             for tmp in settings.HEAT.keys():

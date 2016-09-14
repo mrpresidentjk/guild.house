@@ -80,8 +80,9 @@ def generate_times():
 
 BOOKING_TIMES_CHOICES = generate_times()
 
+# An hour is manually added on in views.TimeMixin for good luck.
 DEFAULT_BOOKING_DURATION = getattr(settings, 'BOOKINGS_DEFAULT_BOOKING_DURATION',
-                                   '04:00:00')
+                                   '03:00:00')
 
 DURATION_SELECTION = [
     ('00:30:00', '30 minutes'),
