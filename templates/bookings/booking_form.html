@@ -7,12 +7,14 @@
 {% block content %}
 
 {% if user.is_authenticated %}
-<h2 style="opacity: 0.7; text-align: right;">Logged in as: {{user}}</h2>
+<h2 style="opacity: 0.7; text-align: right;" class="hidden-print">
+  Logged in as: {{user}}
+</h2>
 {% endif %}
 
 <div class="row">
     {% if not object.code %}
-      <h2>New Booking</h2>
+      <h2 class="hidden-print">New Booking</h2>
     {% endif %}
 
 {% if form.errors %}
@@ -48,12 +50,12 @@ Please supply both email address and phone number.
 
   {% if not update_view %}
   <div class="col-sm-5">
-    {% include "bookings/_calendar.html" %}
-    <hr>
+    <div class="hidden-print">{% include "bookings/_calendar.html" %}</div>
+    <hr class="hidden-print">
     <div id="time"></div>
   </div>
 
-  <div class="col-sm-1">
+  <div class="col-sm-1 hidden-print">
     {% include "bookings/_pax.html" %}
   </div>
   {% endif %}
@@ -134,14 +136,14 @@ PLEASE EMAIL: <a href="mailto:reservations@guild.house" style="color:white">rese
 
   {% endif %}
 
-        <tr class="submit-buttons">
+        <tr class="hidden-print submit-buttons">
           <th></th>
           <td>
-            <button type="submit" class="btn btn-default btn-lg">
+            <button type="submit" class="hidden-print btn btn-default btn-lg">
               <i class="fa fa-save fa-fw"></i>
               <span class="network-name">Save</span>
             </button>
-            <button type="submit" class="btn btn-default btn-lg" id="remove">
+            <button type="submit" class="hidden-print btn btn-default btn-lg" id="remove">
               <i class="fa fa-trash fa-fw"></i>
               <span class="network-name">Cancel</span>
             </button>
