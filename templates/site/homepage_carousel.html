@@ -18,7 +18,7 @@
           </a>
           <div class="carousel-text">
             <h2>{{ entry.title }}</h2>
-            {% if entry.featured_content %}<p>{{ entry.featured_content }}</p>{% endif %}
+            {% if entry.featured_content %}<p>{{ entry.featured_content|safe }}</p>{% endif %}
             <a href="{{ entry.get_absolute_url }}"><i class="fa fa-caret-right"></i> Details</a>
           </div>
     </div>
