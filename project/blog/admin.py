@@ -12,7 +12,7 @@ class EntryAdmin(admin.ModelAdmin):
 
     fieldsets = [
         ('Content', {'fields': ['title',
-                                'is_featured',
+                                'is_featured', 'featured_order',
                                 'featured_image', 'featured_content',
                                 'content',
                                 'meta_description']}),
@@ -24,11 +24,12 @@ class EntryAdmin(admin.ModelAdmin):
 
     form = EntryAdminForm
 
-    list_display = ['title', 'publish_at', 'is_enabled', 'is_featured', 'is_active']
+    list_display = ['title', 'publish_at', 'is_enabled',
+                    'is_featured', 'featured_order', 'is_active']
 
     list_filter = ['is_enabled', 'is_featured']
 
-    list_editable = ['is_enabled', 'is_featured']
+    list_editable = ['is_enabled', 'is_featured', 'featured_order']
 
     prepopulated_fields = {'slug': ['title']}
 
