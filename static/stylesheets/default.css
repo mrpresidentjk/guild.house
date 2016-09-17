@@ -28,11 +28,6 @@ h6 {
     line-height: 2em;
 }
 
-p {
-    font-size: 1.25em;
-    line-height: 1.6;
-}
-
 input, select, textarea {
     color: whitesmoke;
     border: 0;
