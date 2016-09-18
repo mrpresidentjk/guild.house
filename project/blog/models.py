@@ -62,7 +62,7 @@ class Entry(models.Model):
     objects = querysets.QuerySet.as_manager()
 
     class Meta(object):
-        ordering = ['-publish_at', 'title']
+        ordering = ['featured_order', '-publish_at', 'title']
         unique_together = ['site', 'publish_at', 'slug']
         verbose_name_plural = 'entries'
 
