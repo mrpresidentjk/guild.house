@@ -88,6 +88,8 @@ class Booking(models.Model):
                                   help_text="Tell us a story about how you heard about us ..."
     )
 
+    legacy_code = models.CharField(max_length=256, blank=True, null=True)
+
     objects = querysets.QuerySet.as_manager()
 
     class Meta(object):
