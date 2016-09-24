@@ -4,14 +4,20 @@
  * For details, see http://www.apache.org/licenses/LICENSE-2.0.
  */
 
+
 body {
     font-family: Montserrat, "Helvetica Neue",Helvetica,Arial,sans-serif;
-    color: #ccc;
     background: url('../img/bg.jpg') no-repeat center center fixed;
     -webkit-background-size: cover;
     -moz-background-size: cover;
     background-size: cover;
     -o-background-size: cover;
+}
+
+body.change-list > #container,
+body.model-entry > #container,
+body.dashboard > #container {
+    background: rgba(162,162,162,0.85);
 }
 
 h1,
@@ -24,8 +30,20 @@ h6 {
     font-family: "Open Sans Condensed","Helvetica Neue",Helvetica,Arial,sans-serif;
     font-weight: 700;
     letter-spacing: 2px;
-    color: #eee;
     line-height: 2em;
+}
+
+#guild-body {
+    color: #ccc;
+}
+
+#guild-body h1,
+#guild-body h2,
+#guild-body h3,
+#guild-body h4,
+#guild-body h5,
+#guild-body h6 {
+    color: #eee;
 }
 
 input, select, textarea {
@@ -54,6 +72,16 @@ table td {
 table th {
     white-space: nowrap;
     vertical-align: top;
+}
+
+/* Admin */
+
+#header {
+     background: rgba(12,12,12,0.8);
+}
+
+#branding h1, #branding h1 a:link, #branding h1 a:visited {
+     color: white;
 }
 
 table#calendar th {
