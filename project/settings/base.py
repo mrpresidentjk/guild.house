@@ -142,7 +142,7 @@ SITE_ID = 1
 
 # Email
 
-DEFAULT_FROM_EMAIL = 'web@guild.house'
+DEFAULT_FROM_EMAIL = 'hello@guild.house'
 
 EMAIL_SUBJECT_PREFIX = '[Guild] '
 
