@@ -24,7 +24,7 @@
     <h3>All Future Bookings</h3>
     <table id="future">
       {% for obj in future_list %}
-      {% ifchanged obj.reserved_date %}<th colspan=6><br>{{ obj.reserved_date|date:"l j M Y" }}</th>{% endifchanged %}
+      {% ifchanged obj.reserved_date %}<th colspan=6><br>{{ obj.reserved_date|date:"l" }} <a href="{% url 'bookings:booking_day' year=obj.reserved_date.year month=obj.reserved_date|date:"m" day=obj.reserved_date|date:"d" %}">{{ obj.reserved_date|date:"j M Y" }}</a></th>{% endifchanged %}
       {% include "bookings/_booking_list.html" %}
       {% endfor %}
     </table>

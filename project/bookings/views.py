@@ -414,6 +414,9 @@ class BookingDayArchiveView(BookingQueryset, generic.DayArchiveView):
         context_data['total'] = kwargs.get('object_list')\
                                       .aggregate(Sum('party_size'))
         services = []
+        early_list = kwargs.get('object_list').filter(service='early').aggregate(Sum('party_size'))
+        if early_list['party_size__sum']:
+            services.append((('early', 'Early'), early_list))
         for serv in settings.SERVICE_CHOICE:
             services.append((serv, (kwargs.get('object_list').filter(service=serv[0])\
                             .aggregate(Sum('party_size')))))
