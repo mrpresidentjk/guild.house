@@ -2,7 +2,7 @@
 from __future__ import absolute_import, unicode_literals
 import re
 from .models import Booking
-from .settings import DURATION_SELECTION
+from .settings import DURATION_SELECTION, BOOKING_TIMES_CHOICES
 from datetime import date, timedelta, datetime
 from django import forms
 from django.core.validators import EMPTY_VALUES
@@ -51,6 +51,8 @@ class BookingForm(forms.ModelForm):
     required_css_class = 'required'
     booking_duration = forms.ChoiceField(widget=forms.Select(),
                                          choices=DURATION_SELECTION)
+    reserved_time = forms.ChoiceField(widget=forms.Select(),
+                                      choices=BOOKING_TIMES_CHOICES)
     phone = AUPhoneNumberField(widget=forms.TextInput(attrs={'placeholder': '**'}))
 
 
