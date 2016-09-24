@@ -53,6 +53,7 @@ SERVICE_CHOICE = (
 )
 
 SERVICE_TIMES = (
+    (time(0,0), 'early'),
     (time(12,0), 'lunch'),
     (time(14,30), 'afternoon'),
     (time(17,30), 'main'),
