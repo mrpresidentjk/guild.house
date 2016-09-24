@@ -146,6 +146,10 @@ class Booking(models.Model):
             # @@TODO make this less crap
             if "full" in self.private_notes:
                 self.busy_night = True
+                for booking in Booking.objects.filter(
+                        reserved_date=self.reserved_date):
+                    booking.busy_night = True
+                    booking.save()
 
         # Automatically set service based upon `reserved_time`.
         for service_time, service in reversed(settings.SERVICE_TIMES):
@@ -160,10 +164,11 @@ class Booking(models.Model):
         This is legacy from the original system where only phone number was
         required.
         """
-        try:
-            self.user.username
-        except AttributeError:
-            username = password = self.phone
+        if not self.user:
+            if not self.phone:
+                username = password = self.email
+            else:
+                username = password = self.phone
             try:
                 user = User.objects.create_user(username=username)
                 user.first_name = self.name
@@ -174,5 +179,6 @@ class Booking(models.Model):
             if self.email:
                 user.email = self.email
                 user.save()
+            self.user = user
 
         super(Booking, self).save(*args, **kwargs)
