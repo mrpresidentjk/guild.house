@@ -157,7 +157,7 @@ The customer has been warned that this is the case and may be expecting confirma
 
         """
 
-        message = """Booking {change} in to system.
+        message = u"""Booking {change} in to system.
 
 {warning}
 Link to booking: http://guild.house/bookings/{code}/
@@ -169,7 +169,7 @@ Link to day: http://guild.house/bookings/{url_day}
         When: {time} {date} {day}
         """.format(change=change,
                    warning=warning,
-                   code=obj.code.decode('utf-8'),
+                   code=obj.code,
                    url=obj.get_absolute_url(),
                    method=form.cleaned_data.get('booking_method'),
                    day=form.cleaned_data.get('reserved_date').strftime('%a'),
@@ -202,7 +202,7 @@ Beware! As warned at time of booking: you have booked during a busy time it is p
 We will contact you ASAP if this is the case. Alternatively you can contact us to double-check.
         """
 
-        message = """Thank you for making a reservation at Guild!
+        message = u"""Thank you for making a reservation at Guild!
 
 Name: {name}
 Number of people: {pax}pax
@@ -223,7 +223,7 @@ Automated Bookings Robot-Machine
 facebook.com/guildhouse.canberra
 (02) 6257 2727
 Open 7 days, 12pm til late
-        """.format(code=obj.code.decode('utf-8'),
+        """.format(code=obj.code,
                    warning=warning,
                    url=obj.get_absolute_url(),
                    method=form.cleaned_data.get('booking_method'),
