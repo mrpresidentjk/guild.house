@@ -138,6 +138,10 @@ class Booking(models.Model):
     def save(self,*args, **kwargs):
         self.clean()
 
+        if self.legacy_code and Booking.objects.filter(
+                legacy_code=self.legacy_code):
+            return False
+
         # Automatically make code if doesn't already have one.
         if not self.code:
             self.code = utils.generate_unique_hex(queryset=Booking.objects.all())
