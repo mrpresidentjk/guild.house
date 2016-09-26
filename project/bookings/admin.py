@@ -20,7 +20,7 @@ class BookingAdmin(admin.ModelAdmin):
         ('Content', {'fields': ['reserved_date', 'reserved_time',
                                 'booking_duration', 'name',
                                 'party_size', 'status', 'service', 'email',
-                                'phone']}),
+                                'phone', 'notes', 'private_notes']}),
         ('Publishing', {'fields': ['site', ('created_at', 'updated_at'),
                                'user'],
                         'classes': ['collapse']}),
