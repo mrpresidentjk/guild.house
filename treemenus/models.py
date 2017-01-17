@@ -13,6 +13,10 @@ class MenuItem(models.Model):
     rank = models.IntegerField(_('rank'), default=0, editable=False)
     menu = models.ForeignKey('Menu', related_name='contained_items', verbose_name=_('menu'), null=True, blank=True, editable=False)
 
+    class Meta:
+        verbose_name = _('link')
+        verbose_name_plural = _('links')
+
     def __str__(self):
         return self.caption
 
@@ -129,5 +133,5 @@ class Menu(models.Model):
         return self.name
 
     class Meta:
-        verbose_name = _('menu')
-        verbose_name_plural = _('menus')
+        verbose_name = _('navigation')
+        verbose_name_plural = _('navigation')
