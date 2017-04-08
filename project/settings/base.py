@@ -92,7 +92,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'django.template.context_processors.tz',
-                'django.core.context_processors.media',
+                'django.template.context_processors.media',
                 'project.debug_toolbar.context_processors.debug',
             ],
         },
