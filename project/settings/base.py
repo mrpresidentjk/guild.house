@@ -51,6 +51,9 @@ INSTALLED_APPS = [
     'tinymce',
     'treemenus',
 
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
     'project.menus',
     'project.admin',
     'project.blog',
@@ -205,3 +208,12 @@ BOOKINGS_TO_EMAILS = ['reservations@guild.house']
 AWS_ACCESS_KEY_ID = ''  # TODO
 
 AWS_SECRET_ACCESS_KEY = ''  # TODO
+
+# Authentication
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
+
+LOGIN_REDIRECT_URL = "/"

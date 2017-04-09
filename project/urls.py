@@ -13,6 +13,9 @@ urlpatterns = [
     # Site
     url(r'^', include('project.site.urls')),
 
+    # AllAuth
+    url(r'^accounts/', include('allauth.urls')),
+
     # Bookings
     url(r'^bookings/', include('project.bookings.urls')),
 
