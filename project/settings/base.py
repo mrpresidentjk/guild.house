@@ -19,7 +19,7 @@ BASE_DIR = os.path.join(
 
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'd16bx=+!594*6x(v^ba=qj#8u)=zr19c202(6(mu26!rk)vfr3'
+SECRET_KEY = os.environ['GUILD_DJANGO_SECRET_KEY']
 
 ADMINS = (
     # ('Matt Austin', 'devops@mattaustin.com.au'),
