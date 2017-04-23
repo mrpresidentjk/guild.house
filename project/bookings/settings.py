@@ -67,10 +67,9 @@ def generate_times():
     temp_date, time_list = datetime.date(2000,1,1), []
     this_time = BOOKING_TIMES[0]
     while this_time<=BOOKING_TIMES[1]:
-        time_list.append((
-            this_time,
-            "{}:{:0>2}".format(this_time.hour, this_time.minute)
-        ))
+        this_time_formatted = "{}:{:0>2}".format(this_time.hour, this_time.minute)
+        time_list.append((this_time_formatted, this_time_formatted))
+
         # hack around timedelta not allowing time addition (on purpose)
         # http://bugs.python.org/issue1487389
         # http://bugs.python.org/issue1118748

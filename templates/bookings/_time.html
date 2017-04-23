@@ -13,7 +13,7 @@
 
 <div><b>{{ time.service|title }}</b><br>
 {% endif %}
-  <span data-time="{{ time.select_time|time:"H:i:s" }}"
+  <span data-time="{{ time.select_time|time:"H:i" }}"
         data-full="{% if time.pax > 105 %}full{% endif %}"
         class="time{% if time.heat %} {{ time.heat }}{% endif %}">
     {{ time.time }}
@@ -40,6 +40,7 @@ Total: {% if pax_total %}{{ pax_total }}{% else %}0{% endif %}pax<br>
   {{ booking }}<br>
 {% endfor %}
 {% endif %}
+
 
 <script>
 $(".time").click(function() {
@@ -74,9 +75,4 @@ $(".booking-warning").hide().css("display: None");
 $("#id_private_notes").val("");
 $("#id_booking_duration").parents("tr").hide();
 {% endif %}
-
-
-
-
-
 </script>
