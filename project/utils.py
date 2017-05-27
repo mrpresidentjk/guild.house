@@ -26,7 +26,7 @@ def generate_unique_slug(text, queryset, slug_field='slug', iteration=0):
                                     slug_field=slug_field, iteration=iteration)
 
 def generate_unique_hex(length=3, check=None, queryset=None):
-    code = binascii.hexlify(os.urandom(length))
+    code = binascii.hexlify(os.urandom(length)).decode('UTF-8')
     if check:
         if code!=check:
             return code
