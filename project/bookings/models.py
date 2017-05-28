@@ -154,7 +154,7 @@ class Booking(models.Model):
                     booking.busy_night = True
                     booking.save()
 
-        # Automatically set service based upon `reserved_time`.
+        # Automatically set `service` (eg. lunch) based upon `reserved_time`.
         for service_time, service in reversed(settings.SERVICE_TIMES):
             if self.reserved_time >= service_time:
                 this_service = service
