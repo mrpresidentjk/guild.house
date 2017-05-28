@@ -2,8 +2,6 @@
 from __future__ import absolute_import, unicode_literals
 import re
 import datetime
-from .. import utils
-from . import querysets, settings
 from django.contrib.sites.models import Site
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
@@ -11,9 +9,10 @@ from django.core.exceptions import ValidationError
 from django.db import models, IntegrityError
 from django.utils import timezone
 from django.utils.encoding import python_2_unicode_compatible
-from project import utils
 from taggit.managers import TaggableManager
 
+from project import utils
+from . import querysets, settings
 
 def get_current_site():
     try:
