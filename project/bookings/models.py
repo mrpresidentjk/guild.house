@@ -175,10 +175,16 @@ class Booking(models.Model):
             try:
                 user = User.objects.create_user(username=username)
                 user.first_name = self.name
+                if self.email:
+                    ## @@TODO: add multiple emails to user check if variant email
+                    user.email = self.email
                 user.save()
             except IntegrityError:
                 user = User.objects.get(username=username)
                 self.user = user
+            except ValueError:
+                ## @@TODO fallback "Unknown" user done this way feels like potential blackhole
+                user = User.objects.get(username="unknown")
             if self.email:
                 user.email = self.email
                 user.save()
