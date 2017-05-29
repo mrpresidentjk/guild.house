@@ -243,7 +243,7 @@ Open 7 days, 12pm til late
             subject=subject,
             message=message,
             from_email=settings.FROM_EMAIL,
-            recipient_list=[form.cleaned_data.get('email')],
+            recipient_list=[]#form.cleaned_data.get('email')],
         )
         return True
 
@@ -308,7 +308,7 @@ class BookingCreateView(BookingFormMixin, CalendarMixin, BookingQueryset, TimeMi
         obj = form.instance
         obj.save()
         self.send_booking_notice_internal(obj=obj, form=form, change="added")
-        self.send_booking_notice_customer(obj=obj, form=form)
+        #self.send_booking_notice_customer(obj=obj, form=form)
         return redirect('bookings:booking_success', code=form.instance.code)
 
     def get_context_data(self, *args, **kwargs):
