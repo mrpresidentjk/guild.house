@@ -1,0 +1,17 @@
+{% extends "admin/base.html" %}
+{% load static from staticfiles %}
+
+{% block title %}{{ title }} | Guild website admin{% endblock %}
+
+{% block extrahead %}
+    <link href="{% static "stylesheets/default.css" %}" type="text/css" rel="stylesheet" />
+{% endblock %}
+
+{% block branding %}
+<h1><a class="home-link" href="{% url 'admin:index' %}">
+            <img src="http://static.guild.house/static/shield-.png" height="24">
+Guild Website Administration
+</a></h1>
+{% endblock %}
+
+{% block nav-global %}{% endblock %}

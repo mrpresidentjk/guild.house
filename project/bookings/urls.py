@@ -6,15 +6,21 @@ from django.conf.urls import include, url
 
 urls = [
 
-    url(r'^$',
+    url(r'^show/$',
         views.BookingListView.as_view(),
         name='booking_list'),
 
-    url(r'^(?P<page>\d+)$', views.BookingListView.as_view(), name='booking_list'),
+    url(r'^show/(?P<page>\d+)$',
+        views.BookingListView.as_view(),
+        name='booking_list_pagination'),
 
-    url(r'^new/$',
+    url(r'^$',
         views.BookingCreateView.as_view(),
         name="booking_add"),
+
+    url(r'^time/(?P<year>\d{4})/(?P<month>\d{2})/(?P<day>\d{2})/$',
+        views.BookingTimeView.as_view(),
+        name='booking_times'),
 
     url(r'^cancelled/$',
         views.BookingCancelledView.as_view(),

@@ -6,9 +6,10 @@ from django.contrib import admin
 
 
 def get_obj_link(obj):
-    return "<a href='{0}'>{1}</a>".format(obj.get_absolute_url(), obj.code)
+    return "<a href='{0}' target='_blank'>{1}</a>".format(obj.get_absolute_url(), obj.code)
 get_obj_link.allow_tags = True
 get_obj_link.short_description = "URL"
+
 
 @admin.register(Booking)
 class BookingAdmin(admin.ModelAdmin):
@@ -16,9 +17,10 @@ class BookingAdmin(admin.ModelAdmin):
     date_hierarchy = 'reserved_date'
 
     fieldsets = [
-        ('Content', {'fields': ['reserved_date', 'reserved_time', 'name',
+        ('Content', {'fields': ['reserved_date', 'reserved_time',
+                                'booking_duration', 'name',
                                 'party_size', 'status', 'service', 'email',
-                                'phone']}),
+                                'phone', 'notes', 'private_notes']}),
         ('Publishing', {'fields': ['site', ('created_at', 'updated_at'),
                                'user'],
                         'classes': ['collapse']}),
@@ -27,10 +29,10 @@ class BookingAdmin(admin.ModelAdmin):
     form = BookingAdminForm
 
     list_display = ['name', 'party_size', 'reserved_date', 'reserved_time',
-                    'service', 'status', 'phone', 'email', get_obj_link]
+                    'service', 'status', 'phone', 'email', 'user', get_obj_link]
 
-    list_filter = ['reserved_date', 'reserved_time', 'status']
+    list_filter = ['status', 'service', 'reserved_date', 'reserved_time']
 
     readonly_fields = ['created_at', 'updated_at']
 
-    search_fields = ['name', 'email', 'notes', 'reserved_date']
+    search_fields = ['name', 'email', 'notes', 'reserved_date', 'user__username']

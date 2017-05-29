@@ -17,4 +17,6 @@
   {% if entry.featured_content %}<div>{{ entry.featured_content }}</div>{% endif %}
   {% if entry.content %}<div>{{ entry.content|safe }}</div>{% endif %}
 
+<img class="img-responsive img-full" src="{{MEDIA_URL}}{{ entry.featured_image }}" alt="">
+
 {% endblock %}

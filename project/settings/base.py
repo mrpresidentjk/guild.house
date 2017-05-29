@@ -19,7 +19,7 @@ BASE_DIR = os.path.join(
 
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'd16bx=+!594*6x(v^ba=qj#8u)=zr19c202(6(mu26!rk)vfr3'
+SECRET_KEY = os.environ['GUILD_DJANGO_SECRET_KEY']
 
 ADMINS = (
     # ('Matt Austin', 'devops@mattaustin.com.au'),
@@ -31,6 +31,7 @@ ADMINS = (
 
 INSTALLED_APPS = [
     'django.contrib.admin',
+    'django.contrib.admindocs',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.flatpages',
@@ -44,11 +45,13 @@ INSTALLED_APPS = [
     'debug_toolbar',
     'raven.contrib.django.raven_compat',
     'robots',
-    # 'sorl.thumbnail',
+    'sorl.thumbnail',
     'storages',
     'taggit',
     'tinymce',
+    'treemenus',
 
+    'project.menus',
     'project.admin',
     'project.blog',
     'project.library',
@@ -68,9 +71,11 @@ MIDDLEWARE_CLASSES = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.security.SecurityMiddleware',
+    'django.contrib.admindocs.middleware.XViewMiddleware',
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
     'django.contrib.redirects.middleware.RedirectFallbackMiddleware',
     'django.middleware.cache.FetchFromCacheMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
 ROOT_URLCONF = 'project.urls'
@@ -87,6 +92,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'django.template.context_processors.tz',
+                'django.template.context_processors.media',
                 'project.debug_toolbar.context_processors.debug',
             ],
         },
@@ -137,7 +143,7 @@ SITE_ID = 1
 
 # Email
 
-DEFAULT_FROM_EMAIL = 'web@guild.house'
+DEFAULT_FROM_EMAIL = 'hello@guild.house'
 
 EMAIL_SUBJECT_PREFIX = '[Guild] '
 

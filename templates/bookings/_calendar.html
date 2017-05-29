@@ -24,7 +24,7 @@
     <a class="event_a" href="/events/{{x.day|date:'Y/m/d/'}}{% if x.events|length == 1 %}{% for event in x.events %}{{event.event.slug}}/{% endfor %}{% endif %}">
       {% endif %}
 
-      <div class="date {% if object.reserved_date == x.day %} selected{% endif %} {% if x.day >= today %}" data-date="{{x.day|date:'d/m/Y'}}"{% else %}date-inactive{% endif %}">
+      <div class="date {% if object.reserved_date == x.day %} selected{% endif %} {% if x.day >= today %}" data-time="{{x.day|date:'/Y/m/d/'}}" data-date="{{x.day|date:'d/m/Y'}}"{% else %}date-inactive{% endif %}">
         <div class="wkday">{{x.day|date:"D"}}</div>
         {{x.day|date:"j"}}
         <div class="mth">{{x.day|date:"M"}}</div>

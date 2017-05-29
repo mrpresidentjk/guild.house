@@ -12,7 +12,7 @@ class EntrySitemap(Sitemap):
     model = Entry
 
     def items(self):
-        return self.model.objects.current_site().indexable()
+        return self.model.objects.current_site().active()
 
     def lastmod(self, obj):
         return obj.updated_at

@@ -2,6 +2,7 @@
 from __future__ import absolute_import, unicode_literals
 from django.contrib.sites.models import Site
 from django.db import models
+from django.db.models import Sum
 from django.utils import timezone
 from .settings import BIG_BOOKING
 
@@ -17,6 +18,10 @@ class QuerySet(models.query.QuerySet):
     def current_site(self):
         site = Site.objects.get_current()
         return self.filter(site=site)
+
+    def today(self):
+        now = timezone.now()
+        return self.active().filter(reserved_date=now)
 
     def past(self):
         now = timezone.now()

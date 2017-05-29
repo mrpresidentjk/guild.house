@@ -17,28 +17,14 @@
       <ul class="nav navbar-nav">
         <!-- Hidden li included to remove active class from about link when scrolled up past about section -->
         <li class="active">
-          <a href="{% url "site:homepage_detail" %}">
+          <a class="home-link" href="{% url "site:homepage_detail" %}">
             <img src="{% static "sheild-.png" %}" height=24>
           </a>
         </li>
 
+        {% load tree_menu_tags %}
+        {% show_menu "MainNavigation" %}
 
-        <li><a href="#">Events</a></li>
-        <li><a href="/menus/">Food/Drink</a></li>
-        <li><a href="https://boardgamegeek.com/collection/user/elequ?own=1" target="_blank">Games</a></li> {# {% url "library:category_list" %} #}
-
-        {% comment %}
-        <li><a href="{% url "blog:entry_list" %}">News</a></li>
-        <li class="dropdown">
-          <a href="/#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">About<span class="caret"></span></a>
-          <ul class="dropdown-menu">
-            <li><a href="/about.html">About the Guild</a></li>
-            <li><a href="/about.html">Our Team</a></li>
-            <li><a href="/contact.html">Contact</a></li>
-          </ul>
-        </li>
-        {% endcomment %}
-        <li><a href="{% url "bookings:booking_add" %}">Bookings</a></li>
         <li>
           <a href="#location" class="page-scroll">
             Find Us <i class="fa fa-map-marker"></i>

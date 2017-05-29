@@ -11,8 +11,10 @@ class EntryAdmin(admin.ModelAdmin):
     date_hierarchy = 'publish_at'
 
     fieldsets = [
-        ('Content', {'fields': ['title', 'heading', 'summary', 'is_featured',
-                                'featured_image', 'featured_content', 'content',
+        ('Content', {'fields': ['title',
+                                'is_featured', 'featured_order',
+                                'featured_image', 'featured_content',
+                                'content',
                                 'meta_description']}),
         ('Publishing', {'fields': ['is_enabled', 'site', 'slug',
                                    'publish_at', 'tags',
@@ -22,11 +24,12 @@ class EntryAdmin(admin.ModelAdmin):
 
     form = EntryAdminForm
 
-    list_display = ['title', 'publish_at', 'is_enabled', 'is_featured', 'is_active']
+    list_display = ['title', 'publish_at', 'is_enabled',
+                    'is_featured', 'featured_order', 'is_active']
 
     list_filter = ['is_enabled', 'is_featured']
 
-    list_editable = ['is_enabled', 'is_featured']
+    list_editable = ['is_enabled', 'is_featured', 'featured_order']
 
     prepopulated_fields = {'slug': ['title']}
 

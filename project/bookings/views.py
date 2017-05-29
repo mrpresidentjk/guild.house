@@ -5,10 +5,10 @@ import datetime
 from . import settings
 from .forms import BookingForm, NewBookingForm
 from .models import Booking
-from datetime import date, timedelta
+from datetime import time, timedelta, date
 from dateutil.relativedelta import relativedelta
 from django.core.mail import send_mail
-from django.core.urlresolvers import reverse_lazy
+from django.core.urlresolvers import reverse, reverse_lazy
 from django.db.models import Count, Sum
 from django.http import Http404
 from django.shortcuts import redirect, get_object_or_404
@@ -65,66 +65,119 @@ class CalendarMixin(object):
         return context
 
 
-class BookingQueryset(object):
+class TimeMixin(object):
 
-    model = Booking
-    allow_future = True
-    date_field = 'reserved_date'
-    month_format = '%m'
-    week_format = "%W"
-    paginate_by = settings.BOOKINGS_PAGINATE_BY
+    def get_booking_list(self, this_date):
+        return Booking.objects.filter(reserved_date=this_date)
 
-    def get_context_data(self, *args, **kwargs):
-        context = super(BookingQueryset, self).get_context_data(*args, **kwargs)
-        context['future_list'] = self.get_queryset().future()
-        context['summary_list'] = self.get_queryset().future().values('reserved_date')\
-                                      .annotate(count=Count('id'),
-                                                pax=Sum('party_size'))\
-                                      .order_by('reserved_date')
+    def generate_time_dict(self, this_date):
+        """requires `this_date` as :py:class:`datetime.date`
+
+        This is used to fetch bookings and to `datetime.combine` with
+        `datetime.time` to create the necessary range of times.
+        """
+        busy_night = False
+        open_bookings, time_list = [], []
+        interval = settings.BOOKING_INTERVAL
+        this_time = datetime.datetime.combine(this_date,
+                                              settings.BOOKING_TIMES[0])-interval
+
+
+        """Construct bookings
+        Ensure times are constructed first, then iterate through bookings
+        for this day as likely the number of bookings will be fewer than the
+        number of intervals. """
+
+        booking_list = self.get_booking_list(this_date)
+        for booking in booking_list:
+            start_time = datetime.datetime.combine(this_date, booking.reserved_time)
+            end_time = datetime.datetime.combine(this_date,
+                booking.reserved_time)+booking.booking_duration
+            open_bookings.append((start_time, end_time, booking.party_size))
+
+        select_time = datetime.datetime.combine(datetime.date(2000,1,1),
+                                                settings.BOOKING_TIMES[0])
+        while this_time<=datetime.datetime.combine(this_date,
+                                                   settings.BOOKING_TIMES[1])-interval:
+            this_time = this_time+interval
+            this_dict = {'pax': 0,
+                         'date': this_time,
+                         'select_time': time(this_time.hour, this_time.minute),
+                         'time': "{}:{:0>2}".format(this_time.hour,
+                                                    this_time.minute)}
+
+            # Add `party_size` totals to data_dict
+            select_time = select_time+interval
+            for start, end, pax in open_bookings:
+                # Add an hour for good luck.
+                if start <= this_time and this_time < end+timedelta(minutes=60):
+                    this_dict['pax'] = this_dict['pax']+pax
+
+            for tmp in settings.HEAT.keys():
+                if this_dict['pax'] < tmp:
+                    break
+                else:
+                    this_dict['heat'] = settings.HEAT[tmp]
+
+            # @@TODO get value from settings.HEAT
+            if this_dict['pax'] > 104:
+                busy_night = True
+
+            # Add `service` to dictionary
+            for service_time, service in settings.SERVICE_TIMES:
+                if time(this_time.hour, this_time.minute)==service_time:
+                    this_dict['service'] = service
+            time_list.append(this_dict)
+        return time_list, busy_night
+
+    def get_time_list(self, context, this_date):
+        context['time_list'], context['busy_night'] = self.generate_time_dict(this_date)
+        context['date'] = this_date
+        context['booking_list'] = self.get_booking_list(this_date)
+
+        # Sadly annotate too unreliable https://code.djangoproject.com/ticket/10060
+        total_pax = 0
+        for booking in self.get_booking_list(this_date):
+            total_pax = total_pax+booking.party_size
+        context['pax_total'] = total_pax
         return context
 
-    def get_queryset(self, *args, **kwargs):
-        queryset = super(BookingQueryset, self).get_queryset(*args, **kwargs)
-        return queryset.active().order_by('reserved_date', 'reserved_time')
 
-
-class BookingSuccessView(BookingQueryset, generic.DetailView):
-
-    template_name = 'bookings/booking_success.html'
+class BookingFormMixin(object):
 
     def get_object(self):
         return get_object_or_404(Booking, code=self.kwargs.get('code'))
 
+    def send_booking_notice_internal(self, obj, form, change="added"):
+        warning = ""
+        if "full" in form.cleaned_data.get('private_notes'):
+            warning = """Beware! This booking made during a busy time. May conflict. Please check ASAP and contact to discuss options if necessary.
 
-class BookingCreateView(CalendarMixin, BookingQueryset,
-                        generic.edit.CreateView):
+The customer has been warned that this is the case and may be expecting confirmation.
 
-    form_class = NewBookingForm
+        """
 
-    def get_object(self):
-        return get_object_or_404(Booking, code=self.kwargs.get('code'))
+        message = u"""Booking {change} in to system.
 
+{warning}
+Link to booking: http://guild.house/bookings/{code}/
 
-    def form_valid(self, form):
-        obj = form.instance
-        obj.save()
-        message = """Booking entered in to system.
-
-        Link to booking: http://guild.house/bookings/{code}/
-
-        Link to day: http://guild.house{url}
+Link to day: http://guild.house/bookings/{url_day}
 
         Add event to calendar (only if big event)
         What: {pax}pax {name}
         When: {time} {date} {day}
-        """.format(code=obj.code.decode('utf-8'),
+        """.format(change=change,
+                   warning=warning,
+                   code=obj.code,
                    url=obj.get_absolute_url(),
                    method=form.cleaned_data.get('booking_method'),
                    day=form.cleaned_data.get('reserved_date').strftime('%a'),
-                   time=form.cleaned_data.get('reserved_time').strftime('%H:%M%p'),
+                   time=form.cleaned_data.get('reserved_time'),
                    date=form.cleaned_data.get('reserved_date').strftime('%-d-%b-%Y'),
+                   url_day=form.cleaned_data.get('reserved_date').strftime('%Y/%m/%d/'),
                    pax=form.cleaned_data.get('party_size'),
-            name=form.cleaned_data.get('name')
+                   name=form.cleaned_data.get('name'),
         )
         subject = "[{method}] {name} {pax}pax {date} ".format(
             method=form.cleaned_data.get('booking_method'),
@@ -138,31 +191,171 @@ class BookingCreateView(CalendarMixin, BookingQueryset,
             from_email=settings.FROM_EMAIL,
             recipient_list=settings.TO_EMAILS,
         )
+        return True
+
+    def send_booking_notice_customer(self, obj, form):
+        warning = ""
+        if "full" in form.cleaned_data.get('private_notes'):
+            warning = """
+Beware! As warned at time of booking: you have booked during a busy time it is possible that your booking may have conflicted with another.
+
+We will contact you ASAP if this is the case. Alternatively you can contact us to double-check.
+        """
+
+        message = u"""Thank you for making a reservation at Guild!
+
+Name: {name}
+Number of people: {pax}pax
+When: {time}, {day} {date}
+{warning}
+Link to booking details: http://guild.house/bookings/{code}/success/
+
+If you would like to contact us for any reason:
+Call us on: 02 6257 2727
+Email: hello@guild.house
+Web: http://guild.house
+
+--
+Regards,
+Automated Bookings Robot-Machine
+-Guild Team
+
+facebook.com/guildhouse.canberra
+(02) 6257 2727
+Open 7 days, 12pm til late
+        """.format(code=obj.code,
+                   warning=warning,
+                   url=obj.get_absolute_url(),
+                   method=form.cleaned_data.get('booking_method'),
+                   day=form.cleaned_data.get('reserved_date').strftime('%a'),
+                   time=form.cleaned_data.get('reserved_time'),
+                   date=form.cleaned_data.get('reserved_date').strftime('%-d-%b-%Y'),
+                   pax=form.cleaned_data.get('party_size'),
+                   name=form.cleaned_data.get('name'),
+        )
+        subject = "[{method}] {name} {pax}pax {date} ".format(
+            method=form.cleaned_data.get('booking_method'),
+            date=form.cleaned_data.get('reserved_date').strftime('%a %-d-%b'),
+            pax=form.cleaned_data.get('party_size'),
+            name=form.cleaned_data.get('name')
+        )
+        send_mail(
+            subject=subject,
+            message=message,
+            from_email=settings.FROM_EMAIL,
+            recipient_list=[form.cleaned_data.get('email')],
+        )
+        return True
+
+
+class BookingQueryset(object):
+
+    model = Booking
+    allow_future = True
+    date_field = 'reserved_date'
+    month_format = '%m'
+    week_format = "%W"
+    paginate_by = settings.BOOKINGS_PAGINATE_BY
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(BookingQueryset, self).get_context_data(*args, **kwargs)
+        context['future_list'] = self.get_queryset().future()
+        context['summary_list'] = self.get_queryset().today()\
+                                      .values('reserved_date')\
+                                      .annotate(count=Count('id'),
+                                                pax=Sum('party_size'))\
+                                      .order_by('reserved_date')
+        return context
+
+    def get_queryset(self, *args, **kwargs):
+        queryset = super(BookingQueryset, self).get_queryset(*args, **kwargs)
+        return queryset.active().order_by('reserved_date', 'reserved_time')
+
+    def get_queryset_by_day(self, *args, **kwargs):
+        queryset = super(BookingQueryset, self).get_queryset(*args, **kwargs)
+        return queryset.active().order_by('reserved_date', 'reserved_time')
+
+
+
+class BookingTimeView(BookingQueryset, TimeMixin, generic.ListView):
+
+    template_name = 'bookings/_time.html'
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(BookingTimeView, self).get_context_data(*args, **kwargs)
+        context = self.get_time_list(context,
+                                     this_date=date(int(self.kwargs['year']),
+                                                    int(self.kwargs['month']),
+                                                    int(self.kwargs['day']))
+        )
+        return context
+
+
+class BookingSuccessView(BookingQueryset, generic.DetailView):
+
+    template_name = 'bookings/booking_success.html'
+
+    def get_object(self):
+        return get_object_or_404(Booking, code=self.kwargs.get('code'))
+
+
+class BookingCreateView(BookingFormMixin, CalendarMixin, BookingQueryset, TimeMixin,
+                        generic.edit.CreateView):
+
+    form_class = NewBookingForm
+
+    def form_valid(self, form):
+        obj = form.instance
+        obj.save()
+        self.send_booking_notice_internal(obj=obj, form=form, change="added")
+        self.send_booking_notice_customer(obj=obj, form=form)
         return redirect('bookings:booking_success', code=form.instance.code)
 
     def get_context_data(self, *args, **kwargs):
         context = super(BookingCreateView, self).get_context_data(*args, **kwargs)
         context = self.get_calendar(context)
-        context['tomorrow'] = date.today()+timedelta(days=1)
+        context['today'] = date.today()
+        context = self.get_time_list(context, this_date=date.today())
         return context
+
+    def get_form_kwargs(self, *args, **kwargs):
+        kwargs = super(BookingCreateView, self).get_form_kwargs(*args, **kwargs)
+        kwargs.update({'user': self.request.user})
+        return kwargs
 
     def get_initial(self):
         initial = super(BookingCreateView, self).get_initial()
         initial = initial.copy()
-        # set as tomorrow if booking made later than 6pm
+
+        if self.request.user.is_authenticated():
+            initial['user'] = self.request.user
+            initial['email'] = 'foh.managers@guild.house'
+
+        # Set as tomorrow if booking made later than 6pm.
         if localtime(now()).hour > 18:
             initial['reserved_date'] = date.today()+timedelta(days=1)
         else:
             initial['reserved_date'] = date.today()
         initial['reserved_time'] = settings.DEFAULT_BOOKING_TIME
+        initial['booking_duration'] = settings.DEFAULT_BOOKING_DURATION
+        initial['booking_method'] = settings.DEFAULT_BOOKING_METHOD
 
         return initial
 
 
-class BookingUpdateView(CalendarMixin, BookingQueryset, generic.edit.UpdateView):
+class BookingUpdateView(BookingFormMixin, CalendarMixin, BookingQueryset,
+                        generic.edit.UpdateView):
 
     slug_field = 'code'
     form_class = BookingForm
+
+    def form_valid(self, form):
+        obj = form.instance
+        obj.updated_by = self.request.user
+        obj.save()
+        self.send_booking_notice_internal(obj=obj, form=form, change="updated")
+        self.send_booking_notice_customer(obj=obj, form=form)
+        return redirect('bookings:booking_update', code=form.instance.code)
 
     def get_object(self):
         if not self.request.user.is_authenticated():
@@ -176,8 +369,8 @@ class BookingUpdateView(CalendarMixin, BookingQueryset, generic.edit.UpdateView)
         obj = self.get_object()
         unique = self.get_queryset().filter(reserved_date=obj.reserved_date,
                                             phone=obj.phone)
+        context_data['update_view'] = True
         return context_data
-
 
 class BookingListView(BookingQueryset, generic.ListView):
 
@@ -186,6 +379,12 @@ class BookingListView(BookingQueryset, generic.ListView):
         if page is not None and int(page) < 2:
             return redirect('bookings:booking_list', permanent=True)
         return super(BookingListView, self).get(*args, **kwargs)
+
+    def get_context_data(self, *args, **kwargs):
+        context_data = super(BookingListView, self).get_context_data(*args,
+                                                                      **kwargs)
+        context_data['show_all'] = True
+        return context_data
 
 
 class BookingCancelledView(BookingQueryset, generic.ListView):
@@ -215,6 +414,9 @@ class BookingDayArchiveView(BookingQueryset, generic.DayArchiveView):
         context_data['total'] = kwargs.get('object_list')\
                                       .aggregate(Sum('party_size'))
         services = []
+        early_list = kwargs.get('object_list').filter(service='early').aggregate(Sum('party_size'))
+        if early_list['party_size__sum']:
+            services.append((('early', 'Early'), early_list))
         for serv in settings.SERVICE_CHOICE:
             services.append((serv, (kwargs.get('object_list').filter(service=serv[0])\
                             .aggregate(Sum('party_size')))))
@@ -225,9 +427,14 @@ class BookingDayArchiveView(BookingQueryset, generic.DayArchiveView):
         return context_data
 
 
-class BookingTodayArchiveView(BookingQueryset, generic.TodayArchiveView):
+class BookingTodayArchiveView(generic.RedirectView):
 
-    pass
+    def get_redirect_url(self):
+        return reverse('bookings:booking_day', kwargs={
+            'year': datetime.date.today().year,
+            'month': "{:0>2}".format(datetime.date.today().month),
+            'day': "{:0>2}".format(datetime.date.today().day)
+        })
 
 
 class BookingWeekArchiveView(BookingQueryset, generic.WeekArchiveView):

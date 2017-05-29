@@ -28,6 +28,7 @@ class Entry(models.Model):
 
     featured_image = models.ImageField(max_length=1024,
                                        upload_to='entry_featured',
+                                       help_text='Ensure bigger than 790x377 if going to be featured in carousel.',
                                        blank=True, default='')
 
     featured_order = models.IntegerField(default=0)
@@ -61,7 +62,7 @@ class Entry(models.Model):
     objects = querysets.QuerySet.as_manager()
 
     class Meta(object):
-        ordering = ['-publish_at', 'title']
+        ordering = ['featured_order', '-publish_at', 'title']
         unique_together = ['site', 'publish_at', 'slug']
         verbose_name_plural = 'entries'
 

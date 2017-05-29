@@ -1,7 +1,8 @@
 {% extends "base.html" %}
 
 {% block box_above %}
-{% if not user.is_anonymous %}
+{% if user.is_authenticated %}
+      <div style="opacity: 0.8;" class="hidden-print featured_text">
       <ul class="hidden-print">
         <li style="display: inline; list-style-type: none; padding-right: 20px">
           <a href="{% url "bookings:booking_today" %}">Today</a>
@@ -15,6 +16,8 @@
         <li style="display: inline; list-style-type: none; padding-right: 20px">
           <a href="{% url "bookings:booking_add" %}">New</a>
         </li>
+        <i style="opacity: 0.5; float:right;">(This menu only displayed while logged in)</i>
       </ul>
+      </div>
 {% endif %}
 {% endblock %}

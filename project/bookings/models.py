@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, unicode_literals
 import re
+import datetime
 from .. import utils
 from . import querysets, settings
 from django.contrib.sites.models import Site
@@ -29,19 +30,28 @@ class Booking(models.Model):
 
     party_size = models.PositiveIntegerField()
 
-    status = models.CharField(max_length=50, choices=settings.STATUS_CHOICES,
-                              default=settings.STATUS_CHOICES[0][0])
+    status = models.CharField(max_length=50, choices=settings.STATUS_CHOICE,
+                              default=settings.STATUS_CHOICE[0][0])
+
+    area = models.CharField(max_length=50, choices=settings.AREA_CHOICE,
+                            default=settings.AREA_CHOICE[0][0])
 
     notes = models.TextField(blank=True, default='')
 
+    private_notes = models.TextField(blank=True, default='')
+
     email = models.EmailField(max_length=150, blank=True, default='')
 
-    phone = models.CharField(max_length=100, blank=True, default='',
-                             help_text="One phone number only. Put additional numbers in 'notes' if necessary."
+    phone = models.CharField(max_length=100,
+                             help_text="One phone number only. Put additional numbers in 'notes' if necessary. We may need to confirm details so be sure to provide a good number."
     )
 
+    postcode = models.CharField(max_length=16, blank=True, default='')
+
     booking_method = models.CharField(max_length=50, choices=settings.METHOD_CHOICE,
-                                      default=settings.METHOD_CHOICE[0][0])
+                                      default=settings.METHOD_CHOICE[0][0],
+                                      help_text="Only logged in people can see booking method."
+    )
 
     user = models.ForeignKey(User, blank=True, null=True)
 
@@ -49,16 +59,36 @@ class Booking(models.Model):
                              related_name='bookings_booking',
                              on_delete=models.PROTECT)
 
-    reserved_date = models.DateField(db_index=True, default=timezone.now)
+    reserved_date = models.DateField(db_index=True)
     reserved_time = models.TimeField(db_index=True, default=timezone.now)
+
+    booking_duration = models.DurationField(blank=True, null=True)
 
     service = models.CharField(max_length=50, choices=settings.SERVICE_CHOICE,
                                blank=True, default=''
     )
 
+    busy_night = models.BooleanField(default=False)
+
     created_at = models.DateTimeField(auto_now_add=True, editable=False)
 
     updated_at = models.DateTimeField(auto_now=True, editable=False)
+
+    updated_by = models.ForeignKey(User, blank=True, null=True,
+                                   related_name="booking_updated_by"
+    )
+
+    hear_choices = models.CharField(max_length=56, blank=True, default='',
+                                    choices=settings.HEAR_CHOICE,
+                                    verbose_name="Choices",
+                                    help_text="How did you hear about us?"
+    )
+    hear_other = models.TextField(blank=True, default='',
+                                  verbose_name="Other",
+                                  help_text="Tell us a story about how you heard about us ..."
+    )
+
+    legacy_code = models.CharField(max_length=256, blank=True, null=True)
 
     objects = querysets.QuerySet.as_manager()
 
@@ -67,15 +97,26 @@ class Booking(models.Model):
         verbose_name_plural = 'bookings'
 
     def __str__(self):
-        return self.name
+        desc = "{date} {start} {pax}pax {name}".format(
+            name=self.name,
+            pax=self.party_size,
+            date=self.reserved_date.strftime("%d-%b-%Y"),
+            start=self.reserved_time.strftime("%H:%M")
+        )
+
+        if self.booking_duration:
+            desc = "{date}-{end} {start} {pax}pax {name}".format(
+                name=self.name,
+                pax=self.party_size,
+                date=self.reserved_date.strftime("%d-%b-%Y"),
+                start=self.reserved_time.strftime("%H:%M"),
+                end=(datetime.datetime.combine(self.reserved_date,
+                    self.reserved_time)+self.booking_duration).strftime("%H:%M")
+            )
+        return desc
 
     def get_absolute_url(self):
-
-
-        return reverse('bookings:booking_day',
-                       kwargs={'year': '%04d' % (self.reserved_date.year),
-                               'month': '%02d' % (self.reserved_date.month),
-                               'day': '%02d' % (self.reserved_date.day)})
+        return reverse('bookings:booking_update', kwargs={'code': self.code})
 
     def get_next(self):
         queryset = self.__class__.objects.exclude(pk=self.pk).filter(
@@ -97,41 +138,51 @@ class Booking(models.Model):
     def save(self,*args, **kwargs):
         self.clean()
 
+        if self.legacy_code and Booking.objects.filter(
+                legacy_code=self.legacy_code):
+            return False
+
         # Automatically make code if doesn't already have one.
         if not self.code:
             self.code = utils.generate_unique_hex(queryset=Booking.objects.all())
 
+            # adding on first creation. Messy, but works.
+            # @@TODO make this less crap
+            if "full" in self.private_notes:
+                self.busy_night = True
+                for booking in Booking.objects.filter(
+                        reserved_date=self.reserved_date):
+                    booking.busy_night = True
+                    booking.save()
+
         # Automatically set service based upon `reserved_time`.
-        for i, t in enumerate(settings.SERVICE_TIMES):
-            if self.reserved_time >= t[0]:
-                service = settings.SERVICE_TIMES[i][1]
-        self.service = service
+        for service_time, service in reversed(settings.SERVICE_TIMES):
+            if self.reserved_time >= service_time:
+                this_service = service
+                break
+        self.service = this_service
 
-        # Clean phone number
-        self.phone = re.sub('[^0-9]','', self.phone)
+        # Create a user whose username is their phone number.
+        """ This was a tough decision to use phone number as username.
 
-        # Create a user whose username is email address if there is one, but
-        # phone number if there is not.
+        This is legacy from the original system where only phone number was
+        required.
+        """
         if not self.user:
-            if self.email:
-                email = username = self.email
-                try:
-                    user = User.objects.create_user(
-                        username=username,
-                        email=email
-                    )
-                    user.first_name = self.name
-                    user.save()
-                except IntegrityError:
-                    user =  User.objects.get(username=username, email=email)
-            elif self.phone:
+            if not self.phone:
+                username = password = self.email
+            else:
                 username = password = self.phone
-                try:
-                    user = User.objects.create_user(username=username)
-                    user.first_name = self.name
-                    user.save()
-                except IntegrityError:
-                    user = User.objects.get(username=username)
-                    self.user = user
+            try:
+                user = User.objects.create_user(username=username)
+                user.first_name = self.name
+                user.save()
+            except IntegrityError:
+                user = User.objects.get(username=username)
+                self.user = user
+            if self.email:
+                user.email = self.email
+                user.save()
+            self.user = user
 
         super(Booking, self).save(*args, **kwargs)

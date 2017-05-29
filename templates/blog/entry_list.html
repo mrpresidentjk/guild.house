@@ -1,4 +1,5 @@
 {% extends "blog/base.html" %}
+{% load thumbnail %}
 
 
 {% block title %}Blog entries - {{ block.super }}{% endblock %}
@@ -25,6 +26,11 @@
   {% for entry in entry_list %}
     {% if forloop.first %}<ul>{% endif %}
       <li>
+        <a class="carousel-img" href="{{ entry.get_absolute_url }}">
+          {% thumbnail entry.featured_image "100x100" crop="center" as im %}
+          <img src="{{ im.url }}" width="100" height="100">
+          {% endthumbnail %}
+        </a>
         <a href="{{ entry.get_absolute_url }}">{{ entry.publish_at|date:"SHORT_DATE_FORMAT" }} {{ entry }}</a>
         <p>{{ entry.summary }}</p>
       </li>
