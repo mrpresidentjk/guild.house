@@ -445,3 +445,21 @@ class BookingWeekArchiveView(BookingQueryset, generic.WeekArchiveView):
 class BookingDetailView(BookingQueryset, generic.DetailView):
 
     pass
+
+
+def post_view(request):
+
+    template_name = 'bookings/default_form.html'
+    context_data = {}
+
+    if request.method == 'POST':
+        form = BlankForm(request.POST)
+        if form.is_valid():
+            print(request.POST)
+            context_data['success_obj'] = import_revel_bookings(request.POST['input_data'])
+
+    else:
+        form = BlankForm()
+
+    context_data['form'] = form
+    return render(request, template_name, context_data)
