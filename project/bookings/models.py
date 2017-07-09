@@ -104,13 +104,11 @@ class Booking(models.Model):
         )
 
         if self.booking_duration:
-            desc = "{date}-{end} {start} {pax}pax {name}".format(
+            desc = "{date} {start} {pax}pax {name}".format(
                 name=self.name,
                 pax=self.party_size,
                 date=self.reserved_date.strftime("%d-%b-%Y"),
-                start=self.reserved_time.strftime("%H:%M"),
-                end=(datetime.datetime.combine(self.reserved_date,
-                    self.reserved_time)+self.booking_duration).strftime("%H:%M")
+                start=self.reserved_time.strftime("%H:%M")
             )
         return desc
 

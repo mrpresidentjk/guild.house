@@ -2,9 +2,6 @@
 from __future__ import absolute_import, unicode_literals
 import calendar
 import datetime
-from . import settings
-from .forms import BookingForm, NewBookingForm
-from .models import Booking
 from datetime import time, timedelta, date
 from dateutil.relativedelta import relativedelta
 from django.core.mail import send_mail
@@ -12,8 +9,14 @@ from django.core.urlresolvers import reverse, reverse_lazy
 from django.db.models import Count, Sum
 from django.http import Http404
 from django.shortcuts import redirect, get_object_or_404
+from django.shortcuts import render
 from django.utils.timezone import localtime, now
 from django.views import generic
+
+from . import settings
+from .forms import BookingForm, NewBookingForm, BlankForm
+from .models import Booking
+from .utils import import_revel_bookings
 
 
 class CalendarMixin(object):
@@ -91,8 +94,14 @@ class TimeMixin(object):
         booking_list = self.get_booking_list(this_date)
         for booking in booking_list:
             start_time = datetime.datetime.combine(this_date, booking.reserved_time)
-            end_time = datetime.datetime.combine(this_date,
-                booking.reserved_time)+booking.booking_duration
+            if booking.booking_duration:
+                end_time = start_time+booking.booking_duration
+            else:
+                h,m = settings.DEFAULT_BOOKING_DURATION.split(":")[0]
+                end_time = datetime.datetime.combine(
+                    this_date,
+                    time(hour=int(h), minute=int(m))
+                )
             open_bookings.append((start_time, end_time, booking.party_size))
 
         select_time = datetime.datetime.combine(datetime.date(2000,1,1),
@@ -446,6 +455,12 @@ class BookingDetailView(BookingQueryset, generic.DetailView):
 
     pass
 
+
+class FormView(generic.FormView):
+
+    template_name = 'bookings/default_form.html'
+    form_class = BlankForm
+    success_url = "/bookings/post/"
 
 def post_view(request):
 
