@@ -9,7 +9,9 @@
   <td>
     <a href="{% url "bookings:booking_update" code=obj.code %}">
       {{ obj.name }}</a>
-      {% if obj.phone != "0000000000" %}{{ obj.phone }}{% endif %}{% if obj.phone and obj.email%}, {% endif %}{{ obj.email }}
+    {% if obj.phone != "0000000000" %}{{ obj.phone }}{% endif %}
+    {% if obj.phone and obj.email and not obj.email == "unknown@unknown.email" %}, {% endif %}
+    {% if not obj.email == "unknown@unknown.email" %}{{ obj.email }}{% endif %}
   </td>
   <td>
     <em>{{obj.status}}</em>

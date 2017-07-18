@@ -47,6 +47,7 @@ METHOD_CHOICE = [
 ]
 
 SERVICE_CHOICE = (
+    ('early', 'Early'),
     ('lunch', 'Lunch'),
     ('afternoon', 'Afternoon'),
     ('main', 'Main'),
@@ -97,9 +98,9 @@ DURATION_SELECTION = [
 ]
 
 HEAT = {
-    60: 'warm',
-    85: 'hot',
-    105: 'full',
+    50: 'warm',
+    75: 'hot',
+    95: 'full',
 }
 
 # Note: hardcoded in booking_form.html

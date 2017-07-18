@@ -1,0 +1,38 @@
+{% extends "bookings/base.html" %}
+
+
+{% block title %}{{ homepage.title }} - {{ block.super }}{% endblock %}
+
+
+{% block content %}
+<div class="row">
+
+  {{ success_obj|length }} successfully created/found.
+
+  {% for obj in success_obj %}
+  {{ obj }}<br>
+  {% endfor %}
+
+  <form method="post" action="/bookings/post/" id="id-form">{% csrf_token %}
+    {% for field in form %}
+    <p>{{ field }}</p>
+    {% endfor %}
+<input type="submit" value="OK">
+
+  </form>
+
+</div>
+{% endblock %}
+
+
+{% block extra_static %}
+{{ block.super }}
+
+<script src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+
+<script>
+$(document).ready(function(){
+    $('table#bookings').DataTable({"sDom": 't'});
+});
+</script>
+{% endblock %}
