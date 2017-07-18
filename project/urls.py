@@ -19,14 +19,8 @@ urlpatterns = [
     # Menu
     url(r'^menus/', include('project.menus.urls')),
 
-##     # Events
-##     url(r'^events/', include('project.events.urls')),
-
     # Bookings
     url(r'^bookings/', include('project.bookings.urls')),
-
-    # Library
-    url(r'^library/', include('project.library.urls')),
 
     # Robots
     url(r'^robots\.txt$', include('robots.urls')),
@@ -35,7 +29,7 @@ urlpatterns = [
     url(r'^sitemap.xml$', sitemap, {'sitemaps': sitemaps},
         name='django.contrib.sitemaps.views.sitemap'),
 
-    ## Admin Docs
+    # Admin Docs
     url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
 
     # Admin
