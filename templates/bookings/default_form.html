@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "bookings/base.html" %}
 
 
 {% block title %}{{ homepage.title }} - {{ block.super }}{% endblock %}
@@ -8,6 +8,10 @@
 <div class="row">
 
   {{ success_obj|length }} successfully created/found.
+
+  {% for obj in success_obj %}
+  {{ obj }}<br>
+  {% endfor %}
 
   <form method="post" action="/bookings/post/" id="id-form">{% csrf_token %}
     {% for field in form %}
