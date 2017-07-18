@@ -32,39 +32,42 @@ class CalendarMixin(object):
             d = datetime.datetime.today()
             y = d.year
             m = d.month
-            context['today'] = datetime.date(year=d.year, month=d.month, day=d.day)
+            context['today'] = datetime.date(
+                year=d.year, month=d.month, day=d.day)
 
         this_month = datetime.date(year=y, month=m, day=1)
-        next_mth = this_month+relativedelta(months=+1)
-        prev_mth = this_month+relativedelta(months=-1)
+        next_mth = this_month + relativedelta(months=+1)
+        prev_mth = this_month + relativedelta(months=-1)
         context['cal_next_mth'] = '/%s/%02d/' % (next_mth.year, next_mth.month)
         context['cal_prev_mth'] = '/%s/%02d/' % (prev_mth.year, prev_mth.month)
-        context['cal_next_yr'] = '/%s/%02d/' % (this_month.year+1, this_month.month)
-        context['cal_prev_yr'] = '/%s/%02d/' % (this_month.year-1, this_month.month)
+        context['cal_next_yr'] = '/%s/%02d/' % (
+            this_month.year + 1, this_month.month)
+        context['cal_prev_yr'] = '/%s/%02d/' % (
+            this_month.year - 1, this_month.month)
         context['month'] = this_month
-        context['calendar'] = self.make_range(y,m)
+        context['calendar'] = self.make_range(y, m)
         return context
 
-    def make_range(self, y,m):
+    def make_range(self, y, m):
         c = calendar.monthrange(y, m)
         a = datetime.timedelta(days=c[0])
         b = datetime.timedelta(days=settings.DEFAULT_CALENDAR_LENGTH)
 
         # e = Booking.objects.filter(date__year=y, date__month=m)
-        start = datetime.date.today()-\
-                datetime.timedelta(datetime.date.today().weekday())
-        end = start+b
+        start = datetime.date.today() -\
+            datetime.timedelta(datetime.date.today().weekday())
+        end = start + b
         date_range = []
-        while start<end:
-            date_range.append({'day':start})
+        while start < end:
+            date_range.append({'day': start})
             # date_range.append({'day':start, 'events':e.filter(date=start)})
-            start = start+datetime.timedelta(days=1)
+            start = start + datetime.timedelta(days=1)
         return date_range
 
     def get_context_data(self, *args, **kwargs):
         context = super(CalendarMixin, self).get_context_data(*args, **kwargs)
         context = self.get_calendar(context)
-        context['tomorrow'] = date.today()+timedelta(days=1)
+        context['tomorrow'] = date.today() + timedelta(days=1)
         return context
 
 
@@ -83,8 +86,7 @@ class TimeMixin(object):
         open_bookings, time_list = [], []
         interval = settings.BOOKING_INTERVAL
         this_time = datetime.datetime.combine(this_date,
-                                              settings.BOOKING_TIMES[0])-interval
-
+                                              settings.BOOKING_TIMES[0]) - interval
 
         """Construct bookings
         Ensure times are constructed first, then iterate through bookings
@@ -93,22 +95,23 @@ class TimeMixin(object):
 
         booking_list = self.get_booking_list(this_date)
         for booking in booking_list:
-            start_time = datetime.datetime.combine(this_date, booking.reserved_time)
+            start_time = datetime.datetime.combine(
+                this_date, booking.reserved_time)
             if booking.booking_duration:
-                end_time = start_time+booking.booking_duration
+                end_time = start_time + booking.booking_duration
             else:
-                h,m = settings.DEFAULT_BOOKING_DURATION.split(":")[0]
+                h, m = settings.DEFAULT_BOOKING_DURATION.split(":")[0]
                 end_time = datetime.datetime.combine(
                     this_date,
                     time(hour=int(h), minute=int(m))
                 )
             open_bookings.append((start_time, end_time, booking.party_size))
 
-        select_time = datetime.datetime.combine(datetime.date(2000,1,1),
+        select_time = datetime.datetime.combine(datetime.date(2000, 1, 1),
                                                 settings.BOOKING_TIMES[0])
-        while this_time<=datetime.datetime.combine(this_date,
-                                                   settings.BOOKING_TIMES[1])-interval:
-            this_time = this_time+interval
+        while this_time <= datetime.datetime.combine(this_date,
+                                                     settings.BOOKING_TIMES[1]) - interval:
+            this_time = this_time + interval
             this_dict = {'pax': 0,
                          'date': this_time,
                          'select_time': time(this_time.hour, this_time.minute),
@@ -116,11 +119,11 @@ class TimeMixin(object):
                                                     this_time.minute)}
 
             # Add `party_size` totals to data_dict
-            select_time = select_time+interval
+            select_time = select_time + interval
             for start, end, pax in open_bookings:
                 # Add an hour for good luck.
-                if start <= this_time and this_time < end+timedelta(minutes=60):
-                    this_dict['pax'] = this_dict['pax']+pax
+                if start <= this_time and this_time < end + timedelta(minutes=60):
+                    this_dict['pax'] = this_dict['pax'] + pax
 
             for tmp in settings.HEAT.keys():
                 if this_dict['pax'] < tmp:
@@ -134,20 +137,21 @@ class TimeMixin(object):
 
             # Add `service` to dictionary
             for service_time, service in settings.SERVICE_TIMES:
-                if time(this_time.hour, this_time.minute)==service_time:
+                if time(this_time.hour, this_time.minute) == service_time:
                     this_dict['service'] = service
             time_list.append(this_dict)
         return time_list, busy_night
 
     def get_time_list(self, context, this_date):
-        context['time_list'], context['busy_night'] = self.generate_time_dict(this_date)
+        context['time_list'], context['busy_night'] = self.generate_time_dict(
+            this_date)
         context['date'] = this_date
         context['booking_list'] = self.get_booking_list(this_date)
 
         # Sadly annotate too unreliable https://code.djangoproject.com/ticket/10060
         total_pax = 0
         for booking in self.get_booking_list(this_date):
-            total_pax = total_pax+booking.party_size
+            total_pax = total_pax + booking.party_size
         context['pax_total'] = total_pax
         return context
 
@@ -183,11 +187,13 @@ Link to day: http://guild.house/bookings/{url_day}
                    method=form.cleaned_data.get('booking_method'),
                    day=form.cleaned_data.get('reserved_date').strftime('%a'),
                    time=form.cleaned_data.get('reserved_time'),
-                   date=form.cleaned_data.get('reserved_date').strftime('%-d-%b-%Y'),
-                   url_day=form.cleaned_data.get('reserved_date').strftime('%Y/%m/%d/'),
+                   date=form.cleaned_data.get(
+                       'reserved_date').strftime('%-d-%b-%Y'),
+                   url_day=form.cleaned_data.get(
+                       'reserved_date').strftime('%Y/%m/%d/'),
                    pax=form.cleaned_data.get('party_size'),
                    name=form.cleaned_data.get('name'),
-        )
+                   )
         subject = "[{method}] {name} {pax}pax {date} ".format(
             method=form.cleaned_data.get('booking_method'),
             date=form.cleaned_data.get('reserved_date').strftime('%a %-d-%b'),
@@ -238,10 +244,11 @@ Open 7 days, 12pm til late
                    method=form.cleaned_data.get('booking_method'),
                    day=form.cleaned_data.get('reserved_date').strftime('%a'),
                    time=form.cleaned_data.get('reserved_time'),
-                   date=form.cleaned_data.get('reserved_date').strftime('%-d-%b-%Y'),
+                   date=form.cleaned_data.get(
+                       'reserved_date').strftime('%-d-%b-%Y'),
                    pax=form.cleaned_data.get('party_size'),
                    name=form.cleaned_data.get('name'),
-        )
+                   )
         subject = "[{method}] {name} {pax}pax {date} ".format(
             method=form.cleaned_data.get('booking_method'),
             date=form.cleaned_data.get('reserved_date').strftime('%a %-d-%b'),
@@ -252,7 +259,7 @@ Open 7 days, 12pm til late
             subject=subject,
             message=message,
             from_email=settings.FROM_EMAIL,
-            recipient_list=[]#form.cleaned_data.get('email')],
+            recipient_list=[form.cleaned_data.get('email')],
         )
         return True
 
@@ -267,7 +274,8 @@ class BookingQueryset(object):
     paginate_by = settings.BOOKINGS_PAGINATE_BY
 
     def get_context_data(self, *args, **kwargs):
-        context = super(BookingQueryset, self).get_context_data(*args, **kwargs)
+        context = super(BookingQueryset, self).get_context_data(
+            *args, **kwargs)
         context['future_list'] = self.get_queryset().future()
         context['summary_list'] = self.get_queryset().today()\
                                       .values('reserved_date')\
@@ -285,18 +293,18 @@ class BookingQueryset(object):
         return queryset.active().order_by('reserved_date', 'reserved_time')
 
 
-
 class BookingTimeView(BookingQueryset, TimeMixin, generic.ListView):
 
     template_name = 'bookings/_time.html'
 
     def get_context_data(self, *args, **kwargs):
-        context = super(BookingTimeView, self).get_context_data(*args, **kwargs)
+        context = super(BookingTimeView, self).get_context_data(
+            *args, **kwargs)
         context = self.get_time_list(context,
                                      this_date=date(int(self.kwargs['year']),
                                                     int(self.kwargs['month']),
                                                     int(self.kwargs['day']))
-        )
+                                     )
         return context
 
 
@@ -321,14 +329,16 @@ class BookingCreateView(BookingFormMixin, CalendarMixin, BookingQueryset, TimeMi
         return redirect('bookings:booking_success', code=form.instance.code)
 
     def get_context_data(self, *args, **kwargs):
-        context = super(BookingCreateView, self).get_context_data(*args, **kwargs)
+        context = super(BookingCreateView, self).get_context_data(
+            *args, **kwargs)
         context = self.get_calendar(context)
         context['today'] = date.today()
         context = self.get_time_list(context, this_date=date.today())
         return context
 
     def get_form_kwargs(self, *args, **kwargs):
-        kwargs = super(BookingCreateView, self).get_form_kwargs(*args, **kwargs)
+        kwargs = super(BookingCreateView, self).get_form_kwargs(
+            *args, **kwargs)
         kwargs.update({'user': self.request.user})
         return kwargs
 
@@ -342,7 +352,7 @@ class BookingCreateView(BookingFormMixin, CalendarMixin, BookingQueryset, TimeMi
 
         # Set as tomorrow if booking made later than 6pm.
         if localtime(now()).hour > 18:
-            initial['reserved_date'] = date.today()+timedelta(days=1)
+            initial['reserved_date'] = date.today() + timedelta(days=1)
         else:
             initial['reserved_date'] = date.today()
         initial['reserved_time'] = settings.DEFAULT_BOOKING_TIME
@@ -374,7 +384,7 @@ class BookingUpdateView(BookingFormMixin, CalendarMixin, BookingQueryset,
 
     def get_context_data(self, *args, **kwargs):
         context_data = super(BookingUpdateView, self).get_context_data(*args,
-                                                                      **kwargs)
+                                                                       **kwargs)
         obj = self.get_object()
         unique = self.get_queryset().filter(reserved_date=obj.reserved_date,
                                             phone=obj.phone)
@@ -391,7 +401,7 @@ class BookingListView(BookingQueryset, generic.ListView):
 
     def get_context_data(self, *args, **kwargs):
         context_data = super(BookingListView, self).get_context_data(*args,
-                                                                      **kwargs)
+                                                                     **kwargs)
         context_data['show_all'] = True
         return context_data
 
@@ -423,12 +433,13 @@ class BookingDayArchiveView(BookingQueryset, generic.DayArchiveView):
         context_data['total'] = kwargs.get('object_list')\
                                       .aggregate(Sum('party_size'))
         services = []
-        early_list = kwargs.get('object_list').filter(service='early').aggregate(Sum('party_size'))
+        early_list = kwargs.get('object_list').filter(
+            service='early').aggregate(Sum('party_size'))
         if early_list['party_size__sum']:
             services.append((('early', 'Early'), early_list))
         for serv in settings.SERVICE_CHOICE:
-            services.append((serv, (kwargs.get('object_list').filter(service=serv[0])\
-                            .aggregate(Sum('party_size')))))
+            services.append((serv, (kwargs.get('object_list').filter(service=serv[0])
+                                    .aggregate(Sum('party_size')))))
         context_data['services'] = services
         context_data['cancelled_list'] = self.get_dated_queryset()\
                                              .filter(status='Cancelled')\
