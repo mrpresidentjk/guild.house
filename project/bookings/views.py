@@ -4,6 +4,7 @@ import calendar
 import datetime
 from datetime import time, timedelta, date
 from dateutil.relativedelta import relativedelta
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.mail import send_mail
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.db.models import Count, Sum
@@ -391,7 +392,8 @@ class BookingUpdateView(BookingFormMixin, CalendarMixin, BookingQueryset,
         context_data['update_view'] = True
         return context_data
 
-class BookingListView(BookingQueryset, generic.ListView):
+
+class BookingListView(LoginRequiredMixin, BookingQueryset, generic.ListView):
 
     def get(self, *args, **kwargs):
         page = self.kwargs.get('page', None)
@@ -406,7 +408,7 @@ class BookingListView(BookingQueryset, generic.ListView):
         return context_data
 
 
-class BookingCancelledView(BookingQueryset, generic.ListView):
+class BookingCancelledView(LoginRequiredMixin, BookingQueryset, generic.ListView):
 
     template_name = 'bookings/booking_list_cancelled.html'
 
@@ -415,17 +417,17 @@ class BookingCancelledView(BookingQueryset, generic.ListView):
         return Booking.objects.filter(status='Cancelled').order_by('-updated_at')
 
 
-class BookingYearArchiveView(BookingQueryset, generic.YearArchiveView):
+class BookingYearArchiveView(LoginRequiredMixin, BookingQueryset, generic.YearArchiveView):
 
     make_object_list = True
 
 
-class BookingMonthArchiveView(BookingQueryset, generic.MonthArchiveView):
+class BookingMonthArchiveView(LoginRequiredMixin, BookingQueryset, generic.MonthArchiveView):
 
     pass
 
 
-class BookingDayArchiveView(BookingQueryset, generic.DayArchiveView):
+class BookingDayArchiveView(LoginRequiredMixin, BookingQueryset, generic.DayArchiveView):
 
     def get_context_data(self, *args, **kwargs):
         context_data = super(BookingDayArchiveView, self).get_context_data(*args,
@@ -447,7 +449,7 @@ class BookingDayArchiveView(BookingQueryset, generic.DayArchiveView):
         return context_data
 
 
-class BookingTodayArchiveView(generic.RedirectView):
+class BookingTodayArchiveView(LoginRequiredMixin, generic.RedirectView):
 
     def get_redirect_url(self):
         return reverse('bookings:booking_day', kwargs={
@@ -457,17 +459,17 @@ class BookingTodayArchiveView(generic.RedirectView):
         })
 
 
-class BookingWeekArchiveView(BookingQueryset, generic.WeekArchiveView):
+class BookingWeekArchiveView(LoginRequiredMixin, BookingQueryset, generic.WeekArchiveView):
 
     pass
 
 
-class BookingDetailView(BookingQueryset, generic.DetailView):
+class BookingDetailView(LoginRequiredMixin, BookingQueryset, generic.DetailView):
 
     pass
 
 
-class FormView(generic.FormView):
+class FormView(LoginRequiredMixin, generic.FormView):
 
     template_name = 'bookings/default_form.html'
     form_class = BlankForm
@@ -475,17 +477,21 @@ class FormView(generic.FormView):
 
 def post_view(request):
 
-    template_name = 'bookings/default_form.html'
-    context_data = {}
+    if request.user.is_authenticated:
+        template_name = 'bookings/default_form.html'
+        context_data = {}
 
-    if request.method == 'POST':
-        form = BlankForm(request.POST)
-        if form.is_valid():
-            print(request.POST)
-            context_data['success_obj'] = import_revel_bookings(request.POST['input_data'])
+        if request.method == 'POST':
+            form = BlankForm(request.POST)
+            if form.is_valid():
+                print(request.POST)
+                context_data['success_obj'] = import_revel_bookings(
+                    request.POST['input_data'])
 
+        else:
+            form = BlankForm()
+
+        context_data['form'] = form
+        return render(request, template_name, context_data)
     else:
-        form = BlankForm()
-
-    context_data['form'] = form
-    return render(request, template_name, context_data)
+        raise Http404
