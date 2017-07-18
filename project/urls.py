@@ -22,6 +22,9 @@ urlpatterns = [
 ##     # Events
 ##     url(r'^events/', include('project.events.urls')),
 
+    # Bookings
+    url(r'^bookings/', include('project.bookings.urls')),
+
     # Library
     url(r'^library/', include('project.library.urls')),
 
