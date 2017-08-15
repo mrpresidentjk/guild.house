@@ -22,6 +22,9 @@ urlpatterns = [
     # Bookings
     url(r'^bookings/', include('project.bookings.urls')),
 
+    # Members
+    url(r'^members/', include('project.members.urls')),
+
     # Robots
     url(r'^robots\.txt$', include('robots.urls')),
 
