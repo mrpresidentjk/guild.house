@@ -72,7 +72,7 @@ def import_revel_bookings(scrape):
         obj.notes = data[8]
         obj.legacy_code = create_legacy_code(data)
         obj.duration = DEFAULT_BOOKING_DURATION
-        obj.email = "unknown@unknown.email"
+        obj.email = UNKNOWN_EMAIL
         obj.save()
         success.append(obj)
     return success
