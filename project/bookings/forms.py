@@ -53,8 +53,8 @@ class BookingForm(forms.ModelForm):
                                          choices=DURATION_SELECTION)
     reserved_time = forms.ChoiceField(widget=forms.Select(),
                                       choices=BOOKING_TIMES_CHOICES)
-    phone = AUPhoneNumberField(widget=forms.TextInput(attrs={'placeholder': '**'}))
-
+    phone = AUPhoneNumberField(
+        widget=forms.TextInput(attrs={'placeholder': '**'}))
 
     class Meta(object):
         fields = ['status', 'name', 'reserved_time', 'reserved_date',
@@ -63,11 +63,11 @@ class BookingForm(forms.ModelForm):
                   'private_notes', 'busy_night']
         model = Booking
         widgets = {
-            'notes': forms.Textarea(attrs={'rows':4,  'width':185, 'cols':0}),
+            'notes': forms.Textarea(attrs={'rows': 4,  'width': 185, 'cols': 0}),
             'email': forms.TextInput(attrs={'placeholder': '**', }),
             'name': forms.TextInput(attrs={'placeholder': '**'}),
             'party_size': forms.TextInput(attrs={'placeholder': '**'}),
-            'hear_other': forms.Textarea(attrs={'rows':4,  'width':185, 'cols':0}),
+            'hear_other': forms.Textarea(attrs={'rows': 4,  'width': 185, 'cols': 0}),
         }
 
     def __init__(self, user=None, *args, **kwargs):
@@ -80,7 +80,8 @@ class BookingForm(forms.ModelForm):
     def clean(self, *args, **kwargs):
         cleaned_data = super(BookingForm, self).clean(*args, **kwargs)
         if not cleaned_data.get('email') and not cleaned_data.get('phone'):
-            raise forms.ValidationError('Both a phone number and an email address are necessary for online bookings.')
+            raise forms.ValidationError(
+                'Both a phone number and an email address are necessary for online bookings.')
         return super(BookingForm, self).clean(*args, **kwargs)
 
 
@@ -97,4 +98,5 @@ class NewBookingForm(BookingForm):
 
 class BlankForm(forms.Form):
 
-    input_data = forms.CharField(widget=forms.Textarea(attrs={'rows': 15, 'cols': 100}))
+    input_data = forms.CharField(
+        widget=forms.Textarea(attrs={'rows': 15, 'cols': 100}))

@@ -43,7 +43,7 @@ class Booking(models.Model):
 
     phone = models.CharField(max_length=100,
                              help_text="One phone number only. Put additional numbers in 'notes' if necessary. We may need to confirm details so be sure to provide a good number."
-    )
+                             )
 
     postcode = models.CharField(max_length=16, blank=True, default='')
 
@@ -65,7 +65,7 @@ class Booking(models.Model):
 
     service = models.CharField(max_length=50, choices=settings.SERVICE_CHOICE,
                                blank=True, default=''
-    )
+                               )
 
     busy_night = models.BooleanField(default=False)
 
@@ -75,17 +75,17 @@ class Booking(models.Model):
 
     updated_by = models.ForeignKey(User, blank=True, null=True,
                                    related_name="booking_updated_by"
-    )
+                                   )
 
     hear_choices = models.CharField(max_length=56, blank=True, default='',
                                     choices=settings.HEAR_CHOICE,
                                     verbose_name="Choices",
                                     help_text="How did you hear about us?"
-    )
+                                    )
     hear_other = models.TextField(blank=True, default='',
                                   verbose_name="Other",
                                   help_text="Tell us a story about how you heard about us ..."
-    )
+                                  )
 
     legacy_code = models.CharField(max_length=256, blank=True, null=True)
 
@@ -118,13 +118,13 @@ class Booking(models.Model):
     def get_next(self):
         queryset = self.__class__.objects.exclude(pk=self.pk).filter(
             site=self.site, reserved_date__gte=self.reserved_date
-            ).active().order_by('reserved_date', 'reserved_time')
+        ).active().order_by('reserved_date', 'reserved_time')
         return queryset.first()
 
     def get_previous(self):
         queryset = self.__class__.objects.exclude(pk=self.pk).filter(
             site=self.site, reserved_date__lte=self.reserved_date
-            ).active().order_by('-reserved_date', 'reserved_time')
+        ).active().order_by('-reserved_date', 'reserved_time')
         return queryset.first()
 
     def is_active(self):
@@ -132,7 +132,7 @@ class Booking(models.Model):
     is_active.boolean = True
     is_active.short_description = 'active'
 
-    def save(self,*args, **kwargs):
+    def save(self, *args, **kwargs):
         self.clean()
 
         if self.legacy_code and Booking.objects.filter(
@@ -141,7 +141,8 @@ class Booking(models.Model):
 
         # Automatically make code if doesn't already have one.
         if not self.code:
-            self.code = utils.generate_unique_hex(queryset=Booking.objects.all())
+            self.code = utils.generate_unique_hex(
+                queryset=Booking.objects.all())
 
             # adding on first creation. Messy, but works.
             # @@TODO make this less crap
