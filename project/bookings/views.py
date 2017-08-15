@@ -476,21 +476,18 @@ class FormView(generic.FormView):
 
 def post_view(request):
 
-    if request.user.is_authenticated:
-        template_name = 'bookings/default_form.html'
-        context_data = {}
+    template_name = 'bookings/default_form.html'
+    context_data = {}
 
-        if request.method == 'POST':
-            form = BlankForm(request.POST)
-            if form.is_valid():
-                print(request.POST)
-                context_data['success_obj'] = import_revel_bookings(
-                    request.POST['input_data'])
+    if request.method == 'POST':
+        form = BlankForm(request.POST)
+        if form.is_valid():
+            print(request.POST)
+            context_data['success_obj'] = import_revel_bookings(
+                request.POST['input_data'])
 
-        else:
-            form = BlankForm()
-
-        context_data['form'] = form
-        return render(request, template_name, context_data)
     else:
-        raise Http404
+        form = BlankForm()
+
+    context_data['form'] = form
+    return render(request, template_name, context_data)
