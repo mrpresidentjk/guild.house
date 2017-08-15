@@ -9,18 +9,6 @@ BOOKINGS_PERMISSION_REQUIRED = 'bookings.can_change_booking'
 
 urls = [
 
-    url(r'^$',
-        views.BookingCreateView.as_view(),
-        name="booking_add"),
-
-    url(r'^(?P<code>[\w-]+)/success/$',
-        views.BookingSuccessView.as_view(),
-        name="booking_success"),
-
-    url(r'^(?P<code>[\w-]+)/$',
-        views.BookingUpdateView.as_view(),
-        name="booking_update"),
-
     url(r'^show/$',
         permission_required(BOOKINGS_PERMISSION_REQUIRED)(
             views.BookingListView.as_view()
@@ -93,6 +81,19 @@ urls = [
             views.BookingDetailView.as_view()
         ),
         name='booking_detail'),
+
+    url(r'^$',
+        views.BookingCreateView.as_view(),
+        name="booking_add"),
+
+    url(r'^(?P<code>[\w-]+)/success/$',
+        views.BookingSuccessView.as_view(),
+        name="booking_success"),
+
+    url(r'^(?P<code>[\w-]+)/$',
+        views.BookingUpdateView.as_view(),
+        name="booking_update"),
+
 ]
 
 urlpatterns = [url(r'^', include(urls, namespace='bookings'))]
