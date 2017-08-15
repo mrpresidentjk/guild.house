@@ -45,7 +45,6 @@ class BookingForm(forms.ModelForm):
         super(BookingForm, self).__init__(*args, **kwargs)
         self.fields['phone'].required = True
         self.fields['email'].required = True
-        self.fields['user'].widget = forms.HiddenInput()
         self.fields['updated_by'].widget = forms.HiddenInput()
 
     def clean(self, *args, **kwargs):

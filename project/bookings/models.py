@@ -10,6 +10,8 @@ from taggit.managers import TaggableManager
 
 from project import utils
 from . import querysets, settings
+from project.rolodex.models import Email, Phone
+
 
 def get_current_site():
     try:
@@ -52,8 +54,6 @@ class Booking(models.Model):
         help_text="Only logged in people can see booking method."
     )
 
-    user = models.ForeignKey(User, blank=True, null=True)
-
     site = models.ForeignKey('sites.Site', default=get_current_site,
                              related_name='bookings_booking',
                              on_delete=models.PROTECT)
@@ -69,7 +69,7 @@ class Booking(models.Model):
 
     busy_night = models.BooleanField(default=False)
 
-    created_at = models.DateTimeField(auto_now_add=True, editable=False)
+    created_at = models.DateTimeField(auto_now_add=True, editable=True)
 
     updated_at = models.DateTimeField(auto_now=True, editable=False)
 
@@ -164,33 +164,13 @@ class Booking(models.Model):
                 break
         self.service = this_service
 
-        # Create a user whose username is their phone number.
-        """ This was a tough decision to use phone number as username.
+        if self.email:
+            Email.objects.get_or_create(email=self.email)
 
-        This is legacy from the original system where only phone number was
-        required.
-        """
-        if not self.user:
-            if not self.phone:
-                username = password = self.email
-            else:
-                username = password = self.phone
-            try:
-                user = User.objects.create_user(username=username)
-                user.first_name = self.name
-                if self.email:
-                    ## @@TODO: add multiple emails to user check if variant email
-                    user.email = self.email
-                user.save()
-            except IntegrityError:
-                user = User.objects.get(username=username)
-                self.user = user
-            except ValueError:
-                ## @@TODO fallback "Unknown" user done this way feels like potential blackhole
-                user = User.objects.get(username="unknown")
-            if self.email:
-                user.email = self.email
-                user.save()
-            self.user = user
+        if self.phone:
+            Phone.objects.get_or_create(phone=self.phone)
+
+        if not self.created_at:
+            self.created_at = timezone.now()
 
         super(Booking, self).save(*args, **kwargs)
