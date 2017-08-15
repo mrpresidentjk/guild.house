@@ -6,6 +6,24 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.utils.text import slugify
 
 
+def tsv_to_dict(dump):
+    """ Make a sensible k,v dict from imported tsv.
+
+    No validation is done here, just simple conversion."""
+    try:
+        rows = [items for items in dump.split("\r\n")]
+        header_row = rows[0].split("\t")
+        list_row_dicts = []
+        for item in rows[1:]:
+            row_dict = dict(list(zip(header_row, item.split("\t"))))
+            list_row_dicts.append(row_dict)
+        return list_row_dicts
+    except:
+        raise Exception("""Failed to convert dump to dict.
+
+All that is required is a copy and paste from a spreadsheet.""")
+
+
 def generate_unique_slug(text, queryset, slug_field='slug', iteration=0):
 
     slug = slugify(text)
