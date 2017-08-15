@@ -7,15 +7,11 @@
 {% block content %}
 <div class="row">
 
-  {{ success_obj|length }} successfully created/found.
-
-  {% for obj in success_obj %}
-  {{ obj }}<br>
-  {% endfor %}
+  {{ success_obj }} successfully created/found.
 
   <form method="post" action="/bookings/post/" id="id-form">{% csrf_token %}
     {% for field in form %}
-    <p>{{ field }}</p>
+    {{ field }}<br>
     {% endfor %}
 <input type="submit" value="OK">
 

@@ -6,7 +6,7 @@
 
 {% block content %}
 <div class="row">
-  <div class="col-lg-8">
+  <div>
     <h3>Bookings for {{ day|date:"l j-F-Y" }}</h3>
 <div class="hidden-print">
   {% include "bookings/_booking_day_navigation.html" %}
@@ -37,7 +37,7 @@
     <hr>
 
   </div>
-  <div class="col-lg-4 hidden-print">
+  <div class="hidden-print">
     {% include "bookings/_bookings_summary.html" %}
   </div>
 </div>
