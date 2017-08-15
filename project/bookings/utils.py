@@ -1,4 +1,5 @@
-from datetime import date, time, timedelta
+# -*- coding: utf-8 -*-
+from datetime import time, datetime, timedelta
 from .models import Booking
 from .settings import DEFAULT_BOOKING_DURATION
 
@@ -12,7 +13,7 @@ def import_revel_bookings(scrape):
 
     def create_date_from_string(d):
         day, month, year = [int(x) for x in d.split("/")]
-        return date(year, month, day)
+        return datetime(year, month, day, 0, 0, 0)
 
     def create_time_from_string(t):
         hour, minute = [int(x) for x in t.split(":")]
@@ -22,8 +23,9 @@ def import_revel_bookings(scrape):
         return "".join(data[0:-1]).replace(" ", "")
 
     # Confident that they'll do an update one day that will break this.
+    # -> Happened Aug 2017
 
-    split_string_start = "Reserved On\tReserved For\tOrder ID\tStatus\tParty Size\tWait time\tCustomer\tPhone\tNotes & Preferences\r\n"
+    split_string_start = "Order ID\tStatus\tParty Size\tWait time\tCustomer\tPhone\tNotes & Preferences\r\n"
     split_string_end = "Watch the tutorial"
 
     data_raw = scrape.split(split_string_start)[-1].split(split_string_end)
@@ -57,8 +59,7 @@ def import_revel_bookings(scrape):
     success = []
     for data in data_list:
         if not len(data) == 9:
-            return ["*FAIL* {}".format("".join(data))]
-
+            continue
         obj = Booking()
         obj.created_at = create_date_from_string(data[0])
         reserve_date = data[1].split(" ")[0]
