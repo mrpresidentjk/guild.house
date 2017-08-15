@@ -2,62 +2,16 @@
 from __future__ import absolute_import, unicode_literals
 from . import views
 from django.conf.urls import include, url
+from django.contrib.auth.decorators import permission_required
+
+BOOKINGS_PERMISSION_REQUIRED = 'bookings.can_change_booking'
 
 
 urls = [
 
-    url(r'^show/$',
-        views.BookingListView.as_view(),
-        name='booking_list'),
-
-    url(r'^form/$',
-        views.FormView.as_view(),
-        name='booking_default_form'),
-
-    url(r'^post/$',
-        #views.PostView.as_view(),
-        views.post_view,
-        name='booking_default_post'),
-
-    url(r'^show/(?P<page>\d+)$',
-        views.BookingListView.as_view(),
-        name='booking_list_pagination'),
-
     url(r'^$',
         views.BookingCreateView.as_view(),
         name="booking_add"),
-
-    url(r'^time/(?P<year>\d{4})/(?P<month>\d{2})/(?P<day>\d{2})/$',
-        views.BookingTimeView.as_view(),
-        name='booking_times'),
-
-    url(r'^cancelled/$',
-        views.BookingCancelledView.as_view(),
-        name="booking_list_cancelled"),
-
-    url(r'^today/$',
-        views.BookingTodayArchiveView.as_view(),
-        name="booking_today"),
-
-    url(r'^(?P<year>\d{4})/$',
-        views.BookingYearArchiveView.as_view(),
-        name="booking_year"),
-
-    url(r'^(?P<year>\d{4})/(?P<month>\d{2})/$',
-        views.BookingMonthArchiveView.as_view(),
-        name="booking_month"),
-
-    url(r'^(?P<year>\d{4})/week/(?P<week>\d+)/$',
-        views.BookingWeekArchiveView.as_view(),
-        name="booking_week"),
-
-    url(r'^(?P<year>\d{4})/(?P<month>\d{2})/(?P<day>\d{2})/$',
-        views.BookingDayArchiveView.as_view(),
-        name="booking_day"),
-
-    url(r'^(?P<year>\d{4})/(?P<month>\d{2})/(?P<slug>[\w-]+)$',
-        views.BookingDetailView.as_view(),
-        name='booking_detail'),
 
     url(r'^(?P<code>[\w-]+)/success/$',
         views.BookingSuccessView.as_view(),
@@ -66,6 +20,79 @@ urls = [
     url(r'^(?P<code>[\w-]+)/$',
         views.BookingUpdateView.as_view(),
         name="booking_update"),
+
+    url(r'^show/$',
+        permission_required(BOOKINGS_PERMISSION_REQUIRED)(
+            views.BookingListView.as_view()
+        ),
+        name='booking_list'),
+
+    url(r'^form/$',
+        permission_required(BOOKINGS_PERMISSION_REQUIRED)(
+            views.FormView.as_view(),
+        ),
+        name='booking_default_form'),
+
+    url(r'^post/$',
+        permission_required(BOOKINGS_PERMISSION_REQUIRED)(
+            # views.PostView.as_view(),
+            views.post_view
+        ),
+        name='booking_default_post'),
+
+    url(r'^show/(?P<page>\d+)$',
+        permission_required(BOOKINGS_PERMISSION_REQUIRED)(
+            views.BookingListView.as_view()
+        ),
+        name='booking_list_pagination'),
+
+    url(r'^time/(?P<year>\d{4})/(?P<month>\d{2})/(?P<day>\d{2})/$',
+        permission_required(BOOKINGS_PERMISSION_REQUIRED)(
+            views.BookingTimeView.as_view()
+        ),
+        name='booking_times'),
+
+    url(r'^cancelled/$',
+        permission_required(BOOKINGS_PERMISSION_REQUIRED)(
+            views.BookingCancelledView.as_view()
+        ),
+        name="booking_list_cancelled"),
+
+    url(r'^today/$',
+        permission_required(BOOKINGS_PERMISSION_REQUIRED)(
+            views.BookingTodayArchiveView.as_view()
+        ),
+        name="booking_today"),
+
+    url(r'^(?P<year>\d{4})/$',
+        permission_required(BOOKINGS_PERMISSION_REQUIRED)(
+            views.BookingYearArchiveView.as_view()
+        ),
+        name="booking_year"),
+
+    url(r'^(?P<year>\d{4})/(?P<month>\d{2})/$',
+        permission_required(BOOKINGS_PERMISSION_REQUIRED)(
+            views.BookingMonthArchiveView.as_view()
+        ),
+        name="booking_month"),
+
+    url(r'^(?P<year>\d{4})/week/(?P<week>\d+)/$',
+        permission_required(BOOKINGS_PERMISSION_REQUIRED)(
+            views.BookingWeekArchiveView.as_view()
+        ),
+        name="booking_week"),
+
+    url(r'^(?P<year>\d{4})/(?P<month>\d{2})/(?P<day>\d{2})/$',
+        permission_required(BOOKINGS_PERMISSION_REQUIRED)(
+            views.BookingDayArchiveView.as_view()
+        ),
+        name="booking_day"),
+
+    url(r'^(?P<year>\d{4})/(?P<month>\d{2})/(?P<slug>[\w-]+)$',
+        permission_required(BOOKINGS_PERMISSION_REQUIRED)(
+            views.BookingDetailView.as_view()
+        ),
+        name='booking_detail'),
 ]
 
 urlpatterns = [url(r'^', include(urls, namespace='bookings'))]
