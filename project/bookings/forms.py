@@ -28,15 +28,17 @@ class BookingForm(forms.ModelForm):
     class Meta(object):
         fields = ['status', 'name', 'reserved_time', 'reserved_date',
                   'booking_duration', 'party_size', 'area', 'email', 'phone',
-                  'postcode', 'notes','user', 'updated_by', 'booking_method',
+                  'postcode', 'notes', 'updated_by', 'booking_method',
                   'private_notes', 'busy_night']
         model = Booking
         widgets = {
-            'notes': forms.Textarea(attrs={'rows': 4,  'width': 185, 'cols': 0}),
+            'notes': forms.Textarea(
+                attrs={'rows': 4,  'width': 185, 'cols': 0}),
             'email': forms.TextInput(attrs={'placeholder': '**', }),
             'name': forms.TextInput(attrs={'placeholder': '**'}),
             'party_size': forms.TextInput(attrs={'placeholder': '**'}),
-            'hear_other': forms.Textarea(attrs={'rows': 4,  'width': 185, 'cols': 0}),
+            'hear_other': forms.Textarea(
+                attrs={'rows': 4,  'width': 185, 'cols': 0}),
         }
 
     def __init__(self, user=None, *args, **kwargs):
@@ -50,7 +52,7 @@ class BookingForm(forms.ModelForm):
         cleaned_data = super(BookingForm, self).clean(*args, **kwargs)
         if not cleaned_data.get('email') and not cleaned_data.get('phone'):
             raise forms.ValidationError(
-                'Both a phone number and an email address are necessary for online bookings.')
+                'Both a phone number and an email address are necessary for online bookings.')  # noqa
         return super(BookingForm, self).clean(*args, **kwargs)
 
 

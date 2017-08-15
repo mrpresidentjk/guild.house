@@ -1,12 +1,9 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, unicode_literals
-import re
-import datetime
 from django.contrib.sites.models import Site
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
-from django.core.exceptions import ValidationError
-from django.db import models, IntegrityError
+from django.db import models
 from django.utils import timezone
 from django.utils.encoding import python_2_unicode_compatible
 from taggit.managers import TaggableManager
@@ -19,6 +16,7 @@ def get_current_site():
         return Site.objects.get_current().pk
     except Site.DoesNotExist:
         pass
+
 
 @python_2_unicode_compatible
 class Booking(models.Model):
@@ -41,15 +39,17 @@ class Booking(models.Model):
 
     email = models.EmailField(max_length=150, blank=True, default='')
 
-    phone = models.CharField(max_length=100,
-                             help_text="One phone number only. Put additional numbers in 'notes' if necessary. We may need to confirm details so be sure to provide a good number."
-                             )
+    phone = models.CharField(
+        max_length=100,
+        help_text="One phone number only. Put additional numbers in 'notes' if necessary. We may need to confirm details so be sure to provide a good number."  # noqa
+    )
 
     postcode = models.CharField(max_length=16, blank=True, default='')
 
-    booking_method = models.CharField(max_length=50, choices=settings.METHOD_CHOICE,
-                                      default=settings.METHOD_CHOICE[0][0],
-                                      help_text="Only logged in people can see booking method."
+    booking_method = models.CharField(
+        max_length=50, choices=settings.METHOD_CHOICE,
+        default=settings.METHOD_CHOICE[0][0],
+        help_text="Only logged in people can see booking method."
     )
 
     user = models.ForeignKey(User, blank=True, null=True)
@@ -73,19 +73,23 @@ class Booking(models.Model):
 
     updated_at = models.DateTimeField(auto_now=True, editable=False)
 
-    updated_by = models.ForeignKey(User, blank=True, null=True,
-                                   related_name="booking_updated_by"
-                                   )
+    updated_by = models.ForeignKey(
+        User, blank=True, null=True,
+        related_name="booking_updated_by"
+    )
 
-    hear_choices = models.CharField(max_length=56, blank=True, default='',
-                                    choices=settings.HEAR_CHOICE,
-                                    verbose_name="Choices",
-                                    help_text="How did you hear about us?"
-                                    )
-    hear_other = models.TextField(blank=True, default='',
-                                  verbose_name="Other",
-                                  help_text="Tell us a story about how you heard about us ..."
-                                  )
+    hear_choices = models.CharField(
+        max_length=56, blank=True, default='',
+        choices=settings.HEAR_CHOICE,
+        verbose_name="Choices",
+        help_text="How did you hear about us?"
+    )
+
+    hear_other = models.TextField(
+        blank=True, default='',
+        verbose_name="Other",
+        help_text="Tell us a story about how you heard about us ..."  # noqa
+    )
 
     legacy_code = models.CharField(max_length=256, blank=True, null=True)
 
