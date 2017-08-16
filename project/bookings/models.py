@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, unicode_literals
 from django.contrib.sites.models import Site
-from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.utils import timezone
@@ -74,7 +73,7 @@ class Booking(models.Model):
     updated_at = models.DateTimeField(auto_now=True, editable=False)
 
     updated_by = models.ForeignKey(
-        User, blank=True, null=True,
+        'auth.User', blank=True, null=True,
         related_name="booking_updated_by"
     )
 
