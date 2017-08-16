@@ -12,12 +12,7 @@ from django_date_extensions.fields import ApproximateDate, ApproximateDateField
 from project import utils
 from taggit.managers import TaggableManager
 
-
-def get_current_site():
-    try:
-        return Site.objects.get_current().pk
-    except Site.DoesNotExist:
-        pass
+from project.utils import get_current_site
 
 
 class TemporaryMember(models.Model):

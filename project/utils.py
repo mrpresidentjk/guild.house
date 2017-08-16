@@ -3,7 +3,15 @@ from __future__ import absolute_import, unicode_literals
 import binascii
 import os
 from django.core.exceptions import ObjectDoesNotExist
+from django.contrib.sites.models import Site
 from django.utils.text import slugify
+
+
+def get_current_site():
+    try:
+        return Site.objects.get_current().pk
+    except Site.DoesNotExist:
+        pass
 
 
 def tsv_to_dict(dump):
