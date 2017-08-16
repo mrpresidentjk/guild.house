@@ -1,18 +1,13 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, unicode_literals
-from . import querysets, settings
 from django.contrib.auth.models import User
-from django.contrib.sites.models import Site
-from django.core.mail import EmailMultiAlternatives
-from django.core.urlresolvers import reverse
+from django.core.mail import EmailMultiAlternatives, send_mail
 from django.db import models
-from django.utils import timezone
 from django.utils.encoding import python_2_unicode_compatible
-from django_date_extensions.fields import ApproximateDate, ApproximateDateField
-from project import utils
-from taggit.managers import TaggableManager
+from django_date_extensions.fields import ApproximateDateField
 
 from project.utils import get_current_site
+from . import querysets, settings
 
 
 class TemporaryMember(models.Model):
@@ -58,10 +53,12 @@ class TemporaryMember(models.Model):
 
     country = models.CharField(max_length=16, blank=True, default='Australia')
 
-    dob = models.DateTimeField()
     # ApproximateDateField(
     # blank=True, null=True,
     # help_text="We don't like having to ask for this but we children members are differently categorised. Only year, or month and year are required.")  # noqa
+    dob = ApproximateDateField(
+        blank=True, null=True,
+        help_text="We don't like having to ask for this but we children members are differently categorised. Only year, or month and year are required.")  # noqa
 
     payment_method = models.CharField(
         max_length=255, choices=settings.PAYMENT_METHODS,)
@@ -125,8 +122,8 @@ class Member(models.Model):
 
     country = models.CharField(max_length=16, blank=True, default='Australia')
 
-    dob = models.DateTimeField()
     #dob = ApproximateDateField(blank=True, null=True)
+    dob = ApproximateDateField(blank=True, null=True)
 
     updated_at = models.DateTimeField(auto_now=True, editable=False)
 
@@ -181,8 +178,9 @@ class Membership(models.Model):
 
     valid_from = models.DateField(null=True, blank=False)
 
-    valid_until = models.DateField(null=True, blank=False,
-                                   help_text="""As the first day of the month following expiry. Eg. Nov 2018 = '1-Dec-2018'""")
+    valid_until = models.DateField(
+        null=True, blank=False,
+        help_text="""As the first day of the month following expiry. Eg. Nov 2018 = '1-Dec-2018'""")  # noqa
 
 
 class MembershipTag(models.Model):
@@ -218,6 +216,8 @@ class Payment(models.Model):
         ordering = ['member__name', 'created_at']
 
     def __str__(self):
-        return "{date} #{num} {name}".format(date=elf.valid_until,
-                                             num=self.member.number,
-                                             name=self.member.name)
+        return "{date} #{num} {name}".format(
+            date=self.valid_until,
+            num=self.member.number,
+            name=self.member.name
+        )
