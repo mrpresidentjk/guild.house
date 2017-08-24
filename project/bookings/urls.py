@@ -10,6 +10,15 @@ urls = [
         views.BookingListView.as_view(),
         name='booking_list'),
 
+    url(r'^form/$',
+        views.FormView.as_view(),
+        name='booking_default_form'),
+
+    url(r'^post/$',
+        #views.PostView.as_view(),
+        views.post_view,
+        name='booking_default_post'),
+
     url(r'^show/(?P<page>\d+)$',
         views.BookingListView.as_view(),
         name='booking_list_pagination'),

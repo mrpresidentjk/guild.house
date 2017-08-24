@@ -2,8 +2,6 @@
 from __future__ import absolute_import, unicode_literals
 import re
 import datetime
-from .. import utils
-from . import querysets, settings
 from django.contrib.sites.models import Site
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
@@ -11,9 +9,10 @@ from django.core.exceptions import ValidationError
 from django.db import models, IntegrityError
 from django.utils import timezone
 from django.utils.encoding import python_2_unicode_compatible
-from project import utils
 from taggit.managers import TaggableManager
 
+from project import utils
+from . import querysets, settings
 
 def get_current_site():
     try:
@@ -105,13 +104,11 @@ class Booking(models.Model):
         )
 
         if self.booking_duration:
-            desc = "{date}-{end} {start} {pax}pax {name}".format(
+            desc = "{date} {start} {pax}pax {name}".format(
                 name=self.name,
                 pax=self.party_size,
                 date=self.reserved_date.strftime("%d-%b-%Y"),
-                start=self.reserved_time.strftime("%H:%M"),
-                end=(datetime.datetime.combine(self.reserved_date,
-                    self.reserved_time)+self.booking_duration).strftime("%H:%M")
+                start=self.reserved_time.strftime("%H:%M")
             )
         return desc
 
@@ -155,7 +152,7 @@ class Booking(models.Model):
                     booking.busy_night = True
                     booking.save()
 
-        # Automatically set service based upon `reserved_time`.
+        # Automatically set `service` (eg. lunch) based upon `reserved_time`.
         for service_time, service in reversed(settings.SERVICE_TIMES):
             if self.reserved_time >= service_time:
                 this_service = service
@@ -176,10 +173,16 @@ class Booking(models.Model):
             try:
                 user = User.objects.create_user(username=username)
                 user.first_name = self.name
+                if self.email:
+                    ## @@TODO: add multiple emails to user check if variant email
+                    user.email = self.email
                 user.save()
             except IntegrityError:
                 user = User.objects.get(username=username)
                 self.user = user
+            except ValueError:
+                ## @@TODO fallback "Unknown" user done this way feels like potential blackhole
+                user = User.objects.get(username="unknown")
             if self.email:
                 user.email = self.email
                 user.save()

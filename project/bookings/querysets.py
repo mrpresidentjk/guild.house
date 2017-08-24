@@ -19,14 +19,27 @@ class QuerySet(models.query.QuerySet):
         site = Site.objects.get_current()
         return self.filter(site=site)
 
-    def today(self):
+    def today_all(self):
         now = timezone.now()
-        return self.active().filter(reserved_date=now)
+        return self.filter(reserved_date=now)
 
-    def past(self):
+    def today(self):
+        return self.today_all().active()
+
+    def past_all(self):
         now = timezone.now()
         return self.filter(reserved_date__lte=now)
 
+    def past(self):
+        return self.past_all().active()
+
+    def future_all(self):
+        now = timezone.now()
+        return self.filter(reserved_date__gte=now)
+
     def future(self):
+        return self.future_all().active()
+
+    def future_by_date(self):
         now = timezone.now()
         return self.filter(reserved_date__gte=now)

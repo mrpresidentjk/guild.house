@@ -47,6 +47,7 @@ METHOD_CHOICE = [
 ]
 
 SERVICE_CHOICE = (
+    ('early', 'Early'),
     ('lunch', 'Lunch'),
     ('afternoon', 'Afternoon'),
     ('main', 'Main'),
@@ -67,10 +68,9 @@ def generate_times():
     temp_date, time_list = datetime.date(2000,1,1), []
     this_time = BOOKING_TIMES[0]
     while this_time<=BOOKING_TIMES[1]:
-        time_list.append((
-            this_time,
-            "{}:{:0>2}".format(this_time.hour, this_time.minute)
-        ))
+        this_time_formatted = "{}:{:0>2}".format(this_time.hour, this_time.minute)
+        time_list.append((this_time_formatted, this_time_formatted))
+
         # hack around timedelta not allowing time addition (on purpose)
         # http://bugs.python.org/issue1487389
         # http://bugs.python.org/issue1118748
@@ -98,9 +98,9 @@ DURATION_SELECTION = [
 ]
 
 HEAT = {
-    60: 'warm',
-    85: 'hot',
-    105: 'full',
+    50: 'warm',
+    75: 'hot',
+    95: 'full',
 }
 
 # Note: hardcoded in booking_form.html

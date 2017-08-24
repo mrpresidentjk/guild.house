@@ -5,6 +5,10 @@
     <title>{% block title %}{{ request.site.name }}{% endblock %} - Board Games Pizza Craft Drinks Canberra</title>
     {% block meta %}
     <meta charset="utf-8">
+
+    {# dev testing only #}
+    <meta name="robots" content="noindex" />
+
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
@@ -41,7 +45,6 @@
       <span class="light">Board Games &middot; Restaurant &middot; Canberra</span><br>
       <a href="mailto:reservations@guild.house">reservations@guild.house</a>
       &middot; <a href="tel:+61262572727">02 6257 2727</a>
-      <br>Open 7 Days &middot; Midday until Late
     </div>
 
 {% if messages %}
@@ -133,7 +136,7 @@
     <!-- Script to Activate the Carousel -->
     <script>
     $('.carousel').carousel({
-        interval: 3500 //changes the speed
+        interval: 5000 //changes the speed
     })
     </script>
 

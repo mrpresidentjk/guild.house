@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, unicode_literals
+from debug_toolbar import urls as debug_toolbar_urls
 from django.conf import settings
 from django.conf.urls import include, url
 from django.contrib import admin
@@ -18,20 +19,17 @@ urlpatterns = [
     # Menu
     url(r'^menus/', include('project.menus.urls')),
 
-##     # Events
-##     url(r'^events/', include('project.events.urls')),
-
-    # Library
-    url(r'^library/', include('project.library.urls')),
+    # Bookings
+    url(r'^bookings/', include('project.bookings.urls')),
 
     # Robots
-    url(r'^robots.txt$', include('robots.urls')),
+    url(r'^robots\.txt$', include('robots.urls')),
 
     # XML Sitemap
     url(r'^sitemap.xml$', sitemap, {'sitemaps': sitemaps},
         name='django.contrib.sitemaps.views.sitemap'),
 
-    ## Admin Docs
+    # Admin Docs
     url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
 
     # Admin
@@ -51,4 +49,5 @@ if settings.DEBUG:
     urlpatterns += [
         url(r'^errors/404$', TemplateView.as_view(template_name='404.html')),
         url(r'^errors/500$', TemplateView.as_view(template_name='500.html')),
+        url(r'^__debug__/', include(debug_toolbar_urls)),
     ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

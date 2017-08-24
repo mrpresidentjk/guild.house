@@ -93,3 +93,8 @@ class NewBookingForm(BookingForm):
         self.fields['busy_night'].widget = forms.HiddenInput()
         if not user.is_authenticated():
             self.fields['booking_method'].widget = forms.HiddenInput()
+
+
+class BlankForm(forms.Form):
+
+    input_data = forms.CharField(widget=forms.Textarea(attrs={'rows': 15, 'cols': 100}))

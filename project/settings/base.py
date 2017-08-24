@@ -19,7 +19,7 @@ BASE_DIR = os.path.join(
 
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'd16bx=+!594*6x(v^ba=qj#8u)=zr19c202(6(mu26!rk)vfr3'
+SECRET_KEY = os.environ['GUILD_DJANGO_SECRET_KEY']
 
 ADMINS = (
     # ('Matt Austin', 'devops@mattaustin.com.au'),
@@ -75,6 +75,7 @@ MIDDLEWARE_CLASSES = [
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
     'django.contrib.redirects.middleware.RedirectFallbackMiddleware',
     'django.middleware.cache.FetchFromCacheMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
 ROOT_URLCONF = 'project.urls'
@@ -91,7 +92,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'django.template.context_processors.tz',
-                'django.core.context_processors.media',
+                'django.template.context_processors.media',
                 'project.debug_toolbar.context_processors.debug',
             ],
         },
@@ -148,7 +149,8 @@ EMAIL_SUBJECT_PREFIX = '[Guild] '
 
 SERVER_EMAIL = 'web@guild.house'
 
-BOOKINGS_TO_EMAILS = ['reservations@guild.house']
+#BOOKINGS_TO_EMAILS = ['reservations@guild.house']
+BOOKINGS_TO_EMAILS = ['web+testingserver@guild.house']
 
 
 # Logging
