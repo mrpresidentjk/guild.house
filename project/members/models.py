@@ -134,6 +134,8 @@ class Member(models.Model):
                              related_name='members_member',
                              on_delete=models.PROTECT)
 
+    objects = querysets.MemberQuerySet.as_manager()
+
     def __str__(self):
         return "#{num} {name}".format(date=self.valid_until,
                                       num=self.number,
@@ -210,7 +212,6 @@ class Payment(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True, editable=True)
 
-    objects = querysets.QuerySet.as_manager()
 
     class Meta(object):
         ordering = ['member__name', 'created_at']
