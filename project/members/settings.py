@@ -4,7 +4,7 @@ from django.conf import settings
 
 
 PAYMENT_METHODS = getattr(settings, 'MEMBERS_PAYMENT_METHODS',
-                          (
+                          [
                               ('paypal', 'paypal'),
                               ('in person', 'in person'),
-                          ))
+                          ])
