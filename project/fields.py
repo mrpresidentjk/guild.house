@@ -1,4 +1,4 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 import re
 from django.core.validators import EMPTY_VALUES
 from django.forms import ValidationError
@@ -30,6 +30,8 @@ class AUPhoneNumberField(CharField):
 
         if phone_match:
             phone = phone_match.group(1)
-            if len(phone) == 8 or (len(phone) == 10 and str(phone[0]) == "0"):
-                return '%s'.format(phone)
+            if len(phone) == 8 \
+               or (len(phone) == 10 and str(phone[0]) == "0") \
+               or (len(phone) == 11 and int(phone[0])):
+                return '{}'.format(phone)
         raise ValidationError(self.error_messages['invalid'])
