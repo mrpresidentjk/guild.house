@@ -78,12 +78,6 @@ class TemporaryMember(models.Model):
 
     def save(self, *args, **kwargs):
 
-        if type(self.email) == str:
-            self.email, created = Email.objects.get_or_create(email=self.email)
-
-        if type(self.phone) == str:
-            self.phone, created = Phone.objects.get_or_create(phone=self.phone)
-
         if self.is_approved_paid:
             if not self.approved_by or not self.approved_payment_method:
                 raise Exception(
