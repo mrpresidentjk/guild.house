@@ -63,6 +63,7 @@ option {
 
 textarea {
     background: rgba(105, 98, 98, 0.57);
+    height: 4em;
 }
 
 table td {
@@ -73,6 +74,13 @@ table th {
     white-space: nowrap;
     vertical-align: top;
 }
+
+table#member-form th {
+    white-space: normal;
+    vertical-align: top;
+    width: 15em;
+}
+
 
 /* Admin */
 
@@ -115,6 +123,11 @@ span.hot {  /* 85 pax */
 span.full { /* 115 pax */
     background-color: rgba(175, 0, 0, 0.15);
     color: rgba(255, 255, 255, 0.25);
+}
+
+span.helptext {
+    margin: -2px 0px 7px;
+    display: block;
 }
 
 button[type=submit] {
