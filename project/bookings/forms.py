@@ -1,42 +1,11 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, unicode_literals
-import re
-from .models import Booking
-from .settings import DURATION_SELECTION, BOOKING_TIMES_CHOICES
-from datetime import date, timedelta, datetime
 from django import forms
-from django.core.validators import EMPTY_VALUES
-from django.forms import ValidationError
-from django.forms.fields import CharField
-from django.utils.encoding import force_text
 from tinymce.widgets import TinyMCE
 
-
-PHONE_DIGITS_RE = re.compile(r'^(\d{8,10})$')
-
-
-class AUPhoneNumberField(CharField):
-    """
-    A form field that validates input as an Australian phone number.
-    Valid numbers have ten digits.
-    """
-    default_error_messages = {
-        'invalid': 'Enter a valid phone number.'
-    }
-
-    def clean(self, value):
-        """
-        Validate a phone number. Strips parentheses, whitespace and hyphens.
-        """
-        super(AUPhoneNumberField, self).clean(value)
-        if value in EMPTY_VALUES:
-            return ''
-        value = re.sub('(\(|\)|\s+|-)', '', force_text(value))
-        phone_match = PHONE_DIGITS_RE.search(value)
-
-        if phone_match:
-            return '%s' % phone_match.group(1)
-        raise ValidationError(self.error_messages['invalid'])
+from project.fields import AUPhoneNumberField
+from .models import Booking
+from .settings import DURATION_SELECTION, BOOKING_TIMES_CHOICES
 
 
 class BookingAdminForm(forms.ModelForm):
@@ -53,34 +22,36 @@ class BookingForm(forms.ModelForm):
                                          choices=DURATION_SELECTION)
     reserved_time = forms.ChoiceField(widget=forms.Select(),
                                       choices=BOOKING_TIMES_CHOICES)
-    phone = AUPhoneNumberField(widget=forms.TextInput(attrs={'placeholder': '**'}))
-
+    phone = AUPhoneNumberField(
+        widget=forms.TextInput(attrs={'placeholder': '**'}))
 
     class Meta(object):
         fields = ['status', 'name', 'reserved_time', 'reserved_date',
                   'booking_duration', 'party_size', 'area', 'email', 'phone',
-                  'postcode', 'notes','user', 'updated_by', 'booking_method',
+                  'postcode', 'notes', 'updated_by', 'booking_method',
                   'private_notes', 'busy_night']
         model = Booking
         widgets = {
-            'notes': forms.Textarea(attrs={'rows':4,  'width':185, 'cols':0}),
+            'notes': forms.Textarea(
+                attrs={'rows': 4,  'width': 185, 'cols': 0}),
             'email': forms.TextInput(attrs={'placeholder': '**', }),
             'name': forms.TextInput(attrs={'placeholder': '**'}),
             'party_size': forms.TextInput(attrs={'placeholder': '**'}),
-            'hear_other': forms.Textarea(attrs={'rows':4,  'width':185, 'cols':0}),
+            'hear_other': forms.Textarea(
+                attrs={'rows': 4,  'width': 185, 'cols': 0}),
         }
 
     def __init__(self, user=None, *args, **kwargs):
         super(BookingForm, self).__init__(*args, **kwargs)
         self.fields['phone'].required = True
         self.fields['email'].required = True
-        self.fields['user'].widget = forms.HiddenInput()
         self.fields['updated_by'].widget = forms.HiddenInput()
 
     def clean(self, *args, **kwargs):
         cleaned_data = super(BookingForm, self).clean(*args, **kwargs)
         if not cleaned_data.get('email') and not cleaned_data.get('phone'):
-            raise forms.ValidationError('Both a phone number and an email address are necessary for online bookings.')
+            raise forms.ValidationError(
+                'Both a phone number and an email address are necessary for online bookings.')  # noqa
         return super(BookingForm, self).clean(*args, **kwargs)
 
 
@@ -97,4 +68,5 @@ class NewBookingForm(BookingForm):
 
 class BlankForm(forms.Form):
 
-    input_data = forms.CharField(widget=forms.Textarea(attrs={'rows': 15, 'cols': 100}))
+    input_data = forms.CharField(
+        widget=forms.Textarea(attrs={'rows': 15, 'cols': 100}))

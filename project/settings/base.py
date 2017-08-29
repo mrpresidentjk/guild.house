@@ -57,6 +57,8 @@ INSTALLED_APPS = [
     'project.library',
     'project.site',
     'project.bookings',
+    'project.rolodex',
+    'project.members',
 ]
 
 MIDDLEWARE_CLASSES = [

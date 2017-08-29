@@ -1,24 +1,23 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, unicode_literals
-import re
-import datetime
 from django.contrib.sites.models import Site
-from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
-from django.core.exceptions import ValidationError
-from django.db import models, IntegrityError
+from django.db import models
 from django.utils import timezone
 from django.utils.encoding import python_2_unicode_compatible
 from taggit.managers import TaggableManager
 
 from project import utils
 from . import querysets, settings
+from project.rolodex.models import Email, Phone
+
 
 def get_current_site():
     try:
         return Site.objects.get_current().pk
     except Site.DoesNotExist:
         pass
+
 
 @python_2_unicode_compatible
 class Booking(models.Model):
@@ -41,18 +40,18 @@ class Booking(models.Model):
 
     email = models.EmailField(max_length=150, blank=True, default='')
 
-    phone = models.CharField(max_length=100,
-                             help_text="One phone number only. Put additional numbers in 'notes' if necessary. We may need to confirm details so be sure to provide a good number."
+    phone = models.CharField(
+        max_length=100,
+        help_text="One phone number only. Put additional numbers in 'notes' if necessary. We may need to confirm details so be sure to provide a good number."  # noqa
     )
 
     postcode = models.CharField(max_length=16, blank=True, default='')
 
-    booking_method = models.CharField(max_length=50, choices=settings.METHOD_CHOICE,
-                                      default=settings.METHOD_CHOICE[0][0],
-                                      help_text="Only logged in people can see booking method."
+    booking_method = models.CharField(
+        max_length=50, choices=settings.METHOD_CHOICE,
+        default=settings.METHOD_CHOICE[0][0],
+        help_text="Only logged in people can see booking method."
     )
-
-    user = models.ForeignKey(User, blank=True, null=True)
 
     site = models.ForeignKey('sites.Site', default=get_current_site,
                              related_name='bookings_booking',
@@ -65,26 +64,30 @@ class Booking(models.Model):
 
     service = models.CharField(max_length=50, choices=settings.SERVICE_CHOICE,
                                blank=True, default=''
-    )
+                               )
 
     busy_night = models.BooleanField(default=False)
 
-    created_at = models.DateTimeField(auto_now_add=True, editable=False)
+    created_at = models.DateTimeField(auto_now_add=True, editable=True)
 
     updated_at = models.DateTimeField(auto_now=True, editable=False)
 
-    updated_by = models.ForeignKey(User, blank=True, null=True,
-                                   related_name="booking_updated_by"
+    updated_by = models.ForeignKey(
+        'auth.User', blank=True, null=True,
+        related_name="booking_updated_by"
     )
 
-    hear_choices = models.CharField(max_length=56, blank=True, default='',
-                                    choices=settings.HEAR_CHOICE,
-                                    verbose_name="Choices",
-                                    help_text="How did you hear about us?"
+    hear_choices = models.CharField(
+        max_length=56, blank=True, default='',
+        choices=settings.HEAR_CHOICE,
+        verbose_name="Choices",
+        help_text="How did you hear about us?"
     )
-    hear_other = models.TextField(blank=True, default='',
-                                  verbose_name="Other",
-                                  help_text="Tell us a story about how you heard about us ..."
+
+    hear_other = models.TextField(
+        blank=True, default='',
+        verbose_name="Other",
+        help_text="Tell us a story about how you heard about us ..."  # noqa
     )
 
     legacy_code = models.CharField(max_length=256, blank=True, null=True)
@@ -118,13 +121,13 @@ class Booking(models.Model):
     def get_next(self):
         queryset = self.__class__.objects.exclude(pk=self.pk).filter(
             site=self.site, reserved_date__gte=self.reserved_date
-            ).active().order_by('reserved_date', 'reserved_time')
+        ).active().order_by('reserved_date', 'reserved_time')
         return queryset.first()
 
     def get_previous(self):
         queryset = self.__class__.objects.exclude(pk=self.pk).filter(
             site=self.site, reserved_date__lte=self.reserved_date
-            ).active().order_by('-reserved_date', 'reserved_time')
+        ).active().order_by('-reserved_date', 'reserved_time')
         return queryset.first()
 
     def is_active(self):
@@ -132,7 +135,7 @@ class Booking(models.Model):
     is_active.boolean = True
     is_active.short_description = 'active'
 
-    def save(self,*args, **kwargs):
+    def save(self, *args, **kwargs):
         self.clean()
 
         if self.legacy_code and Booking.objects.filter(
@@ -141,7 +144,8 @@ class Booking(models.Model):
 
         # Automatically make code if doesn't already have one.
         if not self.code:
-            self.code = utils.generate_unique_hex(queryset=Booking.objects.all())
+            self.code = utils.generate_unique_hex(
+                queryset=Booking.objects.all())
 
             # adding on first creation. Messy, but works.
             # @@TODO make this less crap
@@ -159,33 +163,13 @@ class Booking(models.Model):
                 break
         self.service = this_service
 
-        # Create a user whose username is their phone number.
-        """ This was a tough decision to use phone number as username.
+        if self.email:
+            Email.objects.get_or_create(email=self.email)
 
-        This is legacy from the original system where only phone number was
-        required.
-        """
-        if not self.user:
-            if not self.phone:
-                username = password = self.email
-            else:
-                username = password = self.phone
-            try:
-                user = User.objects.create_user(username=username)
-                user.first_name = self.name
-                if self.email:
-                    ## @@TODO: add multiple emails to user check if variant email
-                    user.email = self.email
-                user.save()
-            except IntegrityError:
-                user = User.objects.get(username=username)
-                self.user = user
-            except ValueError:
-                ## @@TODO fallback "Unknown" user done this way feels like potential blackhole
-                user = User.objects.get(username="unknown")
-            if self.email:
-                user.email = self.email
-                user.save()
-            self.user = user
+        if self.phone:
+            Phone.objects.get_or_create(phone=self.phone)
+
+        if not self.created_at:
+            self.created_at = timezone.now()
 
         super(Booking, self).save(*args, **kwargs)

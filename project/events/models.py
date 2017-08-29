@@ -7,6 +7,7 @@ from django.utils.encoding import python_2_unicode_compatible
 from photologue.models import Photo, Gallery
 from taggit.managers import TaggableManager
 
+from project.utils import get_current_site
 
 def photo_default_main(self=None):
     if self:

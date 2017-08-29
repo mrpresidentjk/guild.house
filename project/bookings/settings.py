@@ -13,9 +13,14 @@ BIG_BOOKING = getattr(settings, 'BOOKINGS_BIG_BOOKING', 7)
 
 TIME_ZONE = settings.TIME_ZONE
 
-DEFAULT_BOOKING_TIME = getattr(settings, 'BOOKINGS_DEFAULT_BOOKING_TIME', "18:00")
+DEFAULT_BOOKING_TIME = getattr(
+    settings, 'BOOKINGS_DEFAULT_BOOKING_TIME', "18:00")
 
-DEFAULT_CALENDAR_LENGTH = getattr(settings, 'BOOKINGS_DEFAULT_CALENDAR_LENGTH', 42)
+DEFAULT_CALENDAR_LENGTH = getattr(
+    settings, 'BOOKINGS_DEFAULT_CALENDAR_LENGTH', 42)
+
+UNKNOWN_EMAIL = getattr(
+    settings, 'BOOKINGS_UKNOWN_EMAIL', "unknown@unknown.email")
 
 FROM_EMAIL = getattr(settings, 'DEFAULT_FROM_EMAIL')
 
@@ -54,10 +59,10 @@ SERVICE_CHOICE = (
 )
 
 SERVICE_TIMES = (
-    (time(0,0), 'early'),
-    (time(12,0), 'lunch'),
-    (time(14,30), 'afternoon'),
-    (time(17,30), 'main'),
+    (time(0, 0), 'early'),
+    (time(12, 0), 'lunch'),
+    (time(14, 30), 'afternoon'),
+    (time(17, 30), 'main'),
 )
 
 BOOKING_TIMES = (time(12), time(23))
@@ -65,16 +70,18 @@ BOOKING_INTERVAL = timedelta(minutes=30)
 
 
 def generate_times():
-    temp_date, time_list = datetime.date(2000,1,1), []
+    temp_date, time_list = datetime.date(2000, 1, 1), []
     this_time = BOOKING_TIMES[0]
-    while this_time<=BOOKING_TIMES[1]:
-        this_time_formatted = "{}:{:0>2}".format(this_time.hour, this_time.minute)
+    while this_time <= BOOKING_TIMES[1]:
+        this_time_formatted = "{}:{:0>2}".format(
+            this_time.hour, this_time.minute)
         time_list.append((this_time_formatted, this_time_formatted))
 
         # hack around timedelta not allowing time addition (on purpose)
         # http://bugs.python.org/issue1487389
         # http://bugs.python.org/issue1118748
-        temp_time = datetime.datetime.combine(temp_date, this_time)+BOOKING_INTERVAL
+        temp_time = datetime.datetime.combine(
+            temp_date, this_time) + BOOKING_INTERVAL
         this_time = time(temp_time.hour, temp_time.minute)
     return time_list
 
