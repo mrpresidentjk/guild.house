@@ -6,6 +6,7 @@ from django.db import models
 from django.utils.encoding import python_2_unicode_compatible
 from django_date_extensions.fields import ApproximateDateField
 
+from project.rolodex.models import Email, Phone
 from project.utils import get_current_site
 from . import querysets, settings
 
@@ -28,53 +29,57 @@ class TemporaryMember(models.Model):
 
     approved_by = models.ForeignKey('auth.User', blank=True, null=True)
 
+    member = models.ForeignKey('members.Member', blank=True, null=True)
+
     name = models.CharField(max_length=200, blank=True, default='',
                             verbose_name='Full Name',
                             )
 
-    sort_name = models.CharField(max_length=200, blank=True, default='',
-                                 verbose_name='Surname')
+    sort_name = models.CharField(max_length=200, verbose_name='Surname')
 
-    ref_name = models.CharField(max_length=200, blank=True, default='',
-                                verbose_name='First Name',
-                                )
+    ref_name = models.CharField(max_length=200, verbose_name='First Name')
 
     notes = models.TextField(blank=True, default='')
 
-    email = models.ManyToManyField('rolodex.Email')
+    email = models.ForeignKey('rolodex.Email')
 
-    phone = models.ManyToManyField('rolodex.Phone')
+    phone = models.ForeignKey('rolodex.Phone')
 
     address = models.TextField(blank=True, default='')
 
-    postcode = models.CharField(max_length=16, blank=True, default='')
+    suburb = models.CharField(max_length=64)
 
-    state = models.CharField(max_length=16, blank=True, default='')
+    postcode = models.CharField(max_length=16)
 
-    country = models.CharField(max_length=16, blank=True, default='Australia')
+    state = models.CharField(max_length=16)
 
-    # ApproximateDateField(
-    # blank=True, null=True,
-    # help_text="We don't like having to ask for this but we children members are differently categorised. Only year, or month and year are required.")  # noqa
-    dob = ApproximateDateField(
-        blank=True, null=True,
-        help_text="We don't like having to ask for this but we children members are differently categorised. Only year, or month and year are required.")  # noqa
+    country = models.CharField(max_length=32, default='Australia')
+
+    dob = models.DateField(blank=True, null=True, verbose_name='Birth date',
+                           help_text="Kept private, necessary as licenced venue.")
+    # ApproximateDate(
+    #     blank=True, null=True,
+    #     help_text="We don't like having to ask for this but we children members are differently categorised. Only year, or month and year are required.")  # noqa
 
     payment_method = models.CharField(
         max_length=255, choices=settings.PAYMENT_METHODS,)
 
-    survey_suggestions = models.TextField(
-        blank=True, null=True,
-        help_text="Any suggestions you would have for us?")
-    survey_hear = models.TextField(
-        blank=True, null=True,
-        help_text="How did you hear about us? Tell us a story.")
-    survey_food = models.TextField(
-        blank=True, null=True,
-        help_text="What food, drink or pizza would you like see on our menu? Say as much as you want.")  # noqa
     survey_games = models.TextField(
         blank=True, null=True,
-        help_text="What's your favourite game? List as many as you like.")
+        verbose_name="What's your favourite game?",
+        help_text="List as many as you like.")
+    survey_food = models.TextField(
+        blank=True, null=True,
+        verbose_name="What food, drink or pizza would you like see on our menu?",  # noqa
+        help_text="Say as much as you want.")
+    survey_hear = models.TextField(
+        blank=True, null=True,
+        verbose_name="How did you hear about us?",
+        help_text="Tell us a story.")
+    survey_suggestions = models.TextField(
+        blank=True, null=True,
+        verbose_name="Any suggestions you would have for us?",
+        help_text="We're still pretty new and learning as we go!")
 
     def save(self, *args, **kwargs):
 
