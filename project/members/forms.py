@@ -48,3 +48,7 @@ class TemporaryMemberForm(forms.Form):
         model = TemporaryMember
         exclude = ['is_checked', 'is_approved_paid', 'notes',
                    'approved_by', 'approved_payment_method']
+    def __init__(self, *args, **kwargs):
+        super(TemporaryMemberForm, self).__init__(*args, **kwargs)
+        self.request = kwargs.pop('request', None)
+        self.fields['dob'].widget.attrs['placeholder'] = 'dd/mm/yyyy'
