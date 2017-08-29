@@ -11,85 +11,9 @@ from project.utils import get_current_site
 from . import querysets, settings
 
 
-class TemporaryMember(models.Model):
-    """ Anybody can complete the form, it doesn't mean it's right and must be
-    approved.
-    """
-
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    is_checked = models.BooleanField(default=False)
-
-    is_approved_paid = models.BooleanField(default=False)
-
-    approved_payment_method = models.CharField(
-        max_length=255, blank=True, default='',
-        choices=settings.PAYMENT_METHODS,
-    )
-
-    approved_by = models.ForeignKey('auth.User', blank=True, null=True)
-
-    member = models.ForeignKey('members.Member', blank=True, null=True)
-
-    name = models.CharField(max_length=200, blank=True, default='',
-                            verbose_name='Full Name',
-                            )
-
-    sort_name = models.CharField(max_length=200, verbose_name='Surname')
-
-    ref_name = models.CharField(max_length=200, verbose_name='First Name')
-
-    notes = models.TextField(blank=True, default='')
-
-    email = models.ForeignKey('rolodex.Email')
-
-    phone = models.ForeignKey('rolodex.Phone')
-
-    address = models.TextField(blank=True, default='')
-
-    suburb = models.CharField(max_length=64)
-
-    postcode = models.CharField(max_length=16)
-
-    state = models.CharField(max_length=16)
-
-    country = models.CharField(max_length=32, default='Australia')
-
-    dob = models.DateField(blank=True, null=True, verbose_name='Birth date',
-                           help_text="Kept private, necessary as licenced venue.")
     # ApproximateDate(
     #     blank=True, null=True,
     #     help_text="We don't like having to ask for this but we children members are differently categorised. Only year, or month and year are required.")  # noqa
-
-    payment_method = models.CharField(
-        max_length=255, choices=settings.PAYMENT_METHODS,)
-
-    survey_games = models.TextField(
-        blank=True, null=True,
-        verbose_name="What's your favourite game?",
-        help_text="List as many as you like.")
-    survey_food = models.TextField(
-        blank=True, null=True,
-        verbose_name="What food, drink or pizza would you like see on our menu?",  # noqa
-        help_text="Say as much as you want.")
-    survey_hear = models.TextField(
-        blank=True, null=True,
-        verbose_name="How did you hear about us?",
-        help_text="Tell us a story.")
-    survey_suggestions = models.TextField(
-        blank=True, null=True,
-        verbose_name="Any suggestions you would have for us?",
-        help_text="We're still pretty new and learning as we go!")
-
-    def save(self, *args, **kwargs):
-
-        if self.is_approved_paid:
-            if not self.approved_by or not self.approved_payment_method:
-                raise Exception(
-                    "If approved, must have payment method and user.")
-
-        return super(TemporaryMember, self).save(*args, **kwargs)
-
 
 @python_2_unicode_compatible
 class Member(models.Model):
@@ -227,3 +151,87 @@ class Payment(models.Model):
             num=self.member.number,
             name=self.member.name
         )
+
+
+class TemporaryMember(models.Model):
+    """ Anybody can complete the form, it doesn't mean it's right and must be
+    approved.
+    """
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    is_checked = models.BooleanField(default=False)
+
+    is_approved_paid = models.BooleanField(default=False)
+
+    approved_payment_method = models.CharField(
+        max_length=255, blank=True, default='',
+        choices=settings.PAYMENT_METHODS,
+    )
+
+    approved_by = models.ForeignKey('auth.User', blank=True, null=True)
+
+    member = models.ForeignKey('members.Member', blank=True, null=True)
+
+    name = models.CharField(max_length=200, blank=True, default='',
+                            verbose_name='Full Name',)
+
+    sort_name = models.CharField(max_length=200, verbose_name='Surname')
+
+    ref_name = models.CharField(max_length=200, verbose_name='First Name')
+
+    notes = models.TextField(blank=True, default='')
+
+    email = models.ForeignKey('rolodex.Email')
+
+    phone = models.ForeignKey('rolodex.Phone')
+
+    address = models.TextField(blank=True, default='')
+
+    suburb = models.CharField(max_length=64)
+
+    postcode = models.CharField(max_length=16)
+
+    state = models.CharField(max_length=16)
+
+    country = models.CharField(max_length=32, default='Australia')
+
+    dob = models.DateField(blank=True, null=True, verbose_name='Birth date',
+                           help_text="Kept private, necessary as licenced venue.")
+
+    payment_method = models.CharField(
+        max_length=255, choices=settings.PAYMENT_METHODS,)
+
+    survey_games = models.TextField(
+        blank=True, null=True,
+        verbose_name="What's your favourite game?",
+        help_text="List as many as you like.")
+    survey_food = models.TextField(
+        blank=True, null=True,
+        verbose_name="What food, drink or pizza would you like see on our menu?",  # noqa
+        help_text="Say as much as you want.")
+    survey_hear = models.TextField(
+        blank=True, null=True,
+        verbose_name="How did you hear about us?",
+        help_text="Tell us a story.")
+    survey_suggestions = models.TextField(
+        blank=True, null=True,
+        verbose_name="Any suggestions you would have for us?",
+        help_text="We're still pretty new and learning as we go!")
+
+    def get_or_create_member(self):
+        """ What makes a member unique? """
+
+        return member
+
+    def save(self, *args, **kwargs):
+
+        if self.is_approved_paid:
+            if not self.approved_by or not self.approved_payment_method:
+                raise Exception(
+                    "If approved, must have payment method and user.")
+            else:
+                # create/check Member object exists
+                pass
+
+        return super(TemporaryMember, self).save(*args, **kwargs)
