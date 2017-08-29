@@ -1,0 +1,14 @@
+{% extends "events/base.html" %}
+
+{% block title %}Events - {{ block.super }}{% endblock %}
+
+
+{% block content %}
+
+<h1>Events</h1>
+
+{% for event in object_list %}
+  <p>{{ event }}</p>
+{% endfor %}
+
+{% endblock %}
