@@ -78,7 +78,7 @@ table th {
 table#member-form th {
     white-space: normal;
     vertical-align: top;
-    width: 15em;
+    width: 10em;
 }
 
 
@@ -128,6 +128,11 @@ span.full { /* 115 pax */
 span.helptext {
     margin: -2px 0px 7px;
     display: block;
+}
+
+form ul {
+    padding: 0;
+    list-style: none;
 }
 
 button[type=submit] {
