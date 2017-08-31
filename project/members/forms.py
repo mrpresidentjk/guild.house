@@ -10,6 +10,9 @@ from .models import TemporaryMember
 
 class TemporaryMemberForm(forms.Form):
 
+    member_type = forms.ChoiceField(
+        widget=forms.RadioSelect(),
+        choices=settings.MEMBERS_TYPES)
     surname = forms.CharField()
     first_name = forms.CharField()
     email = forms.EmailField()
@@ -22,7 +25,8 @@ class TemporaryMemberForm(forms.Form):
     country = forms.CharField(initial="Australia")
     dob = forms.DateField(label="Birth date")
     payment_method = forms.ChoiceField(
-        choices=[('', '---')] + settings.PAYMENT_METHODS)  # .insert(0, ))
+        widget=forms.RadioSelect(),
+        choices=[('', '---')] + settings.PAYMENT_METHODS)
     survey_games = forms.CharField(
         required=False,
         widget=forms.Textarea,

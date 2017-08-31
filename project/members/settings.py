@@ -10,8 +10,8 @@ PAYMENT_METHODS = getattr(settings, 'MEMBERS_PAYMENT_METHODS', [
 
 
 MEMBERS_TYPES = getattr(settings, 'MEMBERS_TYPES', [
-    ('special', 'special'),
-    ('standard', 'standard'),
-    ('family', 'family'),
-    ('student', 'student'),
+    ('standard', 'Guild Member'),
+    ('family', 'Guild Member Family'),
+    ('student', 'Guild Student Member'),
+    ('special', 'other'),
 ])
