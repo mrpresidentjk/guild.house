@@ -11,6 +11,10 @@ urls = [
         views.member_create_view,
         name='member_form'),
 
+    url(r'^success/',
+        views.TemporaryMemberSuccessView.as_view(),
+        name='temporarymember_success_view'),
+
     url(r'^review/',
         permission_required('members.can_change_member')(
             views.member_approval_view,

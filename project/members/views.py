@@ -24,6 +24,11 @@ def member_create_view(request):
     return render(request, template_name, context)
 
 
+class TemporaryMemberSuccessView(generic.TemplateView):
+
+    template_name = "members/temporarymember_success.html"
+
+
 def member_approval_view(request):
 
     template_name = "members/member_approval.html"
