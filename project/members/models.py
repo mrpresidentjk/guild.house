@@ -105,7 +105,8 @@ class Membership(models.Model):
 
     member = models.ForeignKey('members.Member')
 
-    member_type = models.CharField(max_length=255)
+    member_type = models.CharField(max_length=255,
+                                   choices=settings.MEMBERS_TYPES)
 
     valid_from = models.DateField(null=True, blank=False)
 
@@ -173,6 +174,9 @@ class TemporaryMember(models.Model):
 
     member = models.ForeignKey('members.Member', blank=True, null=True)
 
+    member_type = models.CharField(max_length=255,
+                                   # exclude "special" as an option
+                                   choices=settings.MEMBERS_TYPES[1:])
     name = models.CharField(max_length=200, blank=True, default='',
                             verbose_name='Full Name',)
 
