@@ -13,17 +13,22 @@ class TemporaryMemberForm(forms.Form):
     member_type = forms.ChoiceField(
         widget=forms.RadioSelect(),
         choices=settings.MEMBERS_TYPES)
-    surname = forms.CharField()
-    first_name = forms.CharField()
+    sort_name = forms.CharField(label="surname")
+    ref_name = forms.CharField(label="first_name")
     email = forms.EmailField()
     phone = AUPhoneNumberField()
-    # widget=forms.TextInput())  # attrs={'placeholder': '**'}))
     address = forms.CharField(widget=forms.Textarea)
     suburb = forms.CharField()
     postcode = forms.CharField()
     state = forms.CharField(initial="ACT")
     country = forms.CharField(initial="Australia")
-    dob = forms.DateField(label="Birth date")
+    year = forms.IntegerField(
+        label="Birth year",
+        min_value=1890, max_value=2017)
+    dob = forms.DateField(
+        label="Birthday",
+        help_text="Optional and confidential, so we can wish you happy birthday.",  # noqa
+        required=False)
     payment_method = forms.ChoiceField(
         widget=forms.RadioSelect(),
         choices=[('', '---')] + settings.PAYMENT_METHODS)
@@ -48,11 +53,8 @@ class TemporaryMemberForm(forms.Form):
         label="Any suggestions you would have for us?",
         help_text="We're still pretty new and learning as we go!")
 
-    class Meta:
-        model = TemporaryMember
-        exclude = ['is_checked', 'is_approved_paid', 'notes',
-                   'approved_by', 'approved_payment_method']
     def __init__(self, *args, **kwargs):
         super(TemporaryMemberForm, self).__init__(*args, **kwargs)
         self.request = kwargs.pop('request', None)
+
         self.fields['dob'].widget.attrs['placeholder'] = 'dd/mm/yyyy'
