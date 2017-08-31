@@ -163,6 +163,7 @@ class TemporaryMember(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True)
 
+    # APPROVAL manually added
     is_checked = models.BooleanField(default=False)
 
     is_approved_paid = models.BooleanField(default=False)
@@ -179,11 +180,17 @@ class TemporaryMember(models.Model):
     # Payment type set by user, checked by staff
     payment_method = models.CharField(
         max_length=255, choices=settings.PAYMENT_METHODS,)
+
+    # MEMBER
+    # Member created automatically after manual staff approval
     member = models.ForeignKey('members.Member', blank=True, null=True)
 
     member_type = models.CharField(max_length=255,
                                    # exclude "special" as an option
                                    choices=settings.MEMBERS_TYPES[1:])
+
+    # DETAILS
+    # Replicable details for actual members
     name = models.CharField(max_length=200, blank=True, default='',
                             verbose_name='Full Name',)
 
@@ -210,7 +217,8 @@ class TemporaryMember(models.Model):
     dob = models.DateField(blank=True, null=True, verbose_name='Birth date',
                            help_text="Kept private, necessary as licenced venue.")
 
-
+    # SURVEY
+    # Only kept in temporary for interest
     survey_games = models.TextField(
         blank=True, null=True,
         verbose_name="What's your favourite game?",
