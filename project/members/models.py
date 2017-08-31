@@ -54,6 +54,8 @@ class Member(models.Model):
     country = models.CharField(max_length=16, blank=True, default='Australia')
 
     #dob = ApproximateDateField(blank=True, null=True)
+    year = models.PositiveIntegerField(blank=True, null=True)
+
     dob = ApproximateDateField(blank=True, null=True)
 
     updated_at = models.DateTimeField(auto_now=True, editable=False)
@@ -144,7 +146,6 @@ class Payment(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True, editable=True)
 
-
     class Meta(object):
         ordering = ['member__name', 'created_at']
 
@@ -213,6 +214,8 @@ class TemporaryMember(models.Model):
     state = models.CharField(max_length=64)
 
     country = models.CharField(max_length=32, default='Australia')
+
+    year = models.PositiveIntegerField()
 
     dob = models.DateField(blank=True, null=True, verbose_name='Birth date',
                            help_text="Kept private, necessary as licenced venue.")
