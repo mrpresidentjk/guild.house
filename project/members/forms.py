@@ -12,9 +12,10 @@ class TemporaryMemberForm(forms.Form):
 
     member_type = forms.ChoiceField(
         widget=forms.RadioSelect(),
-        choices=settings.MEMBERS_TYPES)
-    sort_name = forms.CharField(label="surname")
-    ref_name = forms.CharField(label="first_name")
+        choices=settings.MEMBERS_TYPES,
+        initial=settings.MEMBERS_TYPES[0])
+    sort_name = forms.CharField(label="Surname")
+    ref_name = forms.CharField(label="First name")
     email = forms.EmailField()
     phone = AUPhoneNumberField()
     address = forms.CharField(widget=forms.Textarea)

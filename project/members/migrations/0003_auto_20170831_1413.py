@@ -30,13 +30,14 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='temporarymember',
             name='member_type',
-            field=models.CharField(choices=[('family', 'Guild Member Family'), ('student', 'Guild Student Member'), ('special', 'other')], default='', max_length=255),
+            field=models.CharField(choices=[('family', 'Guild Member Family'), (
+                'student', 'Guild Student Member'), ('special', 'other')], default='', max_length=255),
             preserve_default=False,
         ),
         migrations.AddField(
             model_name='temporarymember',
             name='year',
-            field=models.PositiveIntegerField(default=''),
+            field=models.PositiveIntegerField(default=0),
             preserve_default=False,
         ),
         migrations.AlterField(
@@ -47,7 +48,8 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='membership',
             name='member_type',
-            field=models.CharField(choices=[('standard', 'Guild Member'), ('family', 'Guild Member Family'), ('student', 'Guild Student Member'), ('special', 'other')], max_length=255),
+            field=models.CharField(choices=[('standard', 'Guild Member'), ('family', 'Guild Member Family'), (
+                'student', 'Guild Student Member'), ('special', 'other')], max_length=255),
         ),
         migrations.AlterField(
             model_name='temporarymember',
