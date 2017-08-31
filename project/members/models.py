@@ -47,7 +47,9 @@ class Member(models.Model):
 
     postcode = models.CharField(max_length=16, blank=True, default='')
 
-    state = models.CharField(max_length=16, blank=True, default='')
+    suburb = models.CharField(max_length=64, blank=True, default='')
+
+    state = models.CharField(max_length=64, blank=True, default='')
 
     country = models.CharField(max_length=16, blank=True, default='Australia')
 
@@ -172,6 +174,11 @@ class TemporaryMember(models.Model):
 
     approved_by = models.ForeignKey('auth.User', blank=True, null=True)
 
+    approved_at = models.DateTimeField(blank=True, null=True)
+
+    # Payment type set by user, checked by staff
+    payment_method = models.CharField(
+        max_length=255, choices=settings.PAYMENT_METHODS,)
     member = models.ForeignKey('members.Member', blank=True, null=True)
 
     member_type = models.CharField(max_length=255,
@@ -196,15 +203,13 @@ class TemporaryMember(models.Model):
 
     postcode = models.CharField(max_length=16)
 
-    state = models.CharField(max_length=16)
+    state = models.CharField(max_length=64)
 
     country = models.CharField(max_length=32, default='Australia')
 
     dob = models.DateField(blank=True, null=True, verbose_name='Birth date',
                            help_text="Kept private, necessary as licenced venue.")
 
-    payment_method = models.CharField(
-        max_length=255, choices=settings.PAYMENT_METHODS,)
 
     survey_games = models.TextField(
         blank=True, null=True,
