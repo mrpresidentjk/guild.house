@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-from datetime import time, datetime, timedelta
+from datetime import time, datetime
 from .models import Booking
-from .settings import DEFAULT_BOOKING_DURATION
+from .settings import DEFAULT_BOOKING_DURATION, UNKNOWN_EMAIL
 
 # Synchronising scrape from Revel to bookings system.
 # To be automated daily.
