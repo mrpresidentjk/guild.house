@@ -77,7 +77,7 @@ class Member(models.Model):
 
         if not self.number:
             try:
-                self.number = Member.objects.order_by('-number')[0] + 1
+                self.number = Member.objects.order_by('-number')[0].number + 1
             except IndexError:
                 self.number = 1
 
