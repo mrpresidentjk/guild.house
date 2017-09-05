@@ -251,6 +251,9 @@ class TemporaryMember(models.Model):
 
     def save(self, *args, **kwargs):
 
+        if not self.name:
+            self.name = "{} {}".format(self.ref_name, self.sort_name)
+
         if self.is_approved_paid:
             if not self.approved_by or not self.approved_payment_method:
                 raise Exception(
