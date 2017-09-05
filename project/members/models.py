@@ -244,6 +244,12 @@ class TemporaryMember(models.Model):
         verbose_name="Any suggestions you would have for us?",
         help_text="We're still pretty new and learning as we go!")
 
+    def __str__(self):
+        return "{}: {} {} [{}]".format(
+            self.member_type,
+            self.ref_name,
+            self.sort_name,
+            self.approved_at)
     def get_or_create_member(self):
         """ What makes a member unique? """
 
