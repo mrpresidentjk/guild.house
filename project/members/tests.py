@@ -73,30 +73,71 @@ class TestMembership(TestCase):
             'dob': date(1990, 1, 1),
             'year': 1234,
         }
-        self.new_member = Member(**self.test_member_input)
-        self.new_member.save()
+        self.member = Member(**self.test_member_input)
+        self.member.save()
 
-        self.new_member.emails.add(self.test_email)
-        self.new_member.phones.add(self.test_phone)
+        self.member.emails.add(self.test_email)
+        self.member.phones.add(self.test_phone)
+
+        self.test_membership_active = Membership(
+            member=self.member,
+            member_type='standard',
+            valid_until=timezone.now() + timedelta(days=1)
+        )
+        self.test_membership_active.save()
+
+        self.test_membership_inactive = Membership(
+            member=self.member,
+            member_type='standard',
+            valid_until=timezone.now() - timedelta(days=1)
+        )
+        self.test_membership_inactive.save()
 
     def test_membership_active(self):
 
-        test_membership = Membership(
-            member=self.new_member,
-            member_type='',
-            valid_until=timezone.now() + timedelta(days=1)
-        )
-        test_membership.save()
-
-        self.assertTrue(test_membership.is_current())
+        self.assertTrue(self.test_membership_active.is_current())
 
     def test_membership_inactive(self):
 
-        test_membership = Membership(
-            member=self.new_member,
-            member_type='',
-            valid_until=timezone.now() - timedelta(days=1)
-        )
-        test_membership.save()
+        self.assertFalse(self.test_membership_inactive.is_current())
 
-        self.assertFalse(test_membership.is_current())
+    def test_membership_queryset(self):
+
+        test_list = [
+            self.test_membership_active,
+            self.test_membership_inactive,
+        ]
+
+        queryset_list = [x for x in self.member.membership_set.all()]
+
+        self.assertEqual(test_list, queryset_list)
+
+    def test_membership_queryset_active(self):
+
+        test_list = [
+            self.test_membership_active,
+        ]
+
+        queryset_list = [x for x in self.member.membership_set.active()]
+
+        self.assertEqual(test_list, queryset_list)
+
+    def test_membership_queryset_inactive(self):
+
+        test_list = [
+            self.test_membership_inactive,
+        ]
+
+        queryset_list = [x for x in self.member.membership_set.inactive()]
+
+        self.assertEqual(test_list, queryset_list)
+
+    def test_member_active(self):
+
+        self.assertTrue(self.member.is_active())
+
+    def test_member_inactive(self):
+
+        self.test_membership_active.delete()
+
+        self.assertFalse(self.member.is_active())

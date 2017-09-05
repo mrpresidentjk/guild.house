@@ -129,6 +129,8 @@ class Membership(models.Model):
         null=True, blank=False,
         help_text="""As the first day of the month following expiry. Eg. Nov 2018 = '1-Dec-2018'""")  # noqa
 
+    objects = querysets.MembershipQuerySet.as_manager()
+
     def __str__(self):
         if self.is_current:
             current = " (current)"
