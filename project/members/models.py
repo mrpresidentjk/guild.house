@@ -22,7 +22,7 @@ class Member(models.Model):
     # @@TODO: switch off blank/null=True, ensure users exist or are generated
     user = models.ForeignKey('auth.User', blank=True, null=True)
 
-    member_number = models.PositiveIntegerField()
+    number = models.PositiveIntegerField()
 
     name = models.CharField(max_length=200, blank=True, default='',
                             verbose_name='Full Name',
