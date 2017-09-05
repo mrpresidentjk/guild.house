@@ -3,6 +3,7 @@ from django.shortcuts import redirect, get_object_or_404, render
 from django.views import generic
 
 from project.rolodex.models import Email, Phone
+from . import settings
 from .forms import TemporaryMemberForm
 from .models import TemporaryMember
 
@@ -15,30 +16,10 @@ def member_create_view(request):
     if request.method == 'POST':
         form = TemporaryMemberForm(request.POST)
         if form.is_valid():
-            kwargs = request.POST
             temporary_member_kwargs = {}
-            temporary_member_fields = [
-                'sort_name',
-                'ref_name',
-                'email',
-                'phone',
-                'address',
-                'postcode',
-                'suburb',
-                'state',
-                'country',
-                'dob',
-                'year',
-                'member_type',
-                'payment_method',
-                'survey_food',
-                'survey_games',
-                'survey_hear',
-                'survey_suggestions',
-            ]
 
             # Filter only necessary fields
-            for field in temporary_member_fields:
+            for field in settings.temporary_member_fields:
                 temporary_member_kwargs[field] = request.POST.get(
                     field, '')
 

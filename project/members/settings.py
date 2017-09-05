@@ -15,3 +15,39 @@ MEMBERS_TYPES = getattr(settings, 'MEMBERS_TYPES', [
     ('student', 'Guild Student Member'),
     ('special', 'other'),
 ])
+
+
+TEMPORARYMEMBER_FIELDS = [
+    'sort_name',
+    'ref_name',
+    'email',
+    'phone',
+    'address',
+    'postcode',
+    'suburb',
+    'state',
+    'country',
+    'dob',
+    'year',
+    'member_type',
+    'payment_method',
+    'survey_food',
+    'survey_games',
+    'survey_hear',
+    'survey_suggestions',
+]
+
+
+MEMBER_FIELDS = [
+    'sort_name',
+    'ref_name',
+    'email',
+    'phone',
+    'address',
+    'postcode',
+    'suburb',
+    'state',
+    'country',
+    'dob',
+    'year',
+]
