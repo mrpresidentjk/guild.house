@@ -282,7 +282,8 @@ class TemporaryMember(models.Model):
 
         return member
 
-    def convert_to_member(self):
+    def convert_to_member(self, payment_method, amount_paid, payment_ref,
+                          member_type):
 
         if self.member:
             return self.member
@@ -307,12 +308,21 @@ class TemporaryMember(models.Model):
 
         self.is_approved_paid = True
         self.approved_at = timezone.now()
+        self.approved_payment_method = payment_method
         self.member = new_member
         self.save()
 
+        new_payment = Payment()
+        new_payment.member = new_member
+        new_payment.payment_method = payment_method
+        new_payment.payment_ref = payment_ref
+        new_payment.amount_paid = amount_paid
+        new_payment.created_at = timezone.now()
+        new_payment.save()
+
         new_membership = Membership()
         new_membership.member = new_member
-        new_membership.member_type = self.member_type
+        new_membership.member_type = member_type
         new_membership.valid_from = self.approved_at
         new_membership.valid_until = self.approved_at + timedelta(days=365)
         new_membership.save()
