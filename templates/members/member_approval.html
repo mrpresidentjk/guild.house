@@ -6,39 +6,52 @@
 
 {% if new_member %}
 
-<div class="alert alert-success">
+<div class="alert alert-success" >
   <strong>Approved:</strong> New Member Number: #{{ new_member.number }}
   <p>{{ new_member }}</p>
 
 </div>
 
-
 {% endif %}
+
+<div class="row">
+<span class="alert alert-danger pull-right text-right">
+  Must be approved one at a time.<br>Please <b>check details</b> before approving.
+</span>
+</div>
 
 {% for obj in obj_list %}
 <div class="row" style="{% cycle 'background-color: #333' ''  %}">
 <form action="" method="post">
   {% csrf_token %}
 
-  <div class="col-md-6">
+  <div class="col-md-4">
     <b>{{ obj.name }}</b><br>
     ({{ obj.email }},
     {{ obj.phone }})
   </div>
-  <div class="col-md-1">
-    {{ obj.member_type }}
-  </div>
-  <div class="col-md-1">
-    {{ obj.payment_method }}
-  </div>
-  <div class="col-md-2">
-    <input type="hidden" name="pk" value="{{ obj.pk }}">
-    Approve: &nbsp;  <input type="checkbox" name="approve">
-  </div>
-  <div class="col-md-1">
+  <div style="whitespace: nowrap">
+
+    <select name="member_type">
+      {% for option in member_types %}
+      <option {% if obj.member_type == option.0 %}selected{% endif %}>{{ option.1 }}</option>
+      {% endfor %}
+    </select>
+
+    <select name="payment_method">
+      {% for option in payment_methods %}
+      <option {% if obj.payment_method == option.0 %}selected{% endif %}>{{ option.1 }}</option>
+      {% endfor %}
+    </select>
+    <input type="text" name="payment_ref" placeholder="reference" style="width: 3em">
+
+
+    <input type="number" name="amount_paid" step="0.50" value="15.00" style="width: 6em">
+    <input type="hidden" name="pk" value="{{ obj.pk }}"> &nbsp; &nbsp;
+    Approve: &nbsp;  <input type="checkbox" name="approve"> &nbsp; &nbsp;
     <button type="submit" class="hidden-print btn btn-default btn-lg">
-      <i class="fa fa-save fa-fw"></i>
-      <span class="network-name">Save</span>
+      <i class="fa fa-check fa-fw"></i>
+      <span class="network-name">Approve</span>
     </button>
   </div>
 </form>
