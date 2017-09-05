@@ -123,6 +123,24 @@ class Membership(models.Model):
         null=True, blank=False,
         help_text="""As the first day of the month following expiry. Eg. Nov 2018 = '1-Dec-2018'""")  # noqa
 
+    def __str__(self):
+        if self.is_current:
+            current = " (current)"
+        else:
+            current = " (expired)"
+        return "[{member_type}] {date} -- #{num} {name}".format(
+            member_type=self.member_type,
+            date=self.valid_until,
+            num=self.member.number,
+            name=self.member.name
+        ) + current
+
+    def is_current(self):
+        if self.valid_until >= timezone.now():
+            return True
+        else:
+            return False
+
 
 class MembershipTag(models.Model):
 
