@@ -75,8 +75,14 @@ class Member(models.Model):
 
     def save(self, *args, **kwargs):
 
+        if not self.number:
+            try:
+                self.number = Member.objects.order_by('-number')[0] + 1
+            except IndexError:
+                self.number = 1
+
         if not self.user:
-            user = User.objects.create_user(username=self.member_number)
+            user = User.objects.create_user(username=self.number)
             user.first_name = self.ref_name
             user.last_name = self.sort_name
             user.save()
