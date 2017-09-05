@@ -15,7 +15,7 @@ urls = [
         views.TemporaryMemberSuccessView.as_view(),
         name='temporarymember_success_view'),
 
-    url(r'^review/',
+    url(r'^approve/',
         permission_required('members.can_change_member')(
             views.member_approval_view,
         ),
