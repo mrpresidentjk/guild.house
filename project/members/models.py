@@ -70,8 +70,7 @@ class Member(models.Model):
     objects = querysets.MemberQuerySet.as_manager()
 
     def __str__(self):
-        return "#{num} {name}".format(date=self.valid_until,
-                                      num=self.number,
+        return "#{num} {name}".format(num=self.number,
                                       name=self.name)
 
     def save(self, *args, **kwargs):
