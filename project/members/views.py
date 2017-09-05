@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from django.shortcuts import redirect, get_object_or_404, render
+from django.shortcuts import redirect, render
 from django.views import generic
 
 from project.rolodex.models import Email, Phone
@@ -56,13 +56,18 @@ def member_approval_view(request):
 
     template_name = "members/member_approval.html"
     context = {}
+    temp_list = TemporaryMember.objects.filter(is_approved_paid=False)
+    temp_list_old = temp_list.filter(is_checked=True)
 
     if request.method == 'POST':
-        temp_list = []
-
-    else:
-        temp_list = TemporaryMember.objects.filter(is_approved_paid=False)
+        print(request.POST['pk'])
+        temporary_member = TemporaryMember.objects.get(pk=request.POST['pk'])
+        temporary_member.approved_by = request.user
+        temporary_member.save()
+        new_member = temporary_member.convert_to_member()
+        context['new_member'] = new_member
 
     context['obj_list'] = temp_list
+    context['obj_list_old'] = temp_list_old
 
     return render(request, template_name, context)

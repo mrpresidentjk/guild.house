@@ -1,0 +1,52 @@
+{% extends 'members/base.html' %}
+
+
+{% block content %}
+
+
+{% if new_member %}
+
+<div class="alert alert-success">
+  <strong>Approved:</strong> New Member Number: #{{ new_member.number }}
+  <p>{{ new_member }}</p>
+
+</div>
+
+
+{% endif %}
+
+{% for obj in obj_list %}
+<div class="row" style="{% cycle 'background-color: #333' ''  %}">
+<form action="" method="post">
+  {% csrf_token %}
+
+  <div class="col-md-6">
+    <b>{{ obj.name }}</b><br>
+    ({{ obj.email }},
+    {{ obj.phone }})
+  </div>
+  <div class="col-md-1">
+    {{ obj.member_type }}
+  </div>
+  <div class="col-md-1">
+    {{ obj.payment_method }}
+  </div>
+  <div class="col-md-2">
+    <input type="hidden" name="pk" value="{{ obj.pk }}">
+    Approve: &nbsp;  <input type="checkbox" name="approve">
+  </div>
+  <div class="col-md-1">
+    <button type="submit" class="hidden-print btn btn-default btn-lg">
+      <i class="fa fa-save fa-fw"></i>
+      <span class="network-name">Save</span>
+    </button>
+  </div>
+</form>
+</div>
+{% endfor %}
+
+{% for obj in obj_list_old %}
+
+{% endfor %}
+
+{% endblock %}
