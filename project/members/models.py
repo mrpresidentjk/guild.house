@@ -90,6 +90,12 @@ class Member(models.Model):
 
         super(Member, self).save(*args, **kwargs)
 
+    def is_active(self):
+        if self.membership_set.active():
+            return True
+        else:
+            return False
+
     def send_welcome_email(self):
         subject, from_email, to = 'hello', 'from@example.com', 'to@example.com'
         text_content = 'This is an important message.'
