@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, unicode_literals
+from datetime import timedelta
 from django.contrib.auth.models import User
 from django.core.mail import EmailMultiAlternatives, send_mail
 from django.db import models
+from django.utils import timezone
 from django.utils.encoding import python_2_unicode_compatible
 from django_date_extensions.fields import ApproximateDateField
 
-from project.rolodex.models import Email, Phone
 from project.utils import get_current_site
 from . import querysets, settings
 
@@ -280,6 +281,43 @@ class TemporaryMember(models.Model):
         """ What makes a member unique? """
 
         return member
+
+    def convert_to_member(self):
+
+        if self.member:
+            return self.member
+
+        # @@TODO github#7 make this more efficient
+        new_member = Member()
+        new_member.name = self.name
+        new_member.sort_name = self.sort_name
+        new_member.ref_name = self.ref_name
+        new_member.notes = self.notes
+        new_member.address = self.address
+        new_member.postcode = self.postcode
+        new_member.suburb = self.suburb
+        new_member.state = self.state
+        new_member.country = self.country
+        new_member.dob = self.dob
+        new_member.year = self.year
+        new_member.save()
+
+        new_member.emails.add(self.email)
+        new_member.phones.add(self.phone)
+
+        self.is_approved_paid = True
+        self.approved_at = timezone.now()
+        self.member = new_member
+        self.save()
+
+        new_membership = Membership()
+        new_membership.member = new_member
+        new_membership.member_type = self.member_type
+        new_membership.valid_from = self.approved_at
+        new_membership.valid_until = self.approved_at + timedelta(days=365)
+        new_membership.save()
+
+        return new_member
 
     def save(self, *args, **kwargs):
 

@@ -49,6 +49,41 @@ class TestTemporaryMemberSave(TestCase):
         test_temporarymember = TemporaryMember.objects.get(**self.test_input)
         self.assertEqual(self.new_temporarymember, test_temporarymember)
 
+    def test_simple_temporary_member_convert_to_member(self):
+
+        new_member = self.new_temporarymember.convert_to_member()
+
+        # @TODO duplicated could be done smarter
+        test_member_input = {
+            'ref_name': 'Test',
+            'sort_name': 'Smith',
+            'emails__email': self.test_email,
+            'phones__phone': self.test_phone,
+            'address': '1 Testing Avenue',
+            'postcode': '2601',
+            'state': 'ACT',
+            'country': 'Australia',
+            'suburb': 'Canberra',
+            'dob': date(1990, 1, 1),
+            'year': 1234,
+        }
+
+        test_member = Member.objects.get(**test_member_input)
+        self.assertEqual(new_member, test_member)
+
+        test_membership_input = {
+            'member': new_member,
+            'member_type': self.new_temporarymember.member_type,
+            'valid_from': self.new_temporarymember.approved_at,
+            'valid_until': self.new_temporarymember.approved_at
+            + timedelta(days=365),
+        }
+
+        test_membership = Membership.objects.get(**test_membership_input)
+
+        self.assertEqual(new_member.membership_set.all()[0], test_membership)
+
+
 class TestMembership(TestCase):
 
     def setUp(self):
