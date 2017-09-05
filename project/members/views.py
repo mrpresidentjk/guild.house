@@ -15,7 +15,49 @@ def member_create_view(request):
     if request.method == 'POST':
         form = TemporaryMemberForm(request.POST)
         if form.is_valid():
-            new = TemporaryMember(**request.POST)
+            kwargs = request.POST
+            temporary_member_kwargs = {}
+            temporary_member_fields = [
+                'sort_name',
+                'ref_name',
+                'email',
+                'phone',
+                'address',
+                'postcode',
+                'suburb',
+                'state',
+                'country',
+                'dob',
+                'year',
+                'member_type',
+                'payment_method',
+                'survey_food',
+                'survey_games',
+                'survey_hear',
+                'survey_suggestions',
+            ]
+
+            # Filter only necessary fields
+            for field in temporary_member_fields:
+                temporary_member_kwargs[field] = request.POST.get(
+                    field, '')
+
+            # Replace string 'email'/'phone' with rolodex Model objects
+            temporary_member_kwargs['email'], \
+                created = Email.objects.get_or_create(
+                    email=request.POST['email'])
+            temporary_member_kwargs['phone'], \
+                created = Phone.objects.get_or_create(
+                    phone=request.POST['phone'])
+
+            # Fix date format @TODO do this better
+            dob = request.POST['dob'].split("/")
+            temporary_member_kwargs['dob'] = "{}-{}-{}".format(
+                dob[2], dob[1], dob[0])
+
+            new_temporary_member = TemporaryMember(**temporary_member_kwargs)
+            new_temporary_member.save()
+            return redirect('/members/success/')
     else:
         form = TemporaryMemberForm()
 
