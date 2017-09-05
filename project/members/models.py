@@ -307,6 +307,7 @@ class TemporaryMember(models.Model):
         new_member.phones.add(self.phone)
 
         self.is_approved_paid = True
+        self.is_checked = True
         self.approved_at = timezone.now()
         self.approved_payment_method = payment_method
         self.member = new_member

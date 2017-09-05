@@ -20,12 +20,12 @@
 </span>
 </div>
 
-{% for obj in obj_list %}
+{% for obj in obj_list_new %}
 <div class="row" style="{% cycle 'background-color: #333' ''  %}">
 <form action="" method="post">
   {% csrf_token %}
 
-  <div class="col-md-4">
+  <div class="col-md-3">
     <b>{{ obj.name }}</b><br>
     ({{ obj.email }},
     {{ obj.phone }})
@@ -51,15 +51,56 @@
     Approve: &nbsp;  <input type="checkbox" name="approve"> &nbsp; &nbsp;
     <button type="submit" class="hidden-print btn btn-default btn-lg">
       <i class="fa fa-check fa-fw"></i>
-      <span class="network-name">Approve</span>
+      <span class="network-name">Submit</span>
     </button>
+     &nbsp; &nbsp; Defer: &nbsp;  <input type="checkbox" name="defer">
   </div>
 </form>
 </div>
 {% endfor %}
 
-{% for obj in obj_list_old %}
 
+{% if obj_list_old %}
+<h3 style="opacity: 0.5;">OLD</h3>
+<p style="opacity: 0.5;">Likely not genuine or duplicate.</p>
+{% endif %}
+
+{% for obj in obj_list_old %}
+<div class="row" style="opacity: 0.5; {% cycle 'background-color: #333' ''  %}">
+<form action="" method="post">
+  {% csrf_token %}
+
+  <div class="col-md-3">
+    <b>{{ obj.name }}</b><br>
+    ({{ obj.email }},
+    {{ obj.phone }})
+  </div>
+  <div style="whitespace: nowrap">
+
+    <select name="member_type">
+      {% for option in member_types %}
+      <option {% if obj.member_type == option.0 %}selected{% endif %}>{{ option.1 }}</option>
+      {% endfor %}
+    </select>
+
+    <select name="payment_method">
+      {% for option in payment_methods %}
+      <option {% if obj.payment_method == option.0 %}selected{% endif %}>{{ option.1 }}</option>
+      {% endfor %}
+    </select>
+    <input type="text" name="payment_ref" placeholder="reference" style="width: 3em">
+
+
+    <input type="number" name="amount_paid" step="0.50" value="15.00" style="width: 6em">
+    <input type="hidden" name="pk" value="{{ obj.pk }}"> &nbsp; &nbsp;
+    Approve: &nbsp;  <input type="checkbox" name="approve"> &nbsp; &nbsp;
+    <button type="submit" class="hidden-print btn btn-default btn-lg">
+      <i class="fa fa-check fa-fw"></i>
+      <span class="network-name">Submit</span>
+    </button>
+  </div>
+</form>
+</div>
 {% endfor %}
 
 {% endblock %}

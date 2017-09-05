@@ -19,7 +19,7 @@ def member_create_view(request):
             temporary_member_kwargs = {}
 
             # Filter only necessary fields
-            for field in settings.temporary_member_fields:
+            for field in settings.TEMPORARYMEMBER_FIELDS:
                 temporary_member_kwargs[field] = request.POST.get(
                     field, '')
 
@@ -57,22 +57,32 @@ def member_approval_view(request):
     template_name = "members/member_approval.html"
     context = {}
     temp_list = TemporaryMember.objects.filter(is_approved_paid=False)
-    temp_list_old = temp_list.filter(is_checked=True)
+    temp_list_new = temp_list.filter(is_checked=False).order_by('-pk')
+    temp_list_old = temp_list.filter(is_checked=True).order_by('-pk')
 
-    if request.method == 'POST' and request.POST['approve'] == 'on':
-        temporary_member = TemporaryMember.objects.get(pk=request.POST['pk'])
-        temporary_member.approved_by = request.user
-        temporary_member.save()
+    if request.method == 'POST':
+        if request.POST.get('approve'):
+            temporary_member = TemporaryMember.objects.get(
+                pk=request.POST['pk'])
+            temporary_member.approved_by = request.user
+            temporary_member.save()
 
-        new_member = temporary_member.convert_to_member(
-            payment_method=request.POST['payment_method'],
-            amount_paid=request.POST['amount_paid'],
-            payment_ref=request.POST['payment_ref'],
-            member_type=request.POST['member_type'],
-        )
-        context['new_member'] = new_member
+            new_member = temporary_member.convert_to_member(
+                payment_method=request.POST['payment_method'],
+                amount_paid=request.POST['amount_paid'],
+                payment_ref=request.POST['payment_ref'],
+                member_type=request.POST['member_type'],
+            )
+            context['new_member'] = new_member
 
-    context['obj_list'] = temp_list
+        if request.POST.get('defer'):
+            temporary_member = TemporaryMember.objects.get(
+                pk=request.POST['pk'])
+            temporary_member.approved_by = request.user
+            temporary_member.is_checked = True
+            temporary_member.save()
+
+    context['obj_list_new'] = temp_list_new
     context['obj_list_old'] = temp_list_old
     context['payment_methods'] = settings.PAYMENT_METHODS
     context['member_types'] = settings.MEMBERS_TYPES
