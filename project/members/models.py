@@ -36,6 +36,8 @@ class Member(models.Model):
                                 verbose_name='First Name',
                                 )
 
+    title = models.CharField(max_length=64, blank=True, default='')
+
     notes = models.TextField(blank=True, default='')
 
     private_notes = models.TextField(blank=True, default='')
@@ -54,15 +56,21 @@ class Member(models.Model):
 
     country = models.CharField(max_length=16, blank=True, default='Australia')
 
-    #dob = ApproximateDateField(blank=True, null=True)
     year = models.PositiveIntegerField(blank=True, null=True)
 
-    dob = ApproximateDateField(blank=True, null=True)
+    dob = models.DateField(
+        blank=True, null=True, verbose_name='Birth date',
+        help_text="Kept private.")
+    #dob = ApproximateDateField(blank=True, null=True)
+
+    created_at = models.DateTimeField(auto_now_add=True, editable=True)
 
     updated_at = models.DateTimeField(auto_now=True, editable=False)
 
     # @@TODO run cron last day of the month to turn on and off
     is_current = models.BooleanField(db_index=True, default=True)
+
+    legacy_source = models.CharField(max_length=64, blank=True, default='')
 
     site = models.ForeignKey('sites.Site', default=get_current_site,
                              related_name='members_member',
@@ -169,8 +177,7 @@ class Payment(models.Model):
 
     payment_method = models.CharField(max_length=128,
                                       choices=settings.PAYMENT_METHODS,
-                                      default=settings.PAYMENT_METHODS[0][0]
-                                      )
+                                      default=settings.PAYMENT_METHODS[0][0])
 
     payment_ref = models.CharField(max_length=1024, blank=True, default='')
 
@@ -182,8 +189,9 @@ class Payment(models.Model):
         ordering = ['member__name', 'created_at']
 
     def __str__(self):
-        return "{date} #{num} {name}".format(
-            date=self.valid_until,
+        return "#{num} ${amount_paid} [{payment_method}] ({name})".format(
+            payment_method=self.payment_method,
+            amount_paid=self.amount_paid,
             num=self.member.number,
             name=self.member.name
         )
@@ -212,6 +220,11 @@ class TemporaryMember(models.Model):
 
     # Payment type set by user, checked by staff
     payment_method = models.CharField(
+        blank=True, default='',
+        max_length=255, choices=settings.PAYMENT_METHODS,)
+
+    payment_source = models.CharField(
+        blank=True, default='',
         max_length=255, choices=settings.PAYMENT_METHODS,)
 
     # MEMBER
@@ -219,6 +232,7 @@ class TemporaryMember(models.Model):
     member = models.ForeignKey('members.Member', blank=True, null=True)
 
     member_type = models.CharField(max_length=255,
+                                   blank=True, default='',
                                    # exclude "special" as an option
                                    choices=settings.MEMBERS_TYPES[1:])
 
@@ -227,17 +241,19 @@ class TemporaryMember(models.Model):
     name = models.CharField(max_length=200, blank=True, default='',
                             verbose_name='Full Name',)
 
-    sort_name = models.CharField(max_length=200, verbose_name='Surname')
+    sort_name = models.CharField(
+        max_length=200, verbose_name='Surname', blank=True, default='')
 
-    ref_name = models.CharField(max_length=200, verbose_name='First Name')
+    ref_name = models.CharField(
+        max_length=200, verbose_name='First Name', blank=True, default='')
 
     notes = models.TextField(blank=True, default='')
 
-    email = models.ForeignKey('rolodex.Email')
+    email = models.ForeignKey('rolodex.Email', blank=True, default='')
 
-    phone = models.ForeignKey('rolodex.Phone')
+    phone = models.ForeignKey('rolodex.Phone', blank=True, default='')
 
-    address = models.TextField(blank=True, default='')
+    address = models.TextField(blank=True, default=''),
 
     suburb = models.CharField(max_length=64)
 
@@ -247,10 +263,13 @@ class TemporaryMember(models.Model):
 
     country = models.CharField(max_length=32, default='Australia')
 
-    year = models.PositiveIntegerField()
+    year = models.PositiveIntegerField(blank=True, null=True)
 
-    dob = models.DateField(blank=True, null=True, verbose_name='Birth date',
-                           help_text="Kept private, necessary as licenced venue.")
+    dob = models.DateField(
+        blank=True, null=True, verbose_name='Birth date',
+        help_text="Kept private, necessary as licenced venue.")
+
+    legacy_source = models.CharField(max_length=64, blank=True, default='')
 
     # SURVEY
     # Only kept in temporary for interest
@@ -277,6 +296,11 @@ class TemporaryMember(models.Model):
             self.ref_name,
             self.sort_name,
             self.approved_at)
+
+    def create_kwargs_set(**kwargs):
+
+        return temporary_member_kwargs
+
     def get_or_create_member(self):
         """ What makes a member unique? """
 
