@@ -75,5 +75,6 @@ def import_revel_bookings(scrape):
         obj.duration = DEFAULT_BOOKING_DURATION
         obj.email = UNKNOWN_EMAIL
         obj.save()
+        print(obj)
         success.append(obj)
     return success
