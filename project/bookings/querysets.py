@@ -10,7 +10,9 @@ from .settings import BIG_BOOKING
 class QuerySet(models.query.QuerySet):
 
     def active(self):
-        return self.current_site().exclude(status="Cancelled")
+        return self.current_site().exclude(
+            status="Cancelled").exclude(
+            status="No Show")
 
     def big(self):
         return self.active().filter(party_size__gte=BIG_BOOKING)
