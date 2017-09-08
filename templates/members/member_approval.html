@@ -16,7 +16,9 @@
 
 <div class="row">
 <span class="alert alert-danger pull-right text-right">
-  Must be approved one at a time.<br>Please <b>check details</b> before approving.
+  Must be approved one at a time.<br>
+  Please <b>check details</b> before approving.<br>
+  User 'Defer' option if potentially not genuine or duplicate.
 </span>
 </div>
 
@@ -46,7 +48,7 @@
     <input type="text" name="payment_ref" placeholder="reference" style="width: 3em">
 
 
-    <input type="number" name="amount_paid" step="0.50" value="15.00" style="width: 6em">
+    $<input type="number" name="amount_paid" step="0.50" value="15.00" style="width: 6em">
     <input type="hidden" name="pk" value="{{ obj.pk }}"> &nbsp; &nbsp;
     Approve: &nbsp;  <input type="checkbox" name="approve"> &nbsp; &nbsp;
     <button type="submit" class="hidden-print btn btn-default btn-lg">
@@ -61,12 +63,12 @@
 
 
 {% if obj_list_old %}
-<h3 style="opacity: 0.5;">OLD</h3>
-<p style="opacity: 0.5;">Likely not genuine or duplicate.</p>
+<h3 style="opacity: 0.4;">Deferred</h3>
+<p style="opacity: 0.4;">Likely not genuine or duplicate.</p>
 {% endif %}
 
 {% for obj in obj_list_old %}
-<div class="row" style="opacity: 0.5; {% cycle 'background-color: #333' ''  %}">
+<div class="row" style="opacity: 0.4; {% cycle 'background-color: #333' ''  %}">
 <form action="" method="post">
   {% csrf_token %}
 
@@ -91,7 +93,7 @@
     <input type="text" name="payment_ref" placeholder="reference" style="width: 3em">
 
 
-    <input type="number" name="amount_paid" step="0.50" value="15.00" style="width: 6em">
+    $<input type="number" name="amount_paid" step="0.50" value="15.00" style="width: 6em">
     <input type="hidden" name="pk" value="{{ obj.pk }}"> &nbsp; &nbsp;
     Approve: &nbsp;  <input type="checkbox" name="approve"> &nbsp; &nbsp;
     <button type="submit" class="hidden-print btn btn-default btn-lg">
