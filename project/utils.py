@@ -14,10 +14,13 @@ def get_current_site():
         pass
 
 
-def tsv_to_dict(dump):
+def convert_tsv(dump):
     """ Make a sensible k,v dict from imported tsv.
 
-    No validation is done here, just simple conversion."""
+    No validation is done here, just simple conversion.
+
+    Returns list of dictionaries.
+    """
     try:
         rows = [items for items in dump.split("\r\n")]
         header_row = rows[0].split("\t")
