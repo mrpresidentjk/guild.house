@@ -4,8 +4,9 @@ from django.views import generic
 
 from project.rolodex.models import Email, Phone
 from . import settings
-from .forms import TemporaryMemberForm
+from .forms import TemporaryMemberForm, BlankForm
 from .models import TemporaryMember
+from .scripts import import_members
 
 
 def member_create_view(request):
@@ -88,3 +89,22 @@ def member_approval_view(request):
     context['member_types'] = settings.MEMBERS_TYPES
 
     return render(request, template_name, context)
+
+
+def import_view(request):
+
+    template_name = 'members/default_form.html'
+    context_data = {}
+
+    if request.method == 'POST':
+        form = BlankForm(request.POST)
+        if form.is_valid():
+            print(request.POST)
+            context_data['success_obj'] = import_members(
+                request.POST['input_data'])
+
+    else:
+        form = BlankForm()
+
+    context_data['form'] = form
+    return render(request, template_name, context_data)

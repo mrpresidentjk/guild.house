@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
+from __future__ import absolute_import, unicode_literals
 from django.conf.urls import include, url
 from django.contrib.auth.decorators import permission_required
 
 from . import views
+
+MEMBERS_PERMISSION_REQUIRED = 'members.can_change_booking'
 
 
 urls = [
@@ -20,6 +23,13 @@ urls = [
             views.member_approval_view,
         ),
         name='member_approval'),
+
+
+    url(r'^import/$',
+        permission_required(MEMBERS_PERMISSION_REQUIRED)(
+            views.import_view
+        ),
+        name='members_import'),
 ]
 
 urlpatterns = [url(r'^', include(urls, namespace='members'))]
