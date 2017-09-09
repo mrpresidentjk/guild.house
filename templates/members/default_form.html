@@ -1,0 +1,24 @@
+{% extends "members/base.html" %}
+
+
+{% block title %}{{ homepage.title }} - {{ block.super }}{% endblock %}
+
+
+{% block content %}
+<div class="row">
+
+  <h1>Import Members</h1>
+
+  {{ success_obj }} successfully created/found.
+
+  <form method="post" action="/members/import/" id="id-form">{% csrf_token %}
+    {% for field in form %}
+    {{ field }}<br>
+    {% endfor %}
+<input type="submit" value="OK">
+
+  </form>
+
+</div>
+{% endblock %}
+
