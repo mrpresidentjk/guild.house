@@ -59,3 +59,9 @@ class TemporaryMemberForm(forms.Form):
         self.request = kwargs.pop('request', None)
 
         self.fields['dob'].widget.attrs['placeholder'] = 'dd/mm/yyyy'
+
+
+class BlankForm(forms.Form):
+
+    input_data = forms.CharField(
+        widget=forms.Textarea(attrs={'rows': 15, 'cols': 100}))
