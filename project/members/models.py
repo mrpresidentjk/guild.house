@@ -91,10 +91,13 @@ class Member(models.Model):
                 self.number = 1
 
         if not self.user:
-            user = User.objects.create_user(username=self.number)
-            user.first_name = self.ref_name
-            user.last_name = self.sort_name
-            user.save()
+            try:
+                user = User.objects.get(username=self.number)
+            except:
+                user = User.objects.create_user(username=self.number)
+                user.first_name = self.ref_name
+                user.last_name = self.sort_name
+                user.save()
             self.user = user
 
         super(Member, self).save(*args, **kwargs)
