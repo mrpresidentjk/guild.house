@@ -42,9 +42,9 @@ class Member(models.Model):
 
     private_notes = models.TextField(blank=True, default='')
 
-    emails = models.ManyToManyField('rolodex.Email')
+    emails = models.ManyToManyField('rolodex.Email', blank=True, null=True)
 
-    phones = models.ManyToManyField('rolodex.Phone')
+    phones = models.ManyToManyField('rolodex.Phone', blank=True, null=True)
 
     address = models.TextField(blank=True, default='')
 
