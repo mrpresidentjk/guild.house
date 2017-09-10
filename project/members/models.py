@@ -67,7 +67,8 @@ class Member(models.Model):
 
     updated_at = models.DateTimeField(auto_now=True, editable=False)
 
-    # @@TODO run cron last day of the month to turn on and off
+    # Redundant, but may be useful later as memberships are based upon days.
+    # Potential efficiency can be found here by doing cron.
     is_current = models.BooleanField(db_index=True, default=True)
 
     legacy_source = models.CharField(max_length=64, blank=True, default='')
