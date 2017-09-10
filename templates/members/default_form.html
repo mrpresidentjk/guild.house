@@ -24,10 +24,15 @@
 
   </form>
 
+  {% if class == membership %}
+    {% for obj in success_obj %}
+    {{ obj }}<br>
+    {% endfor %}
+  {% else %}
   {% for obj in success_obj %}
     {{ obj }}{% if obj.memberships_set.all %} -- {{ obj.memberships_set.all }}{% endif %}<br>
   {% endfor %}
-
+  {% endif %}
 
 </div>
 {% endblock %}

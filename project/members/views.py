@@ -103,10 +103,10 @@ def import_view(request):
                 context_data['success_obj'] = import_members(
                     request.POST['input_data'])
             if request.POST['input_class'] == 'membership':
-
                 print(request.POST['input_data'])
                 context_data['success_obj'] = import_memberships(
                     request.POST['input_data'])
+                context_data['class'] = 'membership'
     else:
         form = BlankForm()
 
