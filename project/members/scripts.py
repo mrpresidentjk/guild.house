@@ -16,14 +16,16 @@ from project.utils import convert_tsv
 
 def create_member(kwargs):
 
-    obj = Member(number=kwargs.pop('number'), **kwargs)
+    obj, is_created = Member.objects.update_or_create(
+        number=kwargs.pop('number'), **kwargs)
     obj.save()
     return obj
 
 
 def create_membership(kwargs):
 
-    member = Member.objects.get_or_create(number=kwargs.pop('number'))
+    member, is_created = Member.objects.get_or_create(
+        number=kwargs.pop('number'))
     obj = Membership(member=member, **kwargs)
     obj.save()
     return obj
