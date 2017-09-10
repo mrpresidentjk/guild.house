@@ -91,6 +91,9 @@ class Member(models.Model):
             except IndexError:
                 self.number = 1
 
+        if not self.name:
+            self.name = "{} {}".format(self.ref_name, self.sort_name)
+
         if not self.user:
             try:
                 user = User.objects.get(username=self.number)
