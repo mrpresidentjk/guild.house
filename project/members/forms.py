@@ -53,12 +53,17 @@ class TemporaryMemberForm(forms.Form):
         widget=forms.Textarea,
         label="Any suggestions you would have for us?",
         help_text="We're still pretty new and learning as we go!")
+    special = forms.CharField(
+        label="other/special membership add reason",
+        help_text="Add the reason for your special membership. Special memberships are arranged for you by Guild staff or management. Ignore otherwise.",  # noqa
+        required=False)
 
     def __init__(self, *args, **kwargs):
         super(TemporaryMemberForm, self).__init__(*args, **kwargs)
         self.request = kwargs.pop('request', None)
 
         self.fields['dob'].widget.attrs['placeholder'] = 'dd/mm/yyyy'
+        self.fields['special'].widget.attrs['placeholder'] = '"other" membership explanation'  # noqa
 
 
 class BlankForm(forms.Form):

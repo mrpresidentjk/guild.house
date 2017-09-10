@@ -13,7 +13,7 @@ MEMBERS_TYPES = getattr(settings, 'MEMBERS_TYPES', [
     ('standard', 'Guild Member'),
     ('family', 'Guild Member Family'),
     ('student', 'Guild Student Member'),
-    ('special', 'other'),
+    ('special', 'other (please add reason at end)'),
 ])
 
 
