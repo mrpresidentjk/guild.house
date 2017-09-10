@@ -6,7 +6,7 @@ from project.rolodex.models import Email, Phone
 from . import settings
 from .forms import TemporaryMemberForm, BlankForm
 from .models import TemporaryMember
-from .scripts import import_members
+from .scripts import import_members, import_memberships
 
 
 def member_create_view(request):
@@ -99,10 +99,14 @@ def import_view(request):
     if request.method == 'POST':
         form = BlankForm(request.POST)
         if form.is_valid():
-            print(request.POST)
-            context_data['success_obj'] = import_members(
-                request.POST['input_data'])
+            if request.POST['input_class'] == 'member':
+                context_data['success_obj'] = import_members(
+                    request.POST['input_data'])
+            if request.POST['input_class'] == 'membership':
 
+                print(request.POST['input_data'])
+                context_data['success_obj'] = import_memberships(
+                    request.POST['input_data'])
     else:
         form = BlankForm()
 
