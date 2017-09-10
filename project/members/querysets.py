@@ -7,7 +7,7 @@ from django.utils import timezone
 class MemberQuerySet(models.query.QuerySet):
 
     def active(self):
-        return self
+        return self.filter(is_active=True)
 
 
 class MembershipQuerySet(models.query.QuerySet):
