@@ -3,6 +3,7 @@ from __future__ import absolute_import, unicode_literals
 from datetime import timedelta
 from django.contrib.auth.models import User
 from django.core.mail import EmailMultiAlternatives, send_mail
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils import timezone
 from django.utils.encoding import python_2_unicode_compatible
@@ -139,13 +140,19 @@ class Membership(models.Model):
     member_type = models.CharField(max_length=255,
                                    choices=settings.MEMBERS_TYPES)
 
-    valid_from = models.DateField(null=True, blank=False)
+    special = models.CharField(max_length=255, blank=True, default='',
+                               choices=settings.MEMBERS_TYPES)
+
+    valid_from = models.DateField()
 
     valid_until = models.DateField(
         null=True, blank=False,
         help_text="""As the first day of the month following expiry. Eg. Nov 2018 = '1-Dec-2018'""")  # noqa
 
     objects = querysets.MembershipQuerySet.as_manager()
+
+    class Meta:
+        unique_together = ('member', 'member_type', 'valid_from')
 
     def __str__(self):
         if self.is_current:
@@ -159,6 +166,10 @@ class Membership(models.Model):
             name=self.member.name
         ) + current
 
+    def clean(self):
+        if self.member_type == 'special' and not self.special:
+            raise ValidationError(
+                "Must add 'special' explanation for special memberships.")
     def is_current(self):
         if self.valid_until >= timezone.now():
             return True
