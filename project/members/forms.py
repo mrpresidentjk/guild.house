@@ -63,5 +63,9 @@ class TemporaryMemberForm(forms.Form):
 
 class BlankForm(forms.Form):
 
+    input_class = forms.ChoiceField(
+        widget=forms.RadioSelect,
+        choices=[('member', 'Member'), ('membership', 'Membership')])
+
     input_data = forms.CharField(
         widget=forms.Textarea(attrs={'rows': 15, 'cols': 100}))
