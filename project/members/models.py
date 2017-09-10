@@ -140,14 +140,15 @@ class Membership(models.Model):
     member_type = models.CharField(max_length=255,
                                    choices=settings.MEMBERS_TYPES)
 
-    special = models.CharField(max_length=255, blank=True, default='',
-                               choices=settings.MEMBERS_TYPES)
+    special = models.CharField(max_length=255, blank=True, default='')
 
     valid_from = models.DateField()
 
     valid_until = models.DateField(
         null=True, blank=False,
         help_text="""As the first day of the month following expiry. Eg. Nov 2018 = '1-Dec-2018'""")  # noqa
+
+    note = models.CharField(max_length=512, blank=True, default='')
 
     objects = querysets.MembershipQuerySet.as_manager()
 
