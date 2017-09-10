@@ -9,9 +9,14 @@
 
   <h1>Import Members</h1>
 
-  {{ success_obj }} successfully created/found.
+  <p>{{ success_obj|length }} successfully created/found.</p><br>
 
   <form method="post" action="/members/import/" id="id-form">{% csrf_token %}
+
+
+    <style>
+      #id_input_data {height:150px;}
+    </style>
     {% for field in form %}
     {{ field }}<br>
     {% endfor %}
@@ -19,6 +24,10 @@
 
   </form>
 
+  {% for obj in success_obj %}
+    {{ obj }} -- {{ obj.memberships_set.all }}<br>
+  {% endfor %}
+
+
 </div>
 {% endblock %}
-
