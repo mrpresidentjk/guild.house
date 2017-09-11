@@ -1,0 +1,82 @@
+{% extends 'members/base.html' %}
+
+
+
+{% block content %}
+
+<h1>Member #{{obj.number}}</h1>
+
+
+
+    <div class="table-responsive">
+      <table class="table table-hover" width="100%" id="dataTable" cellspacing="0">
+
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Surname</th>
+            <th>First Name</th>
+            <th>Type</th>
+            <th style="text-align: center;" >Valid Until</th>
+            <th>&nbsp;</th>
+          </tr>
+        </thead>
+
+        {% for obj in object_list %}
+        <tr id="row{{obj.pk}}" >
+          <td class="value">
+            <div class="nowrap">#{{ obj.member.number }}</div>
+          </td>
+          <td style="text-align: left;" class="value">
+            <div class="nowrap">{{ obj.member.sort_name }}</div>
+          </td>
+          <td style="text-align: left;" class="value">
+            <div class="nowrap">{{ obj.member.ref_name }}</div>
+          </td>
+          <td class="description">
+            {{ obj.member_type }}
+            {% if obj.member_type == 'special' %}:  {{ obj.special }}{% endif %} <br>
+          </td>
+          <td style="text-align: center;" class="valid_until">
+            {% if obj.valid_until %}
+              {% if obj.is_current %}
+              <p class="list-group-item-success">
+              {% else  %}
+              <p class="list-group-item-danger">
+              {% endif %}
+              {{ obj.valid_until }}
+              </p>
+            {% else %}
+              <p class="list-group-item-info"><i> ** lifetime  **</i></p>
+            {% endif %}
+          </td>
+          <td>
+            <a>renew</a>
+          </td>
+        </tr>
+        {% endfor %}
+
+      </table>
+    </div>
+{% endblock %}
+
+
+{% block extra_static %}
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs-3.3.7/jqc-1.12.4/dt-1.10.15/r-2.1.1/sc-1.4.2/datatables.min.css"/>
+    <script type="text/javascript" src="https://cdn.datatables.net/v/bs-3.3.7/jqc-1.12.4/dt-1.10.15/r-2.1.1/sc-1.4.2/datatables.min.js"></script>
+    <script>
+    // Call the dataTables jQuery plugin
+    $(document).ready(function() {
+    $('#dataTable').DataTable({
+            "order": [[2, "asc"], [3, "asc"]],
+            "lengthMenu": [
+                [50, 100, 250, -1],
+                [50, 100, 250, "All"]],
+              "columnDefs": [
+                  { "targets": 0, "type": "html" }
+              ],
+        });
+    });
+    </script>
+
+{% endblock %}
