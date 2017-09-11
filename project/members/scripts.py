@@ -17,7 +17,8 @@ from project.utils import convert_tsv
 def create_member(kwargs):
 
     obj, is_created = Member.objects.update_or_create(
-        number=kwargs.pop('number'), **kwargs)
+        number=kwargs.pop('number'),
+        defaults=kwargs)
     obj.save()
     return obj
 
@@ -26,7 +27,11 @@ def create_membership(kwargs):
 
     member, is_created = Member.objects.get_or_create(
         number=kwargs.pop('number'))
-    obj = Membership(member=member, **kwargs)
+    obj, is_created = Membership.objects.update_or_create(
+        member=member,
+        member_type=kwargs.pop('member_type'),
+        valid_from=kwargs.pop('valid_from'),
+        defaults=kwargs)
     obj.save()
     return obj
 
