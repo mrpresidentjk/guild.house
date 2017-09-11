@@ -30,6 +30,13 @@ urls = [
             views.import_view
         ),
         name='members_import'),
+
+    url(r'^list/$',
+        permission_required(MEMBERS_PERMISSION_REQUIRED)(
+            views.MemberListView.as_view(),
+        ),
+        name='member_list'),
+
 ]
 
 urlpatterns = [url(r'^', include(urls, namespace='members'))]

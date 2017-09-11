@@ -5,7 +5,7 @@ from django.views import generic
 from project.rolodex.models import Email, Phone
 from . import settings
 from .forms import TemporaryMemberForm, BlankForm
-from .models import TemporaryMember
+from .models import TemporaryMember, Member, Membership
 from .scripts import import_members, import_memberships
 
 
@@ -112,3 +112,17 @@ def import_view(request):
 
     context_data['form'] = form
     return render(request, template_name, context_data)
+
+
+class MemberListView(generic.list.ListView):
+    # class MemberListView(generic.TemplateView):
+
+    #template_name = "members/temporarymember_success.html"
+
+    model = Membership
+    template_name = 'members/member_list.html'
+
+    def get_queryset(self, **kwargs):
+        return Membership.objects.all().order_by(
+            'member__sort_name', 'member__ref_name')
+
