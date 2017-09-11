@@ -94,24 +94,26 @@ def member_approval_view(request):
 def import_view(request):
 
     template_name = 'members/default_form.html'
-    context_data = {}
+    context = {}
 
     if request.method == 'POST':
         form = BlankForm(request.POST)
         if form.is_valid():
             if request.POST['input_class'] == 'member':
-                context_data['success_obj'] = import_members(
+                context['success_obj'] = import_members(
                     request.POST['input_data'])
             if request.POST['input_class'] == 'membership':
                 print(request.POST['input_data'])
-                context_data['success_obj'] = import_memberships(
+                context['success_obj'] = import_memberships(
                     request.POST['input_data'])
-                context_data['class'] = 'membership'
+                context['class'] = 'membership'
     else:
         form = BlankForm()
 
-    context_data['form'] = form
-    return render(request, template_name, context_data)
+    context['form'] = form
+    return render(request, template_name, context)
+
+
 
 
 class MemberListView(generic.list.ListView):
