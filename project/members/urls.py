@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import permission_required
 
 from . import views
 
-MEMBERS_PERMISSION_REQUIRED = 'members.can_change_booking'
+MEMBERS_PERMISSION_REQUIRED = 'members.can_change_member'
 
 
 urls = [
@@ -19,7 +19,7 @@ urls = [
         name='temporarymember_success_view'),
 
     url(r'^approve/',
-        permission_required('members.can_change_member')(
+        permission_required(MEMBERS_PERMISSION_REQUIRED)(
             views.member_approval_view,
         ),
         name='member_approval'),
