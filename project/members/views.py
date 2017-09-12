@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from django.http import Http404
 from django.shortcuts import redirect, render
 from django.views import generic
 
@@ -91,6 +92,30 @@ def member_approval_view(request):
     return render(request, template_name, context)
 
 
+class MemberListView(generic.list.ListView):
+
+    model = Membership
+    template_name = 'members/member_list.html'
+
+    def get_queryset(self, **kwargs):
+        return Membership.objects.all()
+
+
+def member_detail_view(request, number):
+
+    template_name = 'members/member_detail.html'
+    context = {}
+
+    member = Member.objects.filter(number=number)
+
+    if member:
+        context['obj'] = member[0]
+    else:
+        raise Http404
+
+    return render(request, template_name, context)
+
+
 def import_view(request):
 
     template_name = 'members/default_form.html'
@@ -112,14 +137,3 @@ def import_view(request):
 
     context['form'] = form
     return render(request, template_name, context)
-
-
-
-
-class MemberListView(generic.list.ListView):
-
-    model = Membership
-    template_name = 'members/member_list.html'
-
-    def get_queryset(self, **kwargs):
-        return Membership.objects.all()
