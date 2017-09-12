@@ -128,7 +128,6 @@ def import_view(request):
                 context['success_obj'] = import_members(
                     request.POST['input_data'])
             if request.POST['input_class'] == 'membership':
-                print(request.POST['input_data'])
                 context['success_obj'] = import_memberships(
                     request.POST['input_data'])
                 context['class'] = 'membership'

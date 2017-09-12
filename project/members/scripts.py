@@ -53,13 +53,16 @@ def import_memberships(text):
     success = []
     for kwargs in data:
         if kwargs.get('valid_from'):
-            kwargs['valid_from'] = make_date(kwargs['valid_from'])
+            kwargs['valid_from'] = make_date(kwargs['valid_from']).date()
+            if kwargs['valid_from'] == '':
+                kwargs.pop('valid_from')
+
+        if kwargs['valid_until'] == '':
+            kwargs.pop('valid_until')
         if kwargs.get('valid_until'):
-            kwargs['valid_until'] = make_date(kwargs.pop('valid_until'))
-            if not type(kwargs['valid_until']) is datetime.datetime:
-                kwargs.pop('valid_until')
-            if kwargs['valid_until'] == '':
-                kwargs.pop('valid_until')
+            kwargs['valid_until'] = make_date(kwargs.pop('valid_until')).date()
+            if not type(kwargs['valid_until']) is datetime.date:
+                kwargs['valid_until'] = False
         obj = create_membership(kwargs=kwargs)
         success.append(obj)
     return success
