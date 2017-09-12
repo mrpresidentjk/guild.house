@@ -37,6 +37,11 @@ urls = [
         ),
         name='member_list'),
 
+    url(r'^\+/(?P<number>\d+)$',
+        views.member_detail_view,
+        name='member_detail'),
+
+
 ]
 
 urlpatterns = [url(r'^', include(urls, namespace='members'))]
