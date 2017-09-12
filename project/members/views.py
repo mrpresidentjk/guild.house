@@ -117,14 +117,9 @@ def import_view(request):
 
 
 class MemberListView(generic.list.ListView):
-    # class MemberListView(generic.TemplateView):
-
-    #template_name = "members/temporarymember_success.html"
 
     model = Membership
     template_name = 'members/member_list.html'
 
     def get_queryset(self, **kwargs):
-        return Membership.objects.all().order_by(
-            'member__sort_name', 'member__ref_name')
-
+        return Membership.objects.all()
