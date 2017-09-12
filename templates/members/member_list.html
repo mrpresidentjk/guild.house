@@ -24,21 +24,21 @@
         <tr id="row{{ obj.pk }}" data-pk="" >
           <td class="value">
             <div class="nowrap"><b>
-                <a href="{% url 'members:member_detail' obj.pk %}">
+                <a href="{% url 'members:member_detail' obj.member.number %}">
                   #{{ obj.member.number|stringformat:"04d" }}
                 </a>
             </b></div>
           </td>
           <td style="text-align: left;" class="value">
             <div class="nowrap">
-              <a href="{% url 'members:member_detail' obj.pk %}">
+              <a href="{% url 'members:member_detail' obj.member.number %}">
                 {{ obj.member.sort_name }}
               </a>
             </div>
           </td>
           <td style="text-align: left;" class="value">
             <div class="nowrap">
-              <a href="{% url 'members:member_detail' obj.pk %}">
+              <a href="{% url 'members:member_detail' obj.member.number %}">
                 {{ obj.member.ref_name }}
               </a>
             </div>
