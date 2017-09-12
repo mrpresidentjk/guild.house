@@ -4,6 +4,8 @@
 {% block content %}
 
 
+<h1>Approve New Members</h1>
+
 {% if new_member %}
 
 <div class="alert alert-success" >
@@ -46,16 +48,14 @@
       {% endfor %}
     </select>
     <input type="text" name="payment_ref" placeholder="reference" style="width: 3em">
-
-
     $<input type="number" name="amount_paid" step="0.50" value="15.00" style="width: 6em">
-    <input type="hidden" name="pk" value="{{ obj.pk }}"> &nbsp; &nbsp;
-    Approve: &nbsp;  <input type="checkbox" name="approve"> &nbsp; &nbsp;
+    <input type="hidden" name="pk" value="{{ obj.pk }}">  &nbsp;
+    Approve: &nbsp;  <input type="checkbox" name="approve"> &nbsp;
     <button type="submit" class="hidden-print btn btn-default btn-lg">
       <i class="fa fa-check fa-fw"></i>
       <span class="network-name">Submit</span>
     </button>
-     &nbsp; &nbsp; Defer: &nbsp;  <input type="checkbox" name="defer">
+     &nbsp; Defer: &nbsp;  <input type="checkbox" name="defer">
   </div>
 </form>
 </div>
@@ -91,11 +91,9 @@
       {% endfor %}
     </select>
     <input type="text" name="payment_ref" placeholder="reference" style="width: 3em">
-
-
     $<input type="number" name="amount_paid" step="0.50" value="15.00" style="width: 6em">
-    <input type="hidden" name="pk" value="{{ obj.pk }}"> &nbsp; &nbsp;
-    Approve: &nbsp;  <input type="checkbox" name="approve"> &nbsp; &nbsp;
+    <input type="hidden" name="pk" value="{{ obj.pk }}">  &nbsp;
+    Approve: &nbsp;  <input type="checkbox" name="approve"> &nbsp;
     <button type="submit" class="hidden-print btn btn-default btn-lg">
       <i class="fa fa-check fa-fw"></i>
       <span class="network-name">Submit</span>
