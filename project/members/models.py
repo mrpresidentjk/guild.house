@@ -81,8 +81,12 @@ class Member(models.Model):
     objects = querysets.MemberQuerySet.as_manager()
 
     def __str__(self):
-        return "#{num} {name}".format(num=self.number,
-                                      name=self.name)
+        string = ""
+        string = "#{num} {name}".format(
+            num=self.number, name=self.name)
+        if self.is_active:
+            return string + " (active)"
+        return string
 
     def save(self, *args, **kwargs):
 
@@ -156,16 +160,23 @@ class Membership(models.Model):
         unique_together = ('member', 'member_type', 'valid_from')
 
     def __str__(self):
-        if self.is_current:
-            current = " (current)"
-        else:
-            current = " (expired)"
-        return "[{member_type}] {date} -- #{num} {name}".format(
+        string = "[{member_type}] #{num} {name}".format(
             member_type=self.member_type,
-            date=self.valid_until,
             num=self.member.number,
-            name=self.member.name
-        ) + current
+            name=self.member.name)
+        if self.is_current:
+            if self.valid_until:
+                return "{string} (current) Expires: {date}".format(
+                    string=string,
+                    date=self.valid_until)
+            else:
+                return "{string} [{special}] (current)".format(
+                    string=string,
+                    special=self.special)
+        else:
+            return "{string} (renewable) Expired: {date}".format(
+                string=string,
+                date=self.valid_until)
 
     def clean(self):
         if self.member_type == 'special' and not self.special:
