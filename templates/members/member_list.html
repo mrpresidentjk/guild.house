@@ -6,8 +6,6 @@
 
 <h1>Member #{{obj.number}}</h1>
 
-
-
     <div class="table-responsive">
       <table class="table table-hover" width="100%" id="dataTable" cellspacing="0">
 
@@ -23,18 +21,30 @@
         </thead>
 
         {% for obj in object_list %}
-        <tr id="row{{obj.pk}}" >
+        <tr id="row{{ obj.pk }}" data-pk="" >
           <td class="value">
-            <div class="nowrap">#{{ obj.member.number|stringformat:"04d" }}</div>
+            <div class="nowrap"><b>
+                <a href="{% url 'members:member_detail' obj.pk %}">
+                  #{{ obj.member.number|stringformat:"04d" }}
+                </a>
+            </b></div>
           </td>
           <td style="text-align: left;" class="value">
-            <div class="nowrap">{{ obj.member.sort_name }}</div>
+            <div class="nowrap">
+              <a href="{% url 'members:member_detail' obj.pk %}">
+                {{ obj.member.sort_name }}
+              </a>
+            </div>
           </td>
           <td style="text-align: left;" class="value">
-            <div class="nowrap">{{ obj.member.ref_name }}</div>
+            <div class="nowrap">
+              <a href="{% url 'members:member_detail' obj.pk %}">
+                {{ obj.member.ref_name }}
+              </a>
+            </div>
           </td>
           <td class="description">
-            {{ obj.member_type }}
+            {{ obj.get_member_type_display }}
             {% if obj.member_type == 'special' %}:  {{ obj.special }}{% endif %} <br>
           </td>
           <td style="text-align: center;" class="valid_until">
