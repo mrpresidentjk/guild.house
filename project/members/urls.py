@@ -24,7 +24,6 @@ urls = [
         ),
         name='member_approval'),
 
-
     url(r'^import/$',
         permission_required(MEMBERS_PERMISSION_REQUIRED)(
             views.import_view
@@ -40,7 +39,6 @@ urls = [
     url(r'^\+/(?P<number>\d+)$',
         views.member_detail_view,
         name='member_detail'),
-
 
 ]
 

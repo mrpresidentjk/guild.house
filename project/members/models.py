@@ -72,6 +72,7 @@ class Member(models.Model):
     # Potential efficiency can be found here by doing cron.
     is_current = models.BooleanField(db_index=True, default=True)
 
+    key = models.CharField(max_length=64, blank=True, default='')
     legacy_source = models.CharField(max_length=64, blank=True, default='')
 
     site = models.ForeignKey('sites.Site', default=get_current_site,
