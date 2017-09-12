@@ -1,0 +1,50 @@
+{% extends 'members/base.html' %}
+
+
+{% block content %}
+
+<h1>Member #{{ obj.number }}</h1>
+
+<div class="row">
+<div class="box">
+
+  <p>
+    <b>{{ obj.name }}</b>
+    {{ obj.email }}<br>
+    {{ obj.phone }}<br>
+  </p>
+
+{% for membership in obj.membership_set.all %}
+
+{% if membership.member_type == "special" %}
+  <p>Special Member: <b>{{ membership.special }}</b><br>
+{% else%}
+  <p>Member type: <b>{{ membership.get_member_type_display }}</b><br>
+{% endif %}
+  Member since: <b>{{ membership.valid_from }}</b></p>
+
+  {% if membership.is_current %}
+<span class="alert alert-success pull-left text-left">
+  {% if membership.valid_until %}
+  Active until:
+  <b>{{ membership.valid_until }}</b>
+  {% else %}
+  Life Member
+  {% endif %}
+  <i class="fa fa-check" aria-hidden="true"></i>
+</span>
+  {% else %}
+<span class="alert alert-warning pull-left text-left">
+  Was active up to: <b>{{ membership.valid_until }}</b>
+  <i class="fa fa-calendar" aria-hidden="true"></i><br>
+  <a href="{% url 'members:member_detail' obj.pk %}">
+    Renew now <i class="fa fa-heart" aria-hidden="true"></i>
+  </a>
+</span>
+  {% endif %}
+</div>
+</div>
+
+{% endfor %}
+
+{% endblock %}
