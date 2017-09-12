@@ -7,8 +7,9 @@ Script to generate members from spreadsheet one off.
 - Generate `rolodex.Email` and `rolodex.Phone` objects.
 
 """
+import datetime
 from .models import Member, Membership
-from project.utils import convert_tsv
+from project.utils import convert_tsv, make_date
 
 
 # Synchronising scrape from Revel to bookings system.
@@ -51,6 +52,14 @@ def import_memberships(text):
     data = convert_tsv(text)
     success = []
     for kwargs in data:
+        if kwargs.get('valid_from'):
+            kwargs['valid_from'] = make_date(kwargs['valid_from'])
+        if kwargs.get('valid_until'):
+            kwargs['valid_until'] = make_date(kwargs.pop('valid_until'))
+            if not type(kwargs['valid_until']) is datetime.datetime:
+                kwargs.pop('valid_until')
+            if kwargs['valid_until'] == '':
+                kwargs.pop('valid_until')
         obj = create_membership(kwargs=kwargs)
         success.append(obj)
     return success
