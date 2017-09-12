@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, unicode_literals
-from datetime import timedelta
+from datetime import date, timedelta
 from django.contrib.auth.models import User
 from django.core.mail import EmailMultiAlternatives, send_mail
 from django.core.exceptions import ValidationError
@@ -171,8 +171,11 @@ class Membership(models.Model):
         if self.member_type == 'special' and not self.special:
             raise ValidationError(
                 "Must add 'special' explanation for special memberships.")
+
     def is_current(self):
-        if self.valid_until >= timezone.now():
+        if not self.valid_until:
+            return True
+        if self.valid_until >= timezone.now().date():
             return True
         else:
             return False
