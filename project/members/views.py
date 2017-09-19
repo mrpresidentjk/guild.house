@@ -25,6 +25,13 @@ def member_create_view(request):
                 temporary_member_kwargs[field] = request.POST.get(
                     field, '')
 
+            # Tidy date fields
+            if temporary_member_kwargs['dob'] == '':
+                temporary_member_kwargs.pop('dob')
+
+            if temporary_member_kwargs['year'] == '':
+                temporary_member_kwargs.pop('year')
+
             # Replace string 'email'/'phone' with rolodex Model objects
             temporary_member_kwargs['email'], \
                 created = Email.objects.get_or_create(

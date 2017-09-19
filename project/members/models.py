@@ -359,8 +359,10 @@ class TemporaryMember(models.Model):
         new_member.suburb = self.suburb
         new_member.state = self.state
         new_member.country = self.country
-        new_member.dob = self.dob
-        new_member.year = self.year
+        if self.dob:
+            new_member.dob = self.dob
+        if self.year:
+            new_member.year = self.year
         new_member.save()
 
         new_member.emails.add(self.email)

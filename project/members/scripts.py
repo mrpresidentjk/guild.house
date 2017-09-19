@@ -17,6 +17,15 @@ from project.utils import convert_tsv, make_date
 
 def create_member(kwargs):
 
+    # Tidy date fields:
+    if kwargs.get('dob', False):
+        if kwargs['dob'] == '':
+            kwargs.pop('dob')
+
+    if kwargs.get('year', False):
+        if kwargs['year'] == '':
+            kwargs.pop('year')
+
     obj, is_created = Member.objects.update_or_create(
         number=kwargs.pop('number'),
         defaults=kwargs)

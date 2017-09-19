@@ -50,6 +50,18 @@ class TestTemporaryMemberSave(TestCase):
         test_temporarymember = TemporaryMember.objects.get(**self.test_input)
         self.assertEqual(self.new_temporarymember, test_temporarymember)
 
+    def test_simple_temporary_member_create_blank_year(self):
+
+        self.test_input.pop('year')
+        test_temporarymember = TemporaryMember.objects.get(**self.test_input)
+        self.assertEqual(self.new_temporarymember, test_temporarymember)
+
+    def test_simple_temporary_member_create_blank_dob(self):
+
+        self.test_input.pop('dob')
+        test_temporarymember = TemporaryMember.objects.get(**self.test_input)
+        self.assertEqual(self.new_temporarymember, test_temporarymember)
+
     def test_simple_temporary_member_convert_to_member(self):
 
         new_member = self.new_temporarymember.convert_to_member(
@@ -103,6 +115,58 @@ class TestMembership(TestCase):
         self.test_phone, is_created = Phone.objects.get_or_create(
             phone='0401234678')
 
+        self.test_input1 = {
+            'number': 1,
+        }
+
+        self.test_input2 = {
+            'ref_name': 'Test',
+            'sort_name': 'Smith',
+            'address': '1 Testing Avenue',
+            'postcode': '2601',
+            'state': 'ACT',
+            'country': 'Australia',
+            'suburb': 'Canberra',
+        }
+
+        self.test_input3 = {
+            'year': 1234,
+        }
+
+        self.test_input4 = {
+            'dob': date(1990, 1, 1),
+        }
+
+    def test_members1(self):
+
+        self.member = Member(**self.test_input1)
+        self.member.save()
+        member = Member.objects.get(**self.test_input1)
+        self.assertEqual(self.member, member)
+
+    def test_members2(self):
+
+        self.member, is_created = Member.objects.update_or_create(
+            **self.test_input1, defaults=self.test_input2)
+        self.member.save()
+        member = Member.objects.get(**self.test_input2)
+        self.assertEqual(self.member, member)
+
+    def test_members3(self):
+
+        self.member, is_created = Member.objects.update_or_create(
+            **self.test_input1, defaults=self.test_input3)
+        self.member.save()
+        member = Member.objects.get(**self.test_input3)
+        self.assertEqual(self.member, member)
+
+    def test_members4(self):
+
+        self.member, is_created = Member.objects.update_or_create(
+            **self.test_input1, defaults=self.test_input4)
+        self.member.save()
+        member = Member.objects.get(**self.test_input4)
+        self.assertEqual(self.member, member)
         self.test_member_input = {
             'ref_name': 'Test',
             'sort_name': 'Smith',
