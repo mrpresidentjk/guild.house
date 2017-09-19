@@ -27,6 +27,7 @@ class TemporaryMemberForm(forms.Form):
         label="Birth year",
         min_value=1890, max_value=2017)
     dob = forms.DateField(
+        input_formats=('%d/%m/%Y', '%d-%m-%Y'),
         label="Birthday",
         help_text="Optional and confidential, so we can wish you happy birthday.",  # noqa
         required=False)
