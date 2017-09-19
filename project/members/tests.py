@@ -24,6 +24,7 @@ class TestTemporaryMemberSave(TestCase):
         self.test_input = {
             'member_type': 'standard',
             'approved_at': timezone.now(),
+            'approved_by': self.user,
             'ref_name': 'Test',
             'sort_name': 'Smith',
             'email': self.test_email,
@@ -51,7 +52,12 @@ class TestTemporaryMemberSave(TestCase):
 
     def test_simple_temporary_member_convert_to_member(self):
 
-        new_member = self.new_temporarymember.convert_to_member()
+        new_member = self.new_temporarymember.convert_to_member(
+            payment_method='paypal',
+            amount_paid='15.00',
+            payment_ref='asdf',
+            member_type=self.new_temporarymember.member_type,
+        )
 
         # @TODO duplicated could be done smarter
         test_member_input = {
@@ -117,14 +123,16 @@ class TestMembership(TestCase):
         self.test_membership_active = Membership(
             member=self.member,
             member_type='standard',
-            valid_until=timezone.now() + timedelta(days=1)
+            valid_from=timezone.now() - timedelta(days=364),
+            valid_until=timezone.now().date() + timedelta(days=1)
         )
         self.test_membership_active.save()
 
         self.test_membership_inactive = Membership(
             member=self.member,
             member_type='standard',
-            valid_until=timezone.now() - timedelta(days=1)
+            valid_from=timezone.now() - timedelta(days=365),
+            valid_until=timezone.now().date() - timedelta(days=1)
         )
         self.test_membership_inactive.save()
 
