@@ -287,7 +287,7 @@ class TemporaryMember(models.Model):
 
     phone = models.ForeignKey('rolodex.Phone', blank=True, default='')
 
-    address = models.TextField(blank=True, default=''),
+    address = models.TextField(blank=True, default='')
 
     suburb = models.CharField(max_length=64)
 
