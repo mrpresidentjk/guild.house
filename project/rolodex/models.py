@@ -1,7 +1,15 @@
 from django.db import models
 
 
-class Email(models.Model):
+class AbstractRolodex(models.Model):
+
+    is_working = models.BooleanField(default=True)
+
+    class Meta:
+        abstract = True
+
+
+class Email(AbstractRolodex, models.Model):
 
     email = models.EmailField()
 
@@ -9,7 +17,7 @@ class Email(models.Model):
         return self.email
 
 
-class Phone(models.Model):
+class Phone(AbstractRolodex, models.Model):
 
     phone = models.CharField(max_length=16)
 
