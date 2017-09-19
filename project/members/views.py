@@ -35,8 +35,9 @@ def member_create_view(request):
 
             # Fix date format @TODO do this better
             dob = request.POST['dob'].split("/")
-            temporary_member_kwargs['dob'] = "{}-{}-{}".format(
-                dob[2], dob[1], dob[0])
+            if temporary_member_kwargs.get('dob', False):
+                temporary_member_kwargs['dob'] = "{}-{}-{}".format(
+                    dob[2], dob[1], dob[0])
 
             new_temporary_member = TemporaryMember(**temporary_member_kwargs)
             new_temporary_member.save()
