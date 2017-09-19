@@ -57,10 +57,11 @@ class Member(models.Model):
 
     country = models.CharField(max_length=16, blank=True, default='Australia')
 
-    year = models.PositiveIntegerField(blank=True, null=True)
+    year = models.PositiveIntegerField(blank=True, null=False, default=0)
 
     dob = models.DateField(
-        blank=True, null=True, verbose_name='Birth date',
+        blank=True, null=True,
+        verbose_name='Birth date',
         help_text="Kept private.")
     #dob = ApproximateDateField(blank=True, null=True)
 
@@ -297,10 +298,11 @@ class TemporaryMember(models.Model):
 
     country = models.CharField(max_length=32, default='Australia')
 
-    year = models.PositiveIntegerField(blank=True, null=True)
+    year = models.PositiveIntegerField(blank=True, null=False, default=0)
 
     dob = models.DateField(
-        blank=True, null=True, verbose_name='Birth date',
+        blank=True, null=True,
+        verbose_name='Birth date',
         help_text="Kept private, necessary as licenced venue.")
 
     legacy_source = models.CharField(max_length=64, blank=True, default='')
