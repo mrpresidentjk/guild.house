@@ -6,6 +6,26 @@ from django.test import TestCase  # , Client
 
 from project.rolodex.models import Email, Phone
 from .models import TemporaryMember, Member, Membership
+from .scripts import create_member
+
+
+class TestMemberSave(TestCase):
+
+    def setUp(self):
+        self.user = User.objects.create_user(
+            'test_staff_user', 'test@example.com', '1234')
+        self.user.is_staff = True
+        self.user.save()
+
+    def test_simple_temporary_member_create(self):
+
+        test_input = """number	email
+1	jill@hotmail.com
+2	bob@gmail.com"""
+
+        test_temporarymember = TemporaryMember.objects.get(**self.test_input)
+
+        self.assertEqual(self.new_temporarymember, test_temporarymember)
 
 
 class TestTemporaryMemberSave(TestCase):
@@ -167,6 +187,43 @@ class TestMembership(TestCase):
         self.member.save()
         member = Member.objects.get(**self.test_input4)
         self.assertEqual(self.member, member)
+
+    def test_members_add_email(self):
+
+        self.member = Member(**self.test_input1)
+        self.member.save()
+        self.member.emails.add(self.test_email)
+        self.member.save()
+
+        member = Member.objects.get(emails=self.test_email)
+        print(member.emails.all())
+        self.assertEqual(self.member, member)
+
+    def test_members_add_phone(self):
+
+        self.member = Member(**self.test_input1)
+        self.member.save()
+        self.member.phones.add(self.test_phone)
+        self.member.save()
+
+        member = Member.objects.get(phones=self.test_phone)
+        print(member.phones.all())
+        self.assertEqual(self.member, member)
+
+
+class TestMembershipQueryset(TestCase):
+
+    def setUp(self):
+        self.user = User.objects.create_user(
+            'test_staff_user', 'test@example.com', '1234')
+        self.user.is_staff = True
+        self.user.save()
+
+        self.test_email, is_created = Email.objects.get_or_create(
+            email='user@example.com')
+        self.test_phone, is_created = Phone.objects.get_or_create(
+            phone='0401234678')
+
         self.test_member_input = {
             'ref_name': 'Test',
             'sort_name': 'Smith',

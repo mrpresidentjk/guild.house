@@ -9,6 +9,7 @@ Script to generate members from spreadsheet one off.
 """
 import datetime
 from .models import Member, Membership
+from project.rolodex.models import Email, Phone
 from project.utils import convert_tsv, make_date
 
 
@@ -26,10 +27,32 @@ def create_member(kwargs):
         if kwargs['year'] == '':
             kwargs.pop('year')
 
+    # Create phone and/or email if in kwargs
+    if kwargs.get('email', False):
+        email, is_created = Email.objects.get_or_create(
+            email=kwargs.get('email'))
+        kwargs.pop('email')
+    else:
+        email = False
+    if kwargs.get('phone', False):
+        phone, is_created = Phone.objects.get_or_create(
+            phone=kwargs.get('phone'))
+        kwargs.pop('phone')
+    else:
+        phone = False
+
+    # Get or create Member by number
     obj, is_created = Member.objects.update_or_create(
         number=kwargs.pop('number'),
         defaults=kwargs)
     obj.save()
+
+    # Add m2m phone and/or email
+    if email:
+        obj.emails.add(email)
+    if phone:
+        obj.phones.add(phone)
+
     return obj
 
 
