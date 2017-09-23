@@ -22,8 +22,8 @@
           </a>
         </li>
 
-        {% load tree_menu_tags %}
-        {% show_menu "MainNavigation" %}
+        {% load sitetree %}
+        {% sitetree_menu from "MainNavigation" include "trunk"  template "sitetree/custom_menu_bootstrap3.html" %}
 
         <li>
           <a href="#location" class="page-scroll">
