@@ -23,14 +23,16 @@ class TemporaryMemberForm(forms.Form):
     postcode = forms.CharField()
     state = forms.CharField(initial="ACT")
     country = forms.CharField(initial="Australia")
-    year = forms.IntegerField(
-        label="Birth year",
-        min_value=1890, max_value=2017)
     dob = forms.DateField(
         input_formats=('%d/%m/%Y', '%d-%m-%Y'),
         label="Birthday",
         help_text="Optional and confidential, so we can wish you happy birthday.",  # noqa
         required=False)
+    year = forms.IntegerField(
+        widget=forms.Select(choices=settings.YEAR_CHOICES),
+        label="My generation:",  # noqa
+        help_text="Did you know that there are more Generation Yers than Baby Boomers? Please answer this for our curiosity, so we can try to look after you the best.",  # noqa
+        min_value=1890, max_value=2017)
     payment_method = forms.ChoiceField(
         widget=forms.RadioSelect(),
         choices=[('', '---')] + settings.PAYMENT_METHODS)
