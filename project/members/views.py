@@ -6,7 +6,7 @@ from django.views import generic
 from project.rolodex.models import Email, Phone
 from . import settings
 from .forms import TemporaryMemberForm, BlankForm
-from .models import TemporaryMember, Member, Membership
+from .models import TemporaryMember, Member, Membership, MembershipTag
 from .scripts import import_members, import_memberships
 
 
@@ -84,6 +84,15 @@ def member_approval_view(request):
                 member_type=request.POST['member_type'],
             )
             context['new_member'] = new_member
+            if request.POST.get('has_tag'):
+                new_tag_kwargs = {
+                    'membership': new_member.membership_set.first(),
+                    'given_at': new_member.created_at,
+                    'given_by': request.user,
+                    'given_tag': True,
+                }
+                new_tag = MembershipTag(**new_tag_kwargs)
+                new_tag.save()
 
         if request.POST.get('defer'):
             temporary_member = TemporaryMember.objects.get(
