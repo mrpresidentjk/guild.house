@@ -10,7 +10,7 @@
 
 <div class="alert alert-success" >
   <strong>Approved:</strong> New Member Number: #{{ new_member.number }}
-  <p>{{ new_member }}</p>
+  <p><a href="{{ new_member.get_absolute_url }}">{{ new_member }}</a></p>
 
 </div>
 
