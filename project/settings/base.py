@@ -49,7 +49,7 @@ INSTALLED_APPS = [
     'storages',
     'taggit',
     'tinymce',
-    'treemenus',
+    'sitetree',
 
     'project.menus',
     'project.admin',
