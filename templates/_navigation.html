@@ -2,7 +2,6 @@
 <!-- Navigation -->
 <nav class="navbar navbar-custom navbar-fixed-top" role="navigation" style="background: rgba(255,0,0,0.8)">
   <div class="container">
-<h4>GUILD DEV/TESTING WEBSITE ... NOT REAL: MAY BE BUGGY</h4>
     <div class="navbar-header">
       <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-main-collapse">
         <i class="fa fa-bars"></i>
@@ -12,10 +11,11 @@
       </a>
     </div>
 
-    <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="navbar-collapse navbar-center navbar-main-collapse collapse" aria-expanded="false" style="height: 1px;">
+
       <ul class="nav navbar-nav">
-        <!-- Hidden li included to remove active class from about link when scrolled up past about section -->
+        <li><h4>DEV/TESTING ... NOT REAL: MAY BE BUGGY</h4></li>
+
         <li class="active">
           <a class="home-link" href="{% url "site:homepage_detail" %}">
             <img src="{% static "sheild-.png" %}" height=24>
@@ -34,6 +34,18 @@
           <a href="https://facebook.com/guildhouse.canberra" target="_blank"><i class="fa fa-facebook-square fa-fw"></i></a>
         </li>
       </ul>
+
+  {% if user.is_authenticated %}
+  <div class="hidden-print featured_text" style="text-align: center;">
+    Logged in: <a href="/admin/">{{ user }}</a> |
+    <a href="/admin/">Admin</a> |
+    <a href="{% url 'bookings:booking_list' %}">Bookings</a> |
+    <a href="{% url 'members:member_approval' %}">Approve</a> |
+    <a href="/admin/logout/">Log out</a>
+  </div>
+  {% endif %}
+
+
     </div>
 
     <!-- /.navbar-collapse -->

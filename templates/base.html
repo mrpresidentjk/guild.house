@@ -39,8 +39,6 @@
 
   {% include "_navigation.html" %}
 
-  {% if user.is_authenticated %}<div class="hidden-print featured_text" style="float: right; margin-top:70px;">Logged in: <a href="/admin/">{{ user }}</a> (<a href="/admin/">Admin</a> | <a href="/admin/logout/">Log out</a>)</div>{% endif %}
-
     <!-- Branding -->
     <div class="brand"><a href="{% url "site:homepage_detail" %}"><img src="{% static "img/guild_white.png" %}" alt="Guild, Canberra's Board games beer restaurant cafe"></a></div>
     <div class="address-bar">
