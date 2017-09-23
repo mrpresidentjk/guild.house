@@ -198,11 +198,18 @@ class MembershipTag(models.Model):
 
     membership = models.ForeignKey('members.Membership')
 
+    # `Given by` makes sense for this class as exchange of a physical object
+    # will always have a human-to-human component. Not necessarily true with
+    # other classes in this app.
+    given_by = models.ForeignKey('auth.User')
+
+    given_by_name = models.CharField(max_length=128, blank=True, default='')
+
     given_at = models.DateTimeField(auto_now_add=True, editable=True)
 
-    given_tag = models.BooleanField()
+    given_tag = models.BooleanField(default=False)
 
-    given_card = models.BooleanField()
+    given_card = models.BooleanField(default=False)
 
 
 @python_2_unicode_compatible
