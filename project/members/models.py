@@ -90,6 +90,10 @@ class Member(models.Model):
             return string + " (active)"
         return string
 
+    @models.permalink
+    def get_absolute_url(self):
+        return ('members:member_detail', (), {'number': self.number})
+
     def save(self, *args, **kwargs):
 
         if not self.number:
