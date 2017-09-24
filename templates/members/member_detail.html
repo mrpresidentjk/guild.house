@@ -10,9 +10,10 @@
 
   <p>
     <b>{{ obj.name }}</b>
-    {{ obj.email }}<br>
-    {{ obj.phone }}<br>
+    <br>{% for email in obj.emails.all %}{{ email }}{% endfor %}
+    <br>{% for phone in obj.phones.all %}{{ phone }}{% endfor %}
   </p>
+  <br>
 
 {% for membership in obj.membership_set.all %}
 
@@ -46,5 +47,6 @@
 </div>
 
 {% endfor %}
+
 
 {% endblock %}
