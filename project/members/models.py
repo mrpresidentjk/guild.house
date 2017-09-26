@@ -9,7 +9,7 @@ from django.utils import timezone
 from django.utils.encoding import python_2_unicode_compatible
 from django_date_extensions.fields import ApproximateDateField
 
-from project.utils import get_current_site
+from project.utils import get_current_site, generate_unique_hex
 from . import querysets, settings
 
 
@@ -96,6 +96,9 @@ class Member(models.Model):
 
     def save(self, *args, **kwargs):
 
+        if not self.key:
+            self.key = generate_unique_hex(length=16, queryset=Member.objects.all())
+        
         if not self.number:
             try:
                 self.number = Member.objects.order_by('-number')[0].number + 1
