@@ -71,15 +71,15 @@ def generate_unique_slug(text, queryset, slug_field='slug', iteration=0):
 
 
 def generate_unique_hex(length=3, check=None, queryset=None):
-    code = binascii.hexlify(os.urandom(length)).decode('UTF-8')
+    key = binascii.hexlify(os.urandom(length)).decode('UTF-8')
     if check:
-        if code != check:
-            return code
+        if key != check:
+            return key
         else:
-            generate_unique_hex(check=code)
+            generate_unique_hex(check=key)
     if queryset:
-        if not queryset.filter(code=code):
-            return code
+        if not queryset.filter(key=key):
+            return key
         else:
             generate_unique_hex(queryset=queryset)
-    return code
+    return key
