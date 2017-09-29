@@ -33,7 +33,12 @@
   <div class="col-md-3">
     <b>{{ obj.name }}</b><br>
     {{ obj.email }}<br>
-    {{ obj.phone }}
+    {{ obj.phone }}<br>
+
+    <small style="font-family: monospace; font-size: 0.7em; color: #777;">{{ obj.created_at }}</small>
+    <a target="_blank" href="{% url "admin:members_temporarymember_change" obj.pk %}" style="white-space:nowrap">
+      <small>(edit)</small>
+    </a>
   </div>
   <div style="whitespace: nowrap">
 
@@ -80,7 +85,12 @@
   <div class="col-md-3">
     <b>{{ obj.name }}</b><br>
     {{ obj.email }}<br>
-    {{ obj.phone }}
+    {{ obj.phone }}<br>
+
+    <small style="font-family: monospace; font-size: 0.7em; color: #777;">{{ obj.created_at }}</small>
+    <a target="_blank" href="{% url "admin:members_temporarymember_change" obj.pk %}" style="white-space:nowrap">
+      <small>(edit)</small>
+    </a>
   </div>
 
   <div style="whitespace: nowrap">
