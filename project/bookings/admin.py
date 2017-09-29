@@ -23,8 +23,7 @@ class BookingAdmin(admin.ModelAdmin):
                                 'booking_duration', 'name',
                                 'party_size', 'status', 'service', 'email',
                                 'phone', 'notes', 'private_notes']}),
-        ('Publishing', {'fields': ['site', ('created_at', 'updated_at'),
-                                   'user'],
+        ('Publishing', {'fields': ['site', ('created_at', 'updated_at')],
                         'classes': ['collapse']}),
     ]
 
