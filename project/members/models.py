@@ -97,8 +97,10 @@ class Member(models.Model):
     def save(self, *args, **kwargs):
 
         if not self.key:
-            self.key = generate_unique_hex(length=16, queryset=Member.objects.all())
-        
+            self.key = generate_unique_hex(
+                length=16, hex_field='key',
+                queryset=Member.objects.all())
+
         if not self.number:
             try:
                 self.number = Member.objects.order_by('-number')[0].number + 1

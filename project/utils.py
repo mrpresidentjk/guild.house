@@ -70,15 +70,16 @@ def generate_unique_slug(text, queryset, slug_field='slug', iteration=0):
                                     slug_field=slug_field, iteration=iteration)
 
 
-def generate_unique_hex(length=3, check=None, queryset=None):
+def generate_unique_hex(length=7, check_hex=None,
+                        hex_field=None, queryset=None):
     key = binascii.hexlify(os.urandom(length)).decode('UTF-8')
-    if check:
-        if key != check:
+    if check_hex:
+        if key != check_hex:
             return key
         else:
-            generate_unique_hex(check=key)
+            generate_unique_hex(check_hex=key)
     if queryset:
-        if not queryset.filter(key=key):
+        if not queryset.filter(**{hex_field: key}):
             return key
         else:
             generate_unique_hex(queryset=queryset)

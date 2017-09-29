@@ -145,6 +145,7 @@ class Booking(models.Model):
         # Automatically make code if doesn't already have one.
         if not self.code:
             self.code = utils.generate_unique_hex(
+                hex_field='code',
                 queryset=Booking.objects.all())
 
             # adding on first creation. Messy, but works.
