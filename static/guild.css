@@ -12,6 +12,7 @@ body {
     -moz-background-size: cover;
     background-size: cover;
     -o-background-size: cover;
+    padding-top: 40px;
 }
 
 body.change-list > #container,
@@ -44,6 +45,10 @@ h6 {
 #guild-body h5,
 #guild-body h6 {
     color: #eee;
+}
+
+.carousel h2 {
+    line-height: 1.2em;
 }
 
 input, select, textarea {
@@ -492,7 +497,7 @@ footer,
 .carousel-text {
     position: relative;
     z-index: 999;
-    top: -180px;
+    top: -130px;
     float: left;
     margin-left: 135px;
 }
