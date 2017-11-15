@@ -25,11 +25,11 @@ def import_revel_bookings(scrape):
     # Confident that they'll do an update one day that will break this.
     # -> Happened Aug 2017
 
-    split_string_start = "Order ID\tStatus\tParty Size\tWait time\tCustomer\tPhone\tNotes & Preferences\r\n"
+    split_string_start = "Reserved On\nReserved For\nOrder ID\nStatus\nParty Size\nWait time\nCustomer\nPhone\nNotes & Preferences\n"
     split_string_end = "Watch the tutorial"
 
     data_raw = scrape.split(split_string_start)[-1].split(split_string_end)
-    data_list = [x.split("\t") for x in data_raw[0].split("\r\n")]
+    data_list = [x.split("\t") for x in data_raw[0].split("\n")]
 
     # Mapping is as follows:
     """
