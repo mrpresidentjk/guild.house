@@ -27,11 +27,10 @@ FROM_EMAIL = getattr(settings, 'DEFAULT_FROM_EMAIL')
 TO_EMAILS = getattr(settings, 'BOOKINGS_TO_EMAILS')
 
 STATUS_CHOICE = [
-    ('Booked', 'Booked'),
-    ('Confirmed', 'Confirmed'),
-    ('Numbers Confirmed', 'Numbers Confirmed'),
-    ('Big Booking', 'Big Booking'),
-    ('Cancelled', 'Cancelled'),
+    ('booked', 'Booked'),
+    ('confirmed', 'Confirmed'),
+    ('numbers_confirmed', 'Numbers Confirmed'),
+    ('no_show', 'No Show'),
 ]
 
 DEFAULT_BOOKING_METHOD = getattr(settings, 'BOOKINGS_DEFAULT_BOOKING_METHOD',
@@ -56,6 +55,7 @@ SERVICE_CHOICE = (
     ('lunch', 'Lunch'),
     ('afternoon', 'Afternoon'),
     ('main', 'Main'),
+    ('late', 'Late'),
 )
 
 SERVICE_TIMES = (
@@ -63,6 +63,7 @@ SERVICE_TIMES = (
     (time(12, 0), 'lunch'),
     (time(14, 30), 'afternoon'),
     (time(17, 30), 'main'),
+    (time(20, 30), 'late'),
 )
 
 BOOKING_TIMES = (time(12), time(23))

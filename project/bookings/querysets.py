@@ -12,7 +12,8 @@ class QuerySet(models.query.QuerySet):
     def active(self):
         return self.current_site().exclude(
             status="Cancelled").exclude(
-            status="No Show")
+            status="No Show").exclude(
+            status="x").filter(is_cancelled=False)
 
     def big(self):
         return self.active().filter(party_size__gte=BIG_BOOKING)
@@ -45,3 +46,10 @@ class QuerySet(models.query.QuerySet):
     def future_by_date(self):
         now = timezone.now()
         return self.filter(reserved_date__gte=now)
+
+
+class DateQuerySet(models.query.QuerySet):
+
+    def future(self):
+        now = timezone.now()
+        return self.filter(date__gte=now)
