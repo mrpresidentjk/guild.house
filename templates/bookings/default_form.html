@@ -9,7 +9,11 @@
 
   <h1>Import Bookings</h1>
 
-  {{ success_obj }} successfully created/found.
+  Successfully created/found:
+  {% for success in success_obj %}
+  <br>{{ success.1 }} -- {{ success.0 }}
+  {% endfor %}
+
 
   <form method="post" action="/bookings/post/" id="id-form">{% csrf_token %}
     {% for field in form %}

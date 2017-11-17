@@ -15,8 +15,8 @@ from django.views import generic
 
 from . import settings
 from .forms import BookingForm, NewBookingForm, BlankForm
-from .models import Booking
-from .utils import import_revel_bookings
+from .models import Booking, BookingDate
+from .utils import import_revel_bookings, get_future_services_set
 
 
 class CalendarMixin(object):
@@ -404,6 +404,24 @@ class BookingListView(BookingQueryset, generic.ListView):
         context_data = super(BookingListView, self).get_context_data(*args,
                                                                      **kwargs)
         context_data['show_all'] = True
+        context_data['future_days_list'] = BookingDate.objects.future()
+        return context_data
+
+
+class BookingFutureView(generic.ListView):
+
+    model = BookingDate
+    template_name = 'bookings/bookings_table.html'
+
+    def get_queryset(self, *args, **kwargs):
+        queryset = super(BookingFutureView, self).get_queryset(*args, **kwargs)
+        return queryset.future()
+
+    def get_context_data(self, *args, **kwargs):
+        get_future_services_set()
+        context_data = super(
+            BookingFutureView, self).get_context_data(*args, **kwargs)
+        context_data['future_days_list'] = context_data['object_list']
         return context_data
 
 
@@ -473,6 +491,7 @@ class FormView(generic.FormView):
     template_name = 'bookings/default_form.html'
     form_class = BlankForm
     success_url = "/bookings/post/"
+
 
 def post_view(request):
 
