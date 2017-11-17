@@ -204,12 +204,6 @@ class Booking(models.Model):
     is_active.boolean = True
     is_active.short_description = 'active'
 
-    def set_date_values(self):
-        if not self.status == 'x':
-            bd, is_created = BookingDate.objects.get_or_create(
-                date=self.reserved_date)
-            print(vars(bd))
-
     def save(self, *args, **kwargs):
         self.clean()
 
