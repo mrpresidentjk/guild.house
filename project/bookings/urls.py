@@ -9,6 +9,12 @@ BOOKINGS_PERMISSION_REQUIRED = 'bookings.change_booking'
 
 urls = [
 
+    url(r'^show/numbers/$',
+        permission_required(BOOKINGS_PERMISSION_REQUIRED)(
+            views.BookingListNumView.as_view()
+        ),
+        name='booking_list_num'),
+
     url(r'^show/$',
         permission_required(BOOKINGS_PERMISSION_REQUIRED)(
             views.BookingListView.as_view()

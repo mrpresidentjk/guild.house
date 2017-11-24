@@ -408,6 +408,11 @@ class BookingListView(BookingQueryset, generic.ListView):
         return context_data
 
 
+class BookingListNumView(BookingListView):
+
+    template_name = 'bookings/bookings_nums.html'
+
+
 class BookingFutureView(generic.ListView):
 
     model = BookingDate

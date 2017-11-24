@@ -1,0 +1,98 @@
+<style>
+  .table-striped>tbody>tr:nth-of-type(odd) {background-color: #222;}
+</style>
+
+<table id="date" class="table-striped">
+
+  <tr style="text-align: center">
+    <th>Date</th>
+    <th>&nbsp;</th>
+    <th>Early</th>
+    <th>Lunch</th>
+    <th>A/noon</th>
+    <th>Main</th>
+    <th>Late</th>
+    <th>total pax</th>
+    <th>&nbsp;</th>
+    <th>Early</th>
+    <th>Lunch</th>
+    <th>A/noon</th>
+    <th>Main</th>
+    <th>Late</th>
+
+    <th>&nbsp;</th>
+    <th># bookings</th>
+  </tr>
+
+  {% for day in future_days_list %}
+  <tr {% if day.date|date:'D' == 'Fri' %}style="background-colour: #5d3817"{% endif %}>
+    <td>
+      <a href="{% url 'bookings:booking_day' day.date.year day.date|date:'m' day.date|date:'d' %}">
+        <b>{{ day.date|date:"j-M-Y" }}</b>
+      </a>
+    </td>
+    <td>
+      {{ day.date|date:"D" }}
+    </td>
+    <td>
+      {{ day.items }}
+      {% if day.early_num %}
+      <b><a href="{% url 'bookings:booking_day' day.date.year day.date|date:'m' day.date|date:'d' %}">{{ day.early_pax }}</a></b>
+      {% endif %}
+    </td>
+    <td>
+      {% if day.lunch_num %}
+      <b><a href="{% url 'bookings:booking_day' day.date.year day.date|date:'m' day.date|date:'d' %}">{{ day.lunch_pax }}</a></b>
+      {% endif %}
+    </td>
+    <td>
+      {% if day.afternoon_num %}
+      <b><a href="{% url 'bookings:booking_day' day.date.year day.date|date:'m' day.date|date:'d' %}">{{ day.afternoon_pax }}</a></b>
+      {% endif %}
+    </td>
+    <td>
+      {% if day.main_num %}
+      <b><a href="{% url 'bookings:booking_day' day.date.year day.date|date:'m' day.date|date:'d' %}">{{ day.main_pax }}</a></b>
+      {% endif %}
+    </td>
+    <td>
+      {% if day.late_num %}
+      <b><a href="{% url 'bookings:booking_day' day.date.year day.date|date:'m' day.date|date:'d' %}">{{ day.late_pax }}</a></b>
+      {% endif %}
+    </td>
+    <td>
+      {% if day.total_num %}
+      <a href="{% url 'bookings:booking_day' day.date.year day.date|date:'m' day.date|date:'d' %}">{{ day.total_pax }}</a>
+      {% endif %}
+    </td>
+
+    <td>&nbsp; | &nbsp;</td>
+
+    <td>
+      {{ day.early_num }}
+    </td>
+    <td>
+      {{ day.lunch_num }}
+    </td>
+    <td>
+      {{ day.afternoon_num }}
+    </td>
+    <td>
+      {{ day.main_num }}
+    </td>
+    <td>
+      {{ day.late_num }}
+    </td>
+
+    <td>&nbsp; | &nbsp;</td>
+
+    <td>
+      {% if day.total_num %}
+      {{ day.total_num }}
+      {% endif %}
+    </td>
+  </tr>
+
+  {% endfor %}
+
+</table>
