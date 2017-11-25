@@ -98,6 +98,10 @@ urls = [
         views.BookingCreateView.as_view(),
         name="booking_add"),
 
+    url(r'^(?P<code>[\w-]+)/run/$',
+        views.BookingRunView.as_view(),
+        name="booking_run"),
+
     url(r'^(?P<code>[\w-]+)/success/$',
         views.BookingSuccessView.as_view(),
         name="booking_success"),

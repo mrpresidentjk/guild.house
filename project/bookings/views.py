@@ -316,8 +316,23 @@ class BookingSuccessView(BookingQueryset, generic.DetailView):
         return get_object_or_404(Booking, code=self.kwargs.get('code'))
 
 
-class BookingCreateView(BookingFormMixin, CalendarMixin, BookingQueryset, TimeMixin,
-                        generic.edit.CreateView):
+class BookingRunView(BookingQueryset, generic.DetailView):
+
+    template_name = 'bookings/run_sheet.html'
+
+    def get_object(self):
+        return get_object_or_404(Booking, code=self.kwargs.get('code'))
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(BookingRunView, self).get_context_data(
+            *args, **kwargs)
+        context['other_bookings'] = Booking.objects.filter(
+            reserved_date=self.get_object().reserved_date)
+        return context
+
+
+class BookingCreateView(BookingFormMixin, CalendarMixin, BookingQueryset,
+                        TimeMixin, generic.edit.CreateView):
 
     form_class = NewBookingForm
 
