@@ -316,7 +316,7 @@ class BookingSuccessView(BookingQueryset, generic.DetailView):
         return get_object_or_404(Booking, code=self.kwargs.get('code'))
 
 
-class BookingRunView(BookingQueryset, generic.DetailView):
+class BookingRunView(LoginRequiredMixin, BookingQueryset, generic.DetailView):
 
     template_name = 'bookings/run_sheet.html'
 
@@ -377,8 +377,8 @@ class BookingCreateView(BookingFormMixin, CalendarMixin, BookingQueryset,
         return initial
 
 
-class BookingUpdateView(BookingFormMixin, CalendarMixin, BookingQueryset,
-                        generic.edit.UpdateView):
+class BookingUpdateView(LoginRequiredMixin, BookingFormMixin, CalendarMixin,
+                        BookingQueryset, generic.edit.UpdateView):
 
     slug_field = 'code'
     form_class = BookingForm
@@ -423,12 +423,12 @@ class BookingListView(BookingQueryset, generic.ListView):
         return context_data
 
 
-class BookingListNumView(BookingListView):
+class BookingListNumView(LoginRequiredMixin, BookingListView):
 
     template_name = 'bookings/bookings_nums.html'
 
 
-class BookingFutureView(generic.ListView):
+class BookingFutureView(LoginRequiredMixin, generic.ListView):
 
     model = BookingDate
     template_name = 'bookings/bookings_table.html'

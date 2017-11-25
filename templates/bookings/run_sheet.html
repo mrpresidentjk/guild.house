@@ -44,10 +44,15 @@
   </head>
   <body>
 
-    <a href="{% url 'bookings:booking_list' %}">All Bookings</a>
-    
+
+
     <table id="main">
 
+      <tr>
+        <td><a href="{% url 'bookings:booking_list' %}">All Bookings</a></td>
+        <td></td>
+        <td><a href="{% url 'bookings:booking_update' booking.code %}">This Booking</a></td>
+      </tr>
       <tr>
         <td colspan=3 style="background-color: rgb(147, 196, 125)">
           <h3>Booking Date: {{ object.reserved_date|date:"F l jS Y"}}</h3>
@@ -63,7 +68,7 @@
       </tr>
       <tr>
         <td>
-          <h3>Booking Time: {{ object.reserved_time }}</h3>
+          <h3>Booking Time: {{ object.reserved_time|date:"Hi" }}</h3>
         </td>
         <th>Manager:</th>
         <td style="width: 5cm">&nbsp;</td>
@@ -118,24 +123,28 @@
       <tr>
         <th></th>
         <td colspan=2>
-          <a href="{% url 'bookings:booking_list' %}">Total bookings today: {{other_bookings|length}}</a><br> Bookings with 6 or more pax:
+          <a href="{% url 'bookings:booking_list' %}">Total bookings today: {{other_bookings|length}}</a>
         </td>
       </tr>
-      
+
       {% for other in other_bookings %}
-      {% if other.party_size > 5%}
+      {% if not other.pk == object.pk %}
       <tr>
         <th></th>
-        <td><a href="{% url 'bookings:booking_run' other.code %}">{{ other.party_size }}pax -- {{ other.name }}</a></td>
+        <td>
+          {% if other.party_size > 7%}<h4 style="font-size: 20px">{% endif %}
+            <a href="{% url 'bookings:booking_run' other.code %}">{{ other.party_size }} pax -- {{ other.name }}</a>
+          {% if other.party_size > 7%}</h4>{% endif %}
+        </td>
         <td style="whitespace: wrap">
-          {{ other.reserved_time|date:"Hi" }} <b>{{ other.party_size }}pax</b> 
+          {{ other.reserved_time|date:"Hi" }} <b>{{ other.party_size }}pax</b>
           {% if not other.notes == '' %}
           {% if not other.notes == '\r' %}[{{ other.notes }}]{% endif %}{% endif %}
         </td>
       </tr>
       {% endif %}
       {% endfor %}
-      
+
 
     </table>
 
