@@ -21,6 +21,13 @@
   <div>
     {% include "bookings/_bookings_summary.html" %}
     <h3>All Future Bookings</h3>
+
+    {% include "bookings/_bookings_date.html" %}
+
+    <hr>
+    <br>
+    <br>
+
     <table id="future">
 
       {% regroup future_list|dictsort:"reserved_date" by reserved_date as date_list  %}

@@ -1,0 +1,70 @@
+<style>
+  .table-striped>tbody>tr:nth-of-type(odd) {background-color: #222;}
+</style>
+
+<table id="date" class="table-striped">
+
+  <tr style="text-align: center">
+    <th>Date</th>
+    <th>Early</th>
+    <th>Lunch</th>
+    <th>Afternoon</th>
+    <th>Main</th>
+    <th>Late</th>
+    <th>&nbsp;</th>
+    <th>&nbsp;</th>
+    <th>&nbsp;</th>
+  </tr>
+
+  {% for day in future_days_list %}
+  <tr {% if day.date|date:'D' == 'Fri' %}style="background-colour: #5d3817"{% endif %}>
+    <td>
+      <a href="{% url 'bookings:booking_day' day.date.year day.date|date:'m' day.date|date:'d' %}">
+        <b>{{ day.date|date:"j-M-Y" }}</b>
+      </a>
+
+      {{ day.date|date:"D" }}
+    </td>
+    <td>
+      {{ day.items }}
+      {% if day.early_num %}
+      <b><a href="{% url 'bookings:booking_day' day.date.year day.date|date:'m' day.date|date:'d' %}">{{ day.early_pax }}</a> pax</b> ({{ day.early_num }} bookings)
+      {% endif %}
+    </td>
+    <td>
+      {% if day.lunch_num %}
+      <b><a href="{% url 'bookings:booking_day' day.date.year day.date|date:'m' day.date|date:'d' %}">{{ day.lunch_pax }}</a> pax</b> ({{ day.lunch_num }} bookings)
+      {% endif %}
+    </td>
+    <td>
+      {% if day.afternoon_num %}
+      <b><a href="{% url 'bookings:booking_day' day.date.year day.date|date:'m' day.date|date:'d' %}">{{ day.afternoon_pax }}</a> pax</b> ({{ day.afternoon_num }} bookings)
+      {% endif %}
+    </td>
+    <td>
+      {% if day.main_num %}
+      <b><a href="{% url 'bookings:booking_day' day.date.year day.date|date:'m' day.date|date:'d' %}">{{ day.main_pax }}</a> pax</b> ({{ day.main_num }} bookings)
+      {% endif %}
+    </td>
+    <td>
+      {% if day.late_num %}
+      <b><a href="{% url 'bookings:booking_day' day.date.year day.date|date:'m' day.date|date:'d' %}">{{ day.late_pax }}</a> pax</b> ({{ day.late_num }} bookings)
+      {% endif %}
+    </td>
+
+    <td>&nbsp; | &nbsp;</td>
+
+    <td>
+      {% if day.total_num %}
+      Total: <a href="{% url 'bookings:booking_day' day.date.year day.date|date:'m' day.date|date:'d' %}">{{ day.total_pax }}</a> pax
+      {% endif %}
+    </td>
+    <td>
+      {% if day.total_num %}
+      {{ day.total_num }} bookings
+      {% endif %}
+    </td>
+  </tr>
+  {% endfor %}
+
+</table>

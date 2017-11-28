@@ -19,6 +19,73 @@ def get_current_site():
         pass
 
 
+class BookingDate(models.Model):
+
+    date = models.DateField(db_index=True)
+
+    total_num = models.PositiveIntegerField(default=0, null=True)
+
+    total_pax = models.PositiveIntegerField(default=0, null=True)
+
+    early_num = models.PositiveIntegerField(default=0, null=True)
+
+    early_pax = models.PositiveIntegerField(default=0, null=True)
+
+    lunch_num = models.PositiveIntegerField(default=0, null=True)
+
+    lunch_pax = models.PositiveIntegerField(default=0, null=True)
+
+    afternoon_num = models.PositiveIntegerField(default=0, null=True)
+
+    afternoon_pax = models.PositiveIntegerField(default=0, null=True)
+
+    main_num = models.PositiveIntegerField(default=0, null=True)
+
+    main_pax = models.PositiveIntegerField(default=0, null=True)
+
+    late_num = models.PositiveIntegerField(default=0, null=True)
+
+    late_pax = models.PositiveIntegerField(default=0, null=True)
+
+    objects = querysets.DateQuerySet.as_manager()
+
+    class Meta:
+        ordering = ['date']
+
+    def set_values(self):
+        date_bookings = Booking.objects.active().filter(
+            reserved_date=self.date)
+        pax = date_bookings.aggregate(models.Sum('party_size'))[
+            'party_size__sum']
+        num = date_bookings.count()
+        if not getattr(self, 'total_pax') == pax:
+            setattr(self, 'total_pax', pax)
+            self.save()
+        if not getattr(self, 'total_num') == num:
+            setattr(self, 'total_num', num)
+            self.save()
+
+        for service, human in settings.SERVICE_CHOICE:
+            date_service = date_bookings.filter(service=service)
+            pax = date_service.aggregate(models.Sum('party_size'))[
+                'party_size__sum']
+            num = date_service.count()
+            print(self.date, pax, num)
+
+            if not getattr(self, '{}_pax'.format(service)) == pax:
+                setattr(self, '{}_pax'.format(service), pax)
+                self.save()
+            if not getattr(self, '{}_num'.format(service)) == num:
+                setattr(self, '{}_num'.format(service), num)
+                self.save()
+
+        return self
+
+    def __str__(self):
+        return "{} -- {} {} pax".format(self.date,
+                                        self.total_num, self.total_pax)
+
+
 @python_2_unicode_compatible
 class Booking(models.Model):
 
@@ -30,6 +97,8 @@ class Booking(models.Model):
 
     status = models.CharField(max_length=50, choices=settings.STATUS_CHOICE,
                               default=settings.STATUS_CHOICE[0][0])
+
+    is_cancelled = models.BooleanField(default=False)
 
     area = models.CharField(max_length=50, choices=settings.AREA_CHOICE,
                             default=settings.AREA_CHOICE[0][0])
@@ -138,9 +207,6 @@ class Booking(models.Model):
     def save(self, *args, **kwargs):
         self.clean()
 
-        if self.legacy_code and Booking.objects.filter(
-                legacy_code=self.legacy_code):
-            return False
 
         # Automatically make code if doesn't already have one.
         if not self.code:
@@ -172,5 +238,15 @@ class Booking(models.Model):
 
         if not self.created_at:
             self.created_at = timezone.now()
+
+        if self.status == 'no_show' and not self.is_cancelled:
+            self.is_cancelled = True
+
+        if not self.status == 'no_show' and self.is_cancelled:
+            self.is_cancelled = False
+
+        booking_date, is_created = BookingDate.objects.get_or_create(
+            date=self.reserved_date)
+        booking_date.set_values()
 
         super(Booking, self).save(*args, **kwargs)

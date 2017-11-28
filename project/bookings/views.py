@@ -15,8 +15,8 @@ from django.views import generic
 
 from . import settings
 from .forms import BookingForm, NewBookingForm, BlankForm
-from .models import Booking
-from .utils import import_revel_bookings
+from .models import Booking, BookingDate
+from .utils import import_revel_bookings, get_future_services_set
 
 
 class CalendarMixin(object):
@@ -316,8 +316,23 @@ class BookingSuccessView(BookingQueryset, generic.DetailView):
         return get_object_or_404(Booking, code=self.kwargs.get('code'))
 
 
-class BookingCreateView(BookingFormMixin, CalendarMixin, BookingQueryset, TimeMixin,
-                        generic.edit.CreateView):
+class BookingRunView(LoginRequiredMixin, BookingQueryset, generic.DetailView):
+
+    template_name = 'bookings/run_sheet.html'
+
+    def get_object(self):
+        return get_object_or_404(Booking, code=self.kwargs.get('code'))
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(BookingRunView, self).get_context_data(
+            *args, **kwargs)
+        context['other_bookings'] = Booking.objects.filter(
+            reserved_date=self.get_object().reserved_date)
+        return context
+
+
+class BookingCreateView(BookingFormMixin, CalendarMixin, BookingQueryset,
+                        TimeMixin, generic.edit.CreateView):
 
     form_class = NewBookingForm
 
@@ -362,8 +377,8 @@ class BookingCreateView(BookingFormMixin, CalendarMixin, BookingQueryset, TimeMi
         return initial
 
 
-class BookingUpdateView(BookingFormMixin, CalendarMixin, BookingQueryset,
-                        generic.edit.UpdateView):
+class BookingUpdateView(LoginRequiredMixin, BookingFormMixin, CalendarMixin,
+                        BookingQueryset, generic.edit.UpdateView):
 
     slug_field = 'code'
     form_class = BookingForm
@@ -404,6 +419,29 @@ class BookingListView(BookingQueryset, generic.ListView):
         context_data = super(BookingListView, self).get_context_data(*args,
                                                                      **kwargs)
         context_data['show_all'] = True
+        context_data['future_days_list'] = BookingDate.objects.future()
+        return context_data
+
+
+class BookingListNumView(LoginRequiredMixin, BookingListView):
+
+    template_name = 'bookings/bookings_nums.html'
+
+
+class BookingFutureView(LoginRequiredMixin, generic.ListView):
+
+    model = BookingDate
+    template_name = 'bookings/bookings_table.html'
+
+    def get_queryset(self, *args, **kwargs):
+        queryset = super(BookingFutureView, self).get_queryset(*args, **kwargs)
+        return queryset.future()
+
+    def get_context_data(self, *args, **kwargs):
+        get_future_services_set()
+        context_data = super(
+            BookingFutureView, self).get_context_data(*args, **kwargs)
+        context_data['future_days_list'] = context_data['object_list']
         return context_data
 
 
@@ -473,6 +511,7 @@ class FormView(generic.FormView):
     template_name = 'bookings/default_form.html'
     form_class = BlankForm
     success_url = "/bookings/post/"
+
 
 def post_view(request):
 

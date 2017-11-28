@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, unicode_literals
 from .forms import BookingAdminForm
-from .models import Booking
+from .models import Booking, BookingDate
 from django.contrib import admin
 
 
@@ -20,8 +20,8 @@ class BookingAdmin(admin.ModelAdmin):
 
     fieldsets = [
         ('Content', {'fields': ['reserved_date', 'reserved_time',
-                                'booking_duration', 'name',
-                                'party_size', 'status', 'service', 'email',
+                                'booking_duration', 'name', 'party_size',
+                                'status', 'is_cancelled', 'service', 'email',
                                 'phone', 'notes', 'private_notes']}),
         ('Publishing', {'fields': ['site', ('created_at', 'updated_at')],
                         'classes': ['collapse']}),
@@ -38,3 +38,6 @@ class BookingAdmin(admin.ModelAdmin):
 
     search_fields = ['name', 'email', 'notes',
                      'reserved_date', 'user__username']
+
+
+admin.site.register(BookingDate)

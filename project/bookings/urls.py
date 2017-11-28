@@ -4,10 +4,16 @@ from . import views
 from django.conf.urls import include, url
 from django.contrib.auth.decorators import permission_required
 
-BOOKINGS_PERMISSION_REQUIRED = 'bookings.can_change_booking'
+BOOKINGS_PERMISSION_REQUIRED = 'bookings.change_booking'
 
 
 urls = [
+
+    url(r'^show/numbers/$',
+        permission_required(BOOKINGS_PERMISSION_REQUIRED)(
+            views.BookingListNumView.as_view()
+        ),
+        name='booking_list_num'),
 
     url(r'^show/$',
         permission_required(BOOKINGS_PERMISSION_REQUIRED)(
@@ -45,6 +51,12 @@ urls = [
             views.BookingCancelledView.as_view()
         ),
         name="booking_list_cancelled"),
+
+    url(r'^future/$',
+        permission_required(BOOKINGS_PERMISSION_REQUIRED)(
+            views.BookingFutureView.as_view()
+        ),
+        name='booking_future'),
 
     url(r'^today/$',
         permission_required(BOOKINGS_PERMISSION_REQUIRED)(
@@ -85,6 +97,10 @@ urls = [
     url(r'^$',
         views.BookingCreateView.as_view(),
         name="booking_add"),
+
+    url(r'^(?P<code>[\w-]+)/run/$',
+        views.BookingRunView.as_view(),
+        name="booking_run"),
 
     url(r'^(?P<code>[\w-]+)/success/$',
         views.BookingSuccessView.as_view(),
