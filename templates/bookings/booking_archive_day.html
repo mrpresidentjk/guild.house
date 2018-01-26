@@ -30,6 +30,11 @@
       </thead>
       <tbody>
       {% for obj in object_list %}
+      {% ifchanged %}
+      <tr><td colspan=7><div style="border-bottom: 1px solid grey;">
+	    <b>{{ obj.reserved_time|time:"H:i" }}</b>
+      </th></tr>
+      {% endifchanged %}
       {% include "bookings/_booking_list.html" %}
       {% endfor %}
       </tbody>
