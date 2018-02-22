@@ -43,6 +43,8 @@ If this is completely mysterious see Kenneth's guide here http://docs.python-gui
     
     # get the codebase
     git clone https://github.com/elena/guild.house.git
+    # alternatively if you have your own clone of the project:
+    # git clone https://github.com/<yourusername>/guild.house.git
 
     # enter your freshly minted project
     cd guild.house
