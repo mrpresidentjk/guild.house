@@ -1,3 +1,4 @@
+project/settings/__init__.py
 *.py[co]
 .Python
 .DS_Store
