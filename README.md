@@ -69,7 +69,7 @@ We use the pattern of picking settings per environment. You will want to use the
     ln -s development.py __init__.py
     
     # Windows
-    mklink development.py __init__.py
+    mklink /d __init__.py development.py
     
     cd ../..
 
