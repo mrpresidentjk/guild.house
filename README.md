@@ -69,18 +69,24 @@ We use the pattern of picking settings per environment. You will want to use the
     ln -s development.py __init__.py
     
     # Windows
-    mklink development.py __init__.py
+    mklink /d __init__.py development.py
     
     cd ../..
 
 
 For security passwords aren't kept in the repository and will need to be added to your virtual environment. There are a few ways to do this but an easy way is as follows:
 
+For Linux:
+
 
     # one-off basic environment setup
     echo 'export GUILD_DJANGO_SECRET_KEY='$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1) >> $VIRTUAL_ENV/bin/postactivate
 
-
+For Windows (elevated Powershell window):
+    
+    
+    #Set GUILD_DJANGO_SECRET_KEY as a machine level environment variable
+    [Environment]::SetEnvironmentVariable("GUILD_DJANGO_SECRET_KEY", "secretkeygoeshere", "Machine")
 
 #### 3. Run, run, run
 
