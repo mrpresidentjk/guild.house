@@ -245,8 +245,8 @@ class Booking(models.Model):
         if not self.status == 'no_show' and self.is_cancelled:
             self.is_cancelled = False
 
+        super(Booking, self).save(*args, **kwargs)
+
         booking_date, is_created = BookingDate.objects.get_or_create(
             date=self.reserved_date)
         booking_date.set_values()
-
-        super(Booking, self).save(*args, **kwargs)
