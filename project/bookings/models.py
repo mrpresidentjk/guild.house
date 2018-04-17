@@ -265,4 +265,6 @@ class Booking(models.Model):
 
         if not bookings_on_previous_reserved_date:
             previous_booking_date.delete()
+        else:
+            previous_booking_date.set_values()
 
