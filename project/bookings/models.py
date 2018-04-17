@@ -257,4 +257,6 @@ class Booking(models.Model):
         bookings_on_date = Booking.objects.filter(reserved_date=self.reserved_date)
         if not bookings_on_date:
             booking_date.delete()
+        else:
+            booking_date.set_values()
 
