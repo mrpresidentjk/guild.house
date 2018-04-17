@@ -250,3 +250,11 @@ class Booking(models.Model):
         booking_date.set_values()
 
         super(Booking, self).save(*args, **kwargs)
+
+    def delete(self):
+        super(Booking, self).delete()
+        booking_date, is_created = BookingDate.objects.get_or_create(date=self.reserved_date)
+        bookings_on_date = Booking.objects.filter(reserved_date=self.reserved_date)
+        if not bookings_on_date:
+            booking_date.delete()
+
