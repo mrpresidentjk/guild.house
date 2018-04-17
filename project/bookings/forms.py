@@ -2,8 +2,7 @@
 from __future__ import absolute_import, unicode_literals
 from django import forms
 from tinymce.widgets import TinyMCE
-
-from project.fields import AUPhoneNumberField
+from localflavor.au.forms import AUPhoneNumberField
 from .models import Booking
 from .settings import DURATION_SELECTION, BOOKING_TIMES_CHOICES
 
