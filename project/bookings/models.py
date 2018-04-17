@@ -249,4 +249,20 @@ class Booking(models.Model):
             date=self.reserved_date)
         booking_date.set_values()
 
+        # When modified using save, find the previous reservation date of the booking
+        try:
+            previous_reserved_date = Booking.objects.get(code=self.code).reserved_date
+        except Booking.DoesNotExist:
+            # If the object is a new object, use the date given
+            previous_reserved_date = self.reserved_date
+
         super(Booking, self).save(*args, **kwargs)
+
+        # Delete the previous booking date object if there are no bookings for the date after the booking was modified
+        previous_booking_date, is_created \
+            = BookingDate.objects.get_or_create(date=previous_reserved_date)
+        bookings_on_previous_reserved_date = Booking.objects.filter(reserved_date=previous_reserved_date)
+
+        if not bookings_on_previous_reserved_date:
+            previous_booking_date.delete()
+
