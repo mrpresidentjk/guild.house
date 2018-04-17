@@ -31,6 +31,7 @@ STATUS_CHOICE = [
     ('confirmed', 'Confirmed'),
     ('numbers_confirmed', 'Numbers Confirmed'),
     ('no_show', 'No Show'),
+    ('cancelled', 'Cancelled'),
 ]
 
 DEFAULT_BOOKING_METHOD = getattr(settings, 'BOOKINGS_DEFAULT_BOOKING_METHOD',
