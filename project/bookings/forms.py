@@ -13,8 +13,6 @@ class BookingAdminForm(forms.ModelForm):
     class Meta(object):
         fields = ['name', 'site', 'reserved_date', 'reserved_time']
         model = Booking
-        widgets = {'notes': TinyMCE()}
-
 
 class BookingForm(forms.ModelForm):
     required_css_class = 'required'
