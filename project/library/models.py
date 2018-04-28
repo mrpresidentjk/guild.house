@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, unicode_literals
-from . import querysets
 from django.contrib.sites.models import Site
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.utils.encoding import python_2_unicode_compatible
 from project import utils
 from taggit.managers import TaggableManager
+
+from . import querysets
 
 
 def get_current_site():
@@ -84,7 +85,9 @@ class Game(models.Model):
 
     publisher = models.CharField(max_length=200, blank=True, default='')
 
-    boardgamegeek_link = models.URLField(blank=True, null=True)
+    boardgamegeek_id = models.PositiveIntegerField(blank=True, null=True)
+
+    boardgamegeek_rank = models.PositiveIntegerField(blank=True, null=True)
 
     minimum_players = models.PositiveIntegerField(blank=True, null=True)
 
@@ -95,6 +98,8 @@ class Game(models.Model):
 
     maximum_playtime = models.PositiveIntegerField(
         blank=True, null=True, help_text='Duration in minutes')
+
+    year_published = models.PositiveIntegerField(blank=True, null=True)
 
     title = models.CharField(max_length=200, blank=True, default='')
 
