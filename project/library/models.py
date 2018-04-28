@@ -88,11 +88,17 @@ class Game(models.Model):
         'self', related_name='expansions', related_query_name='expansion',
         blank=True, null=True, on_delete=models.PROTECT)
 
+    featured_image = models.ImageField(max_length=1024,
+                                       upload_to='games_featured',
+                                       blank=True, default='')
+
     publisher = models.CharField(max_length=200, blank=True, default='')
 
     boardgamegeek_id = models.PositiveIntegerField(blank=True, null=True)
 
     boardgamegeek_rank = models.PositiveIntegerField(blank=True, null=True)
+
+    complexity = models.FloatField(blank=True, null=True)
 
     minimum_players = models.PositiveIntegerField(blank=True, null=True)
 
@@ -160,7 +166,20 @@ class Game(models.Model):
             self.slug = utils.generate_unique_slug(self.name, queryset)
         return super(Game, self).save(*args, **kwargs)
 
-    def autopopulate_from_bgg(self, bgg_id=None, update_name=True):
+    def autopopulate_bgg_complexity(self):
+        bgg_get = requests.get('https://boardgamegeek.com/boardgame/{}'.format(
+            self.boardgamegeek_id))
+        location_key = 'boardgameweight":{"averageweight":'
+        bgg_content = str(bgg_get.content)
+        weight_location = bgg_content.find(location_key)
+        weight_location_start = weight_location+len(location_key)
+        weight_location_end = weight_location_start + \
+            bgg_content[weight_location_start:].find(',')
+        self.complexity = bgg_content[
+            weight_location_start:weight_location_end]
+        self.save()
+
+    def autopopulate_bgg_json(self, bgg_id=None, update_name=True):
         """ This method will create a `Game` object with details provided from
         boardgamegeek, if `self.boardgamegeek_id` """
 
@@ -202,5 +221,6 @@ class Game(models.Model):
         "This method will create a `Game` object if provided with a bgg_id."
         new_game = cls()
         new_game.boardgamegeek_id = bgg_id
-        new_game.autopopulate_from_bgg()
+        new_game.autopopulate_bgg_json()
+        new_game.autopopulate_bgg_complexity()
         return new_game
