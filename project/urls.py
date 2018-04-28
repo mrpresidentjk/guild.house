@@ -19,6 +19,9 @@ urlpatterns = [
     # Menu
     url(r'^menus/', include('project.menus.urls')),
 
+    # Games Library
+    url(r'^games/', include('project.library.urls')),
+
     # Bookings
     url(r'^bookings/', include('project.bookings.urls')),
 
