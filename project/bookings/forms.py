@@ -2,7 +2,7 @@
 from __future__ import absolute_import, unicode_literals
 from django import forms
 from tinymce.widgets import TinyMCE
-from localflavor.au.forms import AUPhoneNumberField
+from phonenumber_field.formfields import PhoneNumberField
 from .models import Booking
 from .settings import DURATION_SELECTION, BOOKING_TIMES_CHOICES
 
@@ -21,7 +21,7 @@ class BookingForm(forms.ModelForm):
                                          choices=DURATION_SELECTION)
     reserved_time = forms.ChoiceField(widget=forms.Select(),
                                       choices=BOOKING_TIMES_CHOICES)
-    phone = AUPhoneNumberField(
+    phone = PhoneNumberField(
         widget=forms.TextInput(attrs={'placeholder': '**'}))
 
     class Meta(object):

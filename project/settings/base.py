@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'debug_toolbar',
+    'phonenumber_field',
     'raven.contrib.django.raven_compat',
     'robots',
     'sorl.thumbnail',
@@ -125,6 +126,9 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'public/media')
 
 MEDIA_URL = '/media/'
 
+# Use Australian phone number format to store phone numbers
+PHONENUMBER_DB_FORMAT = 'NATIONAL'
+PHONENUMBER_DEFAULT_REGION = 'AU'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.8/howto/static-files/

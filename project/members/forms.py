@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from django import forms
 
-from localflavor.au.forms import AUPhoneNumberField
+from phonenumber_field.modelfields import PhoneNumberField
 from project.rolodex.models import Email, Phone
 
 from . import settings
@@ -17,7 +17,7 @@ class TemporaryMemberForm(forms.Form):
     sort_name = forms.CharField(label="Surname")
     ref_name = forms.CharField(label="First name")
     email = forms.EmailField()
-    phone = AUPhoneNumberField()
+    phone = PhoneNumberField()
     address = forms.CharField(widget=forms.Textarea)
     suburb = forms.CharField()
     postcode = forms.CharField()
