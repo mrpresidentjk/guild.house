@@ -7,6 +7,8 @@ from django.utils import timezone
 from django.utils.encoding import python_2_unicode_compatible
 from taggit.managers import TaggableManager
 
+from localflavor.au.models import AUPhoneNumberField
+
 from project import utils
 from . import querysets, settings
 from project.rolodex.models import Email, Phone
@@ -109,8 +111,7 @@ class Booking(models.Model):
 
     email = models.EmailField(max_length=150, blank=True, default='')
 
-    phone = models.CharField(
-        max_length=100,
+    phone = AUPhoneNumberField(
         help_text="One phone number only. Put additional numbers in 'notes' if necessary. We may need to confirm details so be sure to provide a good number."  # noqa
     )
 
@@ -245,9 +246,8 @@ class Booking(models.Model):
         if not (self.status == 'cancelled' or self.status == 'no_show') and self.is_cancelled:
             self.is_cancelled = False
 
+        super(Booking, self).save(*args, **kwargs)
+
         booking_date, is_created = BookingDate.objects.get_or_create(
             date=self.reserved_date)
         booking_date.set_values()
-
-        super(Booking, self).save(*args, **kwargs)
-
