@@ -246,22 +246,28 @@ class Booking(models.Model):
         if not self.status == 'no_show' and self.is_cancelled:
             self.is_cancelled = False
 
-
-        # When modified using save, find the previous reservation date of the booking
         try:
-            previous_reserved_date = Booking.objects.get(code=self.code).reserved_date
-        except Booking.DoesNotExist:
-            # If the object is a new object, use the date given
-            previous_reserved_date = self.reserved_date
+            # Find the Booking and BookingDate objects relating to the booking before modification
+            previous_booking = Booking.objects.get(code=self.code)
+            previous_booking_date = BookingDate.objects.get(date=previous_booking.reserved_date)
 
-        super(Booking, self).save(*args, **kwargs)
+            # Save the new values for the booking
+            super(Booking, self).save(*args, **kwargs)
+            booking_date, is_created = BookingDate.objects.get_or_create(date=self.reserved_date)
+            booking_date.set_values()
 
-        # Delete the previous booking date object if there are no bookings for the date after the booking was modified
-        previous_booking_date, is_created \
-            = BookingDate.objects.get_or_create(date=previous_reserved_date)
-        bookings_on_previous_reserved_date = Booking.objects.filter(reserved_date=previous_reserved_date)
+            # Check if there are no Booking objects relating to the previous BookingDate object
+            bookings_on_previous_date = Booking.objects.filter(reserved_date=previous_booking.reserved_date)
 
-        if not bookings_on_previous_reserved_date:
-            previous_booking_date.delete()
-        else:
-            previous_booking_date.set_values()
+            # Delete the previous BookingDate if there are no bookings
+            if not bookings_on_previous_date:
+                previous_booking_date.delete()
+            # Update the previous BookingDate with the removed information if there is
+            else:
+                previous_booking_date.set_values()
+        # When creating a booking on a date with no bookings
+        except (Booking.DoesNotExist, BookingDate.DoesNotExist):
+            # Just save, create and update the BookingDate object with the new Booking
+            super(Booking, self).save(*args, **kwargs)
+            booking_date, is_created = BookingDate.objects.get_or_create(date=self.reserved_date)
+            booking_date.set_values()
