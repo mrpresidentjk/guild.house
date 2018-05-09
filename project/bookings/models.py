@@ -5,9 +5,15 @@ from django.core.urlresolvers import reverse
 from django.db import models
 from django.utils import timezone
 from django.utils.encoding import python_2_unicode_compatible
+from django.core.validators import MaxValueValidator, MinValueValidator
+from django.core.exceptions import ValidationError
 from taggit.managers import TaggableManager
 
-from localflavor.au.models import AUPhoneNumberField
+import datetime
+from datetime import time, timedelta, date
+from django.utils.timesince import timesince
+
+from phonenumber_field.modelfields import PhoneNumberField
 
 from project import utils
 from . import querysets, settings
@@ -95,7 +101,8 @@ class Booking(models.Model):
 
     name = models.CharField(max_length=200)
 
-    party_size = models.PositiveIntegerField()
+    party_size = models.PositiveIntegerField(validators = [MaxValueValidator(100),
+                                                           MinValueValidator(1)])
 
     status = models.CharField(max_length=50, choices=settings.STATUS_CHOICE,
                               default=settings.STATUS_CHOICE[0][0])
@@ -111,7 +118,7 @@ class Booking(models.Model):
 
     email = models.EmailField(max_length=150, blank=True, default='')
 
-    phone = AUPhoneNumberField(
+    phone = PhoneNumberField(
         help_text="One phone number only. Put additional numbers in 'notes' if necessary. We may need to confirm details so be sure to provide a good number."  # noqa
     )
 
@@ -204,6 +211,39 @@ class Booking(models.Model):
         return self in self.__class__.objects.filter(pk=self.pk).active()
     is_active.boolean = True
     is_active.short_description = 'active'
+
+    def clean(self, *args, **kwargs):
+        booking_date, is_created = BookingDate.objects.get_or_create(
+            date=self.reserved_date)
+
+        booking_list = Booking.objects.filter(reserved_date=self.reserved_date)
+
+        # Check each 30min window to see which other bookings that window
+        # conflicts with. If the total pax for that window exceeds the max
+        # a validation error is thrown and the booking is not created.
+        minutes = self.booking_duration.total_seconds() / 60
+        blocks = int(minutes/30) # Potentially add an hour to match the safety hour often added
+        for i in range(0, blocks):
+            total_pax = 0
+            dt_this = datetime.datetime.combine(self.reserved_date,self.reserved_time)
+            dt_this = dt_this + timedelta(minutes=30*i)
+            this_end = dt_this + timedelta(minutes=30)
+            for booking in booking_list:
+                dt_other = datetime.datetime.combine(booking.reserved_date,booking.reserved_time)
+                if (timesince(dt_other, dt_this).encode('ascii', 'ignore').decode('ascii') == '0minutes'):
+                    if not dt_this == dt_other: # If not the same start (which shouldn't be skipped)
+                        continue # As it's just a half hour window if the window is before the other booking they can't overlap
+                # An hour is manually added on in views.TimeMixin for good luck, so this needs to be accounted for
+                booking_end = dt_other + booking.booking_duration + timedelta(minutes=60)
+                # Essentially if the window starts after the booking starts but ends before the booking ends
+                if (timesince(booking_end, this_end).encode('ascii', 'ignore').decode('ascii') == '0minutes'):
+                    total_pax = total_pax + booking.party_size
+                    continue
+            combined = self.party_size + total_pax;
+            if combined > settings.FULL:
+                raise ValidationError("Unfortunately the time you have selected overlaps with a very busy period, please contact us directly for further options.")
+
+        super(Booking, self).clean(*args, **kwargs)
 
     def save(self, *args, **kwargs):
         self.clean()
