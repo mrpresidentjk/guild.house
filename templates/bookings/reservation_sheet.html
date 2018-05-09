@@ -1,0 +1,33 @@
+{% extends "bookings/base.html" %}
+
+{% block title %}{{ homepage.title }} - {{ block.super }}{% endblock %}
+
+{% block content %}
+
+<div class="row">
+    <h3>Reservations for {% now "jS F Y" %}</h3>
+</div>
+     <table id="bookings">
+      <thead>
+      <tr>
+        <th>Time</th>
+        <th>Name</th>
+        <th>Total Pax</th>
+        <th>Allocated Table(s)</th>
+          <th>Notes</th>
+      </tr>
+      </thead>
+      <tbody>
+      {% for booking in object_list %}
+          <tr>
+              <td>{{booking.reserved_time}}</td>
+              <td>{{booking.name}}</td>
+              <td>{{booking.party_size}}</td>
+              <td>-</td>
+              <td>{{ booking.notes }}</td>
+          </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+
+{% endblock %}

@@ -88,6 +88,12 @@ urls = [
         ),
         name="booking_day"),
 
+    url(r'^reservation_sheet/$',
+        permission_required(BOOKINGS_PERMISSION_REQUIRED)(
+            views.ReservationSheetView.as_view()
+        ),
+        name="reservation_sheet"),
+
     url(r'^(?P<year>\d{4})/(?P<month>\d{2})/(?P<slug>[\w-]+)$',
         permission_required(BOOKINGS_PERMISSION_REQUIRED)(
             views.BookingDetailView.as_view()

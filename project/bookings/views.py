@@ -274,6 +274,7 @@ class BookingQueryset(object):
     paginate_by = settings.BOOKINGS_PAGINATE_BY
 
     def get_context_data(self, *args, **kwargs):
+        print("lol")
         context = super(BookingQueryset, self).get_context_data(
             *args, **kwargs)
         context['future_list'] = self.get_queryset().future()
@@ -511,6 +512,13 @@ class FormView(generic.FormView):
     template_name = 'bookings/default_form.html'
     form_class = BlankForm
     success_url = "/bookings/post/"
+
+class ReservationSheetView(BookingQueryset, generic.ListView):
+    template_name = 'bookings/reservation_sheet.html'
+
+    def get_queryset(self, *args, **kwargs):
+        qs = super(ReservationSheetView, self).get_queryset(*args, **kwargs)
+        return qs.filter(reserved_date=date.today())
 
 
 def post_view(request):
