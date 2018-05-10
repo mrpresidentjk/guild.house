@@ -191,6 +191,15 @@ $(".pax").click(function() {
 $("#id_phone, #id_name, #id_email, #id_party_size, #id_reserved_date, #id_reserved_time, #id_booking_method, #id_notes").change(function(){
   $(this).addClass("selected");
 })
+$("#id_party_size").change(function(){
+  $(".pax").removeClass("selected");
+})
+$("#id_reserved_date").change(function(){
+  $(".date").removeClass("selected");
+})
+$("#id_reserved_time").change(function(){
+  $(".time").removeClass("selected");
+})
 $("#remove").click(function() {
   $(".date").removeClass("selected");
   $(".time").removeClass("selected");
