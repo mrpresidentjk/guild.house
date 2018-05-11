@@ -240,10 +240,10 @@ class Booking(models.Model):
         if not self.created_at:
             self.created_at = timezone.now()
 
-        if self.status == 'no_show' and not self.is_cancelled:
+        if (self.status == 'no_show' and not self.is_cancelled) or (self.status == 'cancelled' and not self.is_cancelled):
             self.is_cancelled = True
 
-        if not self.status == 'no_show' and self.is_cancelled:
+        if not (self.status == 'cancelled' or self.status == 'no_show') and self.is_cancelled:
             self.is_cancelled = False
 
         super(Booking, self).save(*args, **kwargs)
