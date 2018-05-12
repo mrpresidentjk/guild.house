@@ -7,7 +7,7 @@ from django.utils import timezone
 from django.utils.encoding import python_2_unicode_compatible
 from taggit.managers import TaggableManager
 
-from localflavor.au.models import AUPhoneNumberField
+from phonenumber_field.modelfields import PhoneNumberField
 
 from project import utils
 from . import querysets, settings
@@ -111,7 +111,7 @@ class Booking(models.Model):
 
     email = models.EmailField(max_length=150, blank=True, default='')
 
-    phone = AUPhoneNumberField(
+    phone = PhoneNumberField(
         help_text="One phone number only. Put additional numbers in 'notes' if necessary. We may need to confirm details so be sure to provide a good number."  # noqa
     )
 
