@@ -208,7 +208,6 @@ class Booking(models.Model):
     def save(self, *args, **kwargs):
         self.clean()
 
-
         # Automatically make code if doesn't already have one.
         if not self.code:
             self.code = utils.generate_unique_hex(
@@ -250,4 +249,13 @@ class Booking(models.Model):
 
         booking_date, is_created = BookingDate.objects.get_or_create(
             date=self.reserved_date)
-        booking_date.set_values()
+
+     def delete(self):
+        super(Booking, self).delete()
+        booking_date, is_created = BookingDate.objects.get_or_create(date=self.reserved_date)
+        bookings_on_date = Booking.objects.filter(reserved_date=self.reserved_date)
+        if not bookings_on_date:
+            booking_date.delete()
+        else:
+            booking_date.set_values()
+
