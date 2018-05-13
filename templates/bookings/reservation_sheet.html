@@ -30,28 +30,34 @@
     </div>
     <div class="col-sm-4">
         <div>
-            <h3>Lunch</h3>
+            <h4>Lunch</h4>
+            <div class="timeNotes">
+            </div>
+        </div>
+        <div>
+            <h4>Dinner</h4>
             <div class="timeNotes">
 
             </div>
         </div>
         <div>
-            <h3>Dinner</h3>
-            <div class="timeNotes">
+            <h4>Available Tables</h4>
+            <div id="tableList">
+                {% for section,tables in table_layout.items %}
+                    <h4>{{ section }}</h4>
+                    <div class="row">
+                        {% for table in tables %}
+                            <div class="col-sm-1 tableField">
+                                {{ table }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endfor %}
+            </div>
+        <br>
+            <div class="tableNotes">
 
             </div>
-        </div>
-        <div>
-            <h3>Available Tables</h3>
-            {% for section in layout %}
-                <div class="row">
-                    {% for table in section %}
-                        <div class="table">
-                            {{ table }}
-                        </div>
-                    {% endfor %}
-                </div>
-            {% endfor %}
         </div>
     </div>
 </div>
