@@ -5,29 +5,57 @@
 {% block content %}
 
 <div class="row">
-    <h3>Reservations for {% now "jS F Y" %}</h3>
-</div>
-     <table id="bookings">
-      <thead>
-      <tr>
-        <th>Time</th>
-        <th>Name</th>
-        <th>Total Pax</th>
-        <th>Allocated Table(s)</th>
-          <th>Notes</th>
-      </tr>
-      </thead>
-      <tbody>
-      {% for booking in object_list %}
+    <div class="col-sm-8">
+        <h3>Reservations for {% now "jS F Y" %}</h3>
+        <table class="reservations">
+          <thead>
           <tr>
-              <td>{{booking.reserved_time}}</td>
-              <td>{{booking.name}}</td>
-              <td>{{booking.party_size}}</td>
-              <td>-</td>
-              <td>{{ booking.notes }}</td>
+            <th>Time</th>
+            <th>Name</th>
+            <th>Total Pax</th>
+            <th>Allocated Table(s)</th>
           </tr>
-      {% endfor %}
-      </tbody>
-    </table>
+          </thead>
+          <tbody>
+          {% for booking in object_list %}
+              <tr>
+                  <td>{{booking.reserved_time}}</td>
+                  <td>{{booking.name}}</td>
+                  <td>{{booking.party_size}}</td>
+                  <td class="assignedTable"></td>
+              </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+    </div>
+    <div class="col-sm-4">
+        <div>
+            <h3>Lunch</h3>
+            <div class="timeNotes">
+
+            </div>
+        </div>
+        <div>
+            <h3>Dinner</h3>
+            <div class="timeNotes">
+
+            </div>
+        </div>
+        <div>
+            <h3>Available Tables</h3>
+            {% for section in layout %}
+                <div class="row">
+                    {% for table in section %}
+                        <div class="table">
+                            {{ table }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+
 
 {% endblock %}
