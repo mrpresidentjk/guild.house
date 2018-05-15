@@ -1,17 +1,12 @@
 
 <head>
     <title>Reservation Site</title>
-    {% load static from staticfiles %}
-    {%  block meta %}
-        <link href="{% static "vendor/bootstrap/bootstrap.min.css" %}" rel="stylesheet">
-        <link href="{% static "reservation_sheet.css" %}" rel="stylesheet">
-    {% endblock %}
 </head>
 <div class="a4">
     <h3>Reservations for {% now "jS F Y" %}</h3>
     <br>
     <div class="row">
-        <div class="col-sm-8">
+        <div class="col-sm-7">
             <table class="reservations">
               <thead>
               <tr>
@@ -39,7 +34,7 @@
               </tbody>
             </table>
         </div>
-        <div class="col-sm-4">
+        <div class="col-sm-5">
             <div>
                 <h4>Lunch</h4>
                 <div class="timeNotes">
@@ -53,7 +48,6 @@
             </div>
             <div>
                 <h4>Available Tables</h4>
-                <br>
                 <div id="tableList">
                     {% for section,tables in table_layout.items %}
                         <h5>{{ section }}</h5>

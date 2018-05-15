@@ -90,7 +90,7 @@ urls = [
 
     url(r'^reservation_sheet/$',
         permission_required(BOOKINGS_PERMISSION_REQUIRED)(
-            views.ReservationSheetView.as_view()
+            views.ReservationSheetPDFView.as_view()
         ),
         name="reservation_sheet"),
 

@@ -18,6 +18,9 @@ from .forms import BookingForm, NewBookingForm, BlankForm
 from .models import Booking, BookingDate
 from .utils import import_revel_bookings, get_future_services_set
 
+from django_weasyprint import WeasyTemplateResponseMixin
+
+
 
 class CalendarMixin(object):
     """ @TD: Fri Jun 24 11:46:48 AEST 2016: This is overkill, but was useful in a past
@@ -526,9 +529,10 @@ class ReservationSheetView(BookingQueryset, generic.ListView):
         table_layout["Inside"] = [str(i) for i in range(1,14)] + [str(i) for i in range(81,88)]
         table_layout["Outside"] = [str(i) for i in range(1,5)]
         context_data['table_layout'] = table_layout
-
         return context_data
 
+class ReservationSheetPDFView(ReservationSheetView, WeasyTemplateResponseMixin):
+    pdf_stylesheets = ['static/reservation_sheet.css','static/vendor/bootstrap/bootstrap.min.css']
 
 def post_view(request):
 

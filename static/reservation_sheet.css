@@ -4,7 +4,6 @@
   height: 29.7cm;
   display: block;
   margin: 0 auto;
-  padding: 10px 25px;
   margin-bottom: 0.5cm;
   box-shadow: 0 0 0.5cm rgba(0, 0, 0, 0.5);
   overflow-y: scroll;
@@ -37,13 +36,20 @@ table.reservations tr{
 }
 .timeNotes{
     width: auto;
-    height: 150px;
+    height: 100px;
     background: white;
     border: 1px solid black;
 }
-.waiterNotes, .tableNotes{
+.tableNotes{
     width: auto;
     height: 100px;
+    background: white;
+    border: 1px solid black;
+}
+
+.waiterNotes{
+    width: auto;
+    height: 150px;
     background: white;
     border: 1px solid black;
 }
