@@ -20,6 +20,14 @@ table.reservations td, th{
     padding: 0;
 }
 
+table.reservations tr{
+    line-height: 2em;
+}
+
+.bookingConfirmed{
+    text-align: center;
+}
+
 
 .assignedTable{
     width: auto;
@@ -33,7 +41,7 @@ table.reservations td, th{
     background: white;
     border: 1px solid black;
 }
-.tableNotes{
+.waiterNotes, .tableNotes{
     width: auto;
     height: 100px;
     background: white;
@@ -99,5 +107,4 @@ table.reservations td, th{
   .enable-print {
     display: block;
   }
-
 }
