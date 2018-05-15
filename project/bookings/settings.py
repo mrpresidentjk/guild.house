@@ -31,6 +31,7 @@ STATUS_CHOICE = [
     ('confirmed', 'Confirmed'),
     ('numbers_confirmed', 'Numbers Confirmed'),
     ('no_show', 'No Show'),
+    ('cancelled', 'Cancelled'),
 ]
 
 DEFAULT_BOOKING_METHOD = getattr(settings, 'BOOKINGS_DEFAULT_BOOKING_METHOD',
@@ -74,9 +75,14 @@ def generate_times():
     temp_date, time_list = datetime.date(2000, 1, 1), []
     this_time = BOOKING_TIMES[0]
     while this_time <= BOOKING_TIMES[1]:
-        this_time_formatted = "{}:{:0>2}".format(
+        
+        # Choice fields values need the seconds portion, but this
+        # is omitted for the displayed time
+        
+        this_time_display_label = "{}:{:0>2}".format(
             this_time.hour, this_time.minute)
-        time_list.append((this_time_formatted, this_time_formatted))
+        this_time_actual_value = this_time_display_label + ":00"    
+        time_list.append((this_time_actual_value, this_time_display_label))
 
         # hack around timedelta not allowing time addition (on purpose)
         # http://bugs.python.org/issue1487389
@@ -91,18 +97,18 @@ BOOKING_TIMES_CHOICES = generate_times()
 
 # An hour is manually added on in views.TimeMixin for good luck.
 DEFAULT_BOOKING_DURATION = getattr(settings, 'BOOKINGS_DEFAULT_BOOKING_DURATION',
-                                   '03:00:00')
+                                   '3:00:00')
 
 DURATION_SELECTION = [
     ('00:30:00', '30 minutes'),
     ('00:45:00', '45 minutes'),
-    ('01:00:00', '1 hour'),
-    ('01:30:00', '1 and a half hours'),
-    ('02:00:00', '2 hours'),
-    ('02:30:00', '2 and a half hours'),
-    ('03:00:00', '3 hours'),
-    ('04:00:00', '4 hours'),
-    ('06:00:00', 'more than 4 hours')
+    ('1:00:00', '1 hour'),
+    ('1:30:00', '1 and a half hours'),
+    ('2:00:00', '2 hours'),
+    ('2:30:00', '2 and a half hours'),
+    ('3:00:00', '3 hours'),
+    ('4:00:00', '4 hours'),
+    ('6:00:00', 'more than 4 hours')
 ]
 
 HEAT = {

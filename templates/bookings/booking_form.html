@@ -143,7 +143,7 @@ PLEASE EMAIL: <a href="mailto:reservations@guild.house" style="color:white">rese
               <i class="fa fa-save fa-fw"></i>
               <span class="network-name">Save</span>
             </button>
-            <button type="submit" class="hidden-print btn btn-default btn-lg" id="remove">
+            <button type="reset" class="hidden-print btn btn-default btn-lg" id="remove" value="Cancel">
               <i class="fa fa-trash fa-fw"></i>
               <span class="network-name">Cancel</span>
             </button>
@@ -191,7 +191,29 @@ $(".pax").click(function() {
 $("#id_phone, #id_name, #id_email, #id_party_size, #id_reserved_date, #id_reserved_time, #id_booking_method, #id_notes").change(function(){
   $(this).addClass("selected");
 })
-$("#remove").click(function() {$("id_status".val(""))})
+$("#id_party_size").change(function(){
+  $(".pax").removeClass("selected");
+})
+$("#id_reserved_date").change(function(){
+  $(".date").removeClass("selected");
+})
+$("#id_reserved_time").change(function(){
+  $(".time").removeClass("selected");
+})
+$("#remove").click(function() {
+  $(".date").removeClass("selected");
+  $(".time").removeClass("selected");
+  $(".pax").removeClass("selected");
+  $("#id_phone").removeClass("selected");
+  $("#id_name").removeClass("selected");
+  $("#id_email").removeClass("selected");
+  $("#id_party_size").removeClass("selected");
+  $("#id_reserved_date").removeClass("selected");
+  $("#id_reserved_time").removeClass("selected");
+  $("#id_booking_method").removeClass("selected");
+  $("#id_notes").removeClass("selected");
+  $("id_status".val(""))
+})
 $("#id_reservation_time").prop("readonly", true);
 
 </script>

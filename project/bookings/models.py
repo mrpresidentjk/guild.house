@@ -7,7 +7,7 @@ from django.utils import timezone
 from django.utils.encoding import python_2_unicode_compatible
 from taggit.managers import TaggableManager
 
-from localflavor.au.models import AUPhoneNumberField
+from phonenumber_field.modelfields import PhoneNumberField
 
 from project import utils
 from . import querysets, settings
@@ -111,7 +111,7 @@ class Booking(models.Model):
 
     email = models.EmailField(max_length=150, blank=True, default='')
 
-    phone = AUPhoneNumberField(
+    phone = PhoneNumberField(
         help_text="One phone number only. Put additional numbers in 'notes' if necessary. We may need to confirm details so be sure to provide a good number."  # noqa
     )
 
@@ -208,7 +208,6 @@ class Booking(models.Model):
     def save(self, *args, **kwargs):
         self.clean()
 
-
         # Automatically make code if doesn't already have one.
         if not self.code:
             self.code = utils.generate_unique_hex(
@@ -240,12 +239,11 @@ class Booking(models.Model):
         if not self.created_at:
             self.created_at = timezone.now()
 
-        if self.status == 'no_show' and not self.is_cancelled:
+        if (self.status == 'no_show' and not self.is_cancelled) or (self.status == 'cancelled' and not self.is_cancelled):
             self.is_cancelled = True
 
-        if not self.status == 'no_show' and self.is_cancelled:
+        if not (self.status == 'cancelled' or self.status == 'no_show') and self.is_cancelled:
             self.is_cancelled = False
-
         try:
             # Find the Booking and BookingDate objects relating to the booking before modification
             previous_booking = Booking.objects.get(code=self.code)
@@ -271,3 +269,12 @@ class Booking(models.Model):
             super(Booking, self).save(*args, **kwargs)
             booking_date, is_created = BookingDate.objects.get_or_create(date=self.reserved_date)
             booking_date.set_values()
+
+    def delete(self):
+       super(Booking, self).delete()
+       booking_date, is_created = BookingDate.objects.get_or_create(date=self.reserved_date)
+       bookings_on_date = Booking.objects.filter(reserved_date=self.reserved_date)
+       if not bookings_on_date:
+           booking_date.delete()
+       else:
+           booking_date.set_values()
