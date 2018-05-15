@@ -102,6 +102,8 @@ class Booking(models.Model):
 
     is_cancelled = models.BooleanField(default=False)
 
+    confirmed = models.BooleanField(default=False)
+
     area = models.CharField(max_length=50, choices=settings.AREA_CHOICE,
                             default=settings.AREA_CHOICE[0][0])
 

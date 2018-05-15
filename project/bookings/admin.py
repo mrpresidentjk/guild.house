@@ -21,7 +21,7 @@ class BookingAdmin(admin.ModelAdmin):
     fieldsets = [
         ('Content', {'fields': ['reserved_date', 'reserved_time',
                                 'booking_duration', 'name', 'party_size',
-                                'status', 'is_cancelled', 'service', 'email',
+                                'status', 'is_cancelled', 'confirmed', 'service', 'email',
                                 'phone', 'notes', 'private_notes']}),
         ('Publishing', {'fields': ['site', ('created_at', 'updated_at')],
                         'classes': ['collapse']}),
