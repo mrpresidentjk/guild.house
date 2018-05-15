@@ -1,67 +1,73 @@
-{% extends "bookings/base.html" %}
 
-{% block title %}{{ homepage.title }} - {{ block.super }}{% endblock %}
-
-{% block content %}
-
-<div class="row">
-    <div class="col-sm-8">
-        <h3>Reservations for {% now "jS F Y" %}</h3>
-        <table class="reservations">
-          <thead>
-          <tr>
-            <th>Time</th>
-            <th>Name</th>
-            <th>Total Pax</th>
-            <th>Allocated Table(s)</th>
-          </tr>
-          </thead>
-          <tbody>
-          {% for booking in object_list %}
+<head>
+    <title>Reservation Site</title>
+    {% load static from staticfiles %}
+    {%  block meta %}
+        <link href="{% static "vendor/bootstrap/bootstrap.min.css" %}" rel="stylesheet">
+        <link href="{% static "reservation_sheet.css" %}" rel="stylesheet">
+    {% endblock %}
+</head>
+<div class="a4">
+    <div class="row">
+        <div class="col-lg-8">
+            <h2>Reservations for {% now "jS F Y" %}</h2>
+            <br>
+            <table class="reservations">
+              <thead>
               <tr>
-                  <td>{{booking.reserved_time}}</td>
-                  <td>{{booking.name}}</td>
-                  <td>{{booking.party_size}}</td>
-                  <td class="assignedTable"></td>
+                <th>Time</th>
+                <th>Name</th>
+                <th>Total Pax</th>
+                <th>Tables</th>
+                <th>Confirmed</th>
               </tr>
-          {% endfor %}
-          </tbody>
-        </table>
-    </div>
-    <div class="col-sm-4">
-        <div>
-            <h4>Lunch</h4>
-            <div class="timeNotes">
-            </div>
+              </thead>
+              <tbody>
+              {% for booking in object_list %}
+                  <tr>
+                      <td>{{booking.reserved_time}}</td>
+                      <td>{{booking.name}}</td>
+                      <td>{{booking.party_size}}</td>
+                      <td class="assignedTable"></td>
+                      <td><input type="checkbox" checked disabled></td>
+                  </tr>
+              {% endfor %}
+              </tbody>
+            </table>
         </div>
-        <div>
-            <h4>Dinner</h4>
-            <div class="timeNotes">
-
+        <div class="col-lg-4">
+            <div>
+                <h4>Lunch</h4>
+                <div class="timeNotes">
+                </div>
             </div>
-        </div>
-        <div>
-            <h4>Available Tables</h4>
-            <div id="tableList">
-                {% for section,tables in table_layout.items %}
-                    <h4>{{ section }}</h4>
-                    <div class="row">
-                        {% for table in tables %}
-                            <div class="col-sm-1 tableField">
-                                {{ table }}
-                            </div>
-                        {% endfor %}
-                    </div>
-                {% endfor %}
-            </div>
-        <br>
-            <div class="tableNotes">
+            <div>
+                <h4>Dinner</h4>
+                <div class="timeNotes">
 
+                </div>
+            </div>
+            <div>
+                <h4>Available Tables</h4>
+                <br>
+                <div id="tableList">
+                    {% for section,tables in table_layout.items %}
+                        <h5>{{ section }}</h5>
+                        <div class="row">
+                            {% for table in tables %}
+                                <div class="col-xs-1 tableNumber">
+                                    {{ table }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <br>
+                        <div class="tableNotes">
+
+                        </div>
+                    {% endfor %}
+                </div>
+            <br>
             </div>
         </div>
     </div>
 </div>
-
-
-
-{% endblock %}

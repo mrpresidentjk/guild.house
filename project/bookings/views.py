@@ -520,6 +520,15 @@ class ReservationSheetView(BookingQueryset, generic.ListView):
         qs = super(ReservationSheetView, self).get_queryset(*args, **kwargs)
         return qs.filter(reserved_date=date.today())
 
+    def get_context_data(self, *args, **kwargs):
+        context_data = super(ReservationSheetView, self).get_context_data()
+        table_layout = dict()
+        table_layout["Inside"] = [str(i) for i in range(1,14)] + [str(i) for i in range(81,88)]
+        table_layout["Outside"] = [str(i) for i in range(1,5)]
+        context_data['table_layout'] = table_layout
+
+        return context_data
+
 
 def post_view(request):
 
