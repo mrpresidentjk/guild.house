@@ -28,15 +28,17 @@ class CalendarMixin(object):
 
     def get_calendar(self, context, yr=None, mth=None, day=None):
 
-        if yr and mth:
+        if yr and mth and day:
             y = int(yr)
             m = int(mth)
+            d = int(day)
         else:
-            d = datetime.datetime.today()
-            y = d.year
-            m = d.month
-            context['today'] = datetime.date(
-                year=d.year, month=d.month, day=d.day)
+            today = datetime.datetime.today()
+            y = today.year
+            m = today.month
+            d = today.day
+
+        context['today'] = datetime.date(year=y, month=m, day=d)
 
         this_month = datetime.date(year=y, month=m, day=1)
         next_mth = this_month + relativedelta(months=+1)
@@ -48,17 +50,17 @@ class CalendarMixin(object):
         context['cal_prev_yr'] = '/%s/%02d/' % (
             this_month.year - 1, this_month.month)
         context['month'] = this_month
-        context['calendar'] = self.make_range(y, m)
+        context['calendar'] = self.make_range(y, m, d)
         return context
 
-    def make_range(self, y, m):
+    def make_range(self, y, m, d):
         c = calendar.monthrange(y, m)
         a = datetime.timedelta(days=c[0])
         b = datetime.timedelta(days=settings.DEFAULT_CALENDAR_LENGTH)
 
         # e = Booking.objects.filter(date__year=y, date__month=m)
-        start = datetime.date.today() -\
-            datetime.timedelta(datetime.date.today().weekday())
+        start = datetime.date(year=y, month=m, day=d) -\
+            datetime.timedelta(datetime.date(year=y, month=m, day=d).weekday())
         end = start + b
         date_range = []
         while start < end:
@@ -70,7 +72,7 @@ class CalendarMixin(object):
     def get_context_data(self, *args, **kwargs):
         context = super(CalendarMixin, self).get_context_data(*args, **kwargs)
         context = self.get_calendar(context)
-        context['tomorrow'] = date.today() + timedelta(days=1)
+        context['tomorrow'] = context['today'] + timedelta(days=1)
         return context
 
 
@@ -277,7 +279,6 @@ class BookingQueryset(object):
     paginate_by = settings.BOOKINGS_PAGINATE_BY
 
     def get_context_data(self, *args, **kwargs):
-        print("lol")
         context = super(BookingQueryset, self).get_context_data(
             *args, **kwargs)
         context['future_list'] = self.get_queryset().future()
@@ -350,9 +351,12 @@ class BookingCreateView(BookingFormMixin, CalendarMixin, BookingQueryset,
     def get_context_data(self, *args, **kwargs):
         context = super(BookingCreateView, self).get_context_data(
             *args, **kwargs)
-        context = self.get_calendar(context)
-        context['today'] = date.today()
-        context = self.get_time_list(context, this_date=date.today())
+        this_booking_date, _ = BookingDate.objects.get_or_create(date=datetime.date.today())
+        reservation_sheet_printed = this_booking_date.reservation_sheet_printed
+        start_date = datetime.date.today() if not reservation_sheet_printed else datetime.date.today() + datetime.timedelta(days=1)
+        context = self.get_calendar(context, yr=start_date.year, mth=start_date.month, day=start_date.day)
+        context['today'] = start_date
+        context = self.get_time_list(context, this_date=start_date)
         return context
 
     def get_form_kwargs(self, *args, **kwargs):
@@ -533,6 +537,13 @@ class ReservationSheetView(BookingQueryset, generic.ListView):
 
 class ReservationSheetPDFView(ReservationSheetView, WeasyTemplateResponseMixin):
     pdf_stylesheets = ['static/reservation_sheet.css','static/vendor/bootstrap/bootstrap.min.css']
+
+    def get(self, request, *args, **kwargs):
+        this_booking_date, _ = BookingDate.objects.get_or_create(date=datetime.date.today())
+        print(this_booking_date)
+        this_booking_date.reservation_sheet_printed = True
+        this_booking_date.save()
+        return super(ReservationSheetPDFView,self).get(request,*args,**kwargs)
 
 def post_view(request):
 
