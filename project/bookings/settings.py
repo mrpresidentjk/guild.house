@@ -11,6 +11,8 @@ BOOKINGS_FEED = getattr(settings, 'BOOKINGS_BOOKING_FEED', 10)
 # If a booking is greater or equal to this number it is treated as a larger sized booking.
 BIG_BOOKING = getattr(settings, 'BOOKINGS_BIG_BOOKING', 7)
 
+VENUE_FULL = getattr(settings, 'VENUE_FULL', 105)
+
 TIME_ZONE = settings.TIME_ZONE
 
 DEFAULT_BOOKING_TIME = getattr(
@@ -111,10 +113,11 @@ DURATION_SELECTION = [
     ('6:00:00', 'more than 4 hours')
 ]
 
+
 HEAT = {
     50: 'warm',
     75: 'hot',
-    95: 'full',
+    VENUE_FULL: 'full',
 }
 
 # Note: hardcoded in booking_form.html

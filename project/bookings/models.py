@@ -248,9 +248,6 @@ class Booking(models.Model):
                     total_pax = total_pax + booking.party_size
                     continue
             combined = self.party_size + total_pax
-            if combined > settings.FULL:
-                raise ValidationError(
-                    "Unfortunately the time you have selected overlaps with a very busy period, please contact us directly for further options.")
 
         super(Booking, self).clean(*args, **kwargs)
 
