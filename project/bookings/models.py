@@ -134,7 +134,7 @@ class Booking(models.Model):
     reserved_date = models.DateField(db_index=True)
     reserved_time = models.TimeField(db_index=True, default=timezone.now)
 
-    booking_duration = models.DurationField(blank=True, null=True)
+    booking_duration = models.DurationField(blank=True, null=True, default=settings.DEFAULT_BOOKING_DURATION)
 
     service = models.CharField(max_length=50, choices=settings.SERVICE_CHOICE,
                                blank=True, default=''
