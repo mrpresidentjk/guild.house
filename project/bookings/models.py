@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, unicode_literals
-from datetime import time, timedelta, date
+from datetime import datetime, timedelta
 from django.contrib.sites.models import Site
 from django.core.urlresolvers import reverse
 from django.db import models
@@ -223,12 +223,12 @@ class Booking(models.Model):
         blocks = int(minutes/30)
         for i in range(0, blocks):
             total_pax = 0
-            dt_this = datetime.datetime.combine(
+            dt_this = datetime.combine(
                 self.reserved_date, self.reserved_time)
             dt_this = dt_this + timedelta(minutes=30*i)
             this_end = dt_this + timedelta(minutes=30)
             for booking in booking_list:
-                dt_other = datetime.datetime.combine(
+                dt_other = datetime.combine(
                     booking.reserved_date, booking.reserved_time)
                 if (timesince(dt_other, dt_this).encode(
                         'ascii', 'ignore').decode('ascii') == '0minutes'):
