@@ -110,8 +110,9 @@ class TimeMixin(object):
 
         select_time = datetime.datetime.combine(datetime.date(2000, 1, 1),
                                                 settings.BOOKING_TIMES[0])
-        while this_time <= datetime.datetime.combine(this_date,
-                                                     settings.BOOKING_TIMES[1]) - interval:
+        while this_time <= datetime.datetime.combine(
+                this_date,
+                settings.BOOKING_TIMES[1]) - interval:
             this_time = this_time + interval
             this_dict = {'pax': 0,
                          'date': this_time,

@@ -13,7 +13,9 @@ class BookingAdminForm(forms.ModelForm):
         fields = ['name', 'site', 'reserved_date', 'reserved_time']
         model = Booking
 
+
 class BookingForm(forms.ModelForm):
+
     required_css_class = 'required'
     booking_duration = forms.ChoiceField(widget=forms.Select(),
                                          choices=DURATION_SELECTION)
