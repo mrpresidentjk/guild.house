@@ -96,6 +96,12 @@ urls = [
         views.BookingTimeView.as_view(),
         name='booking_times'),
 
+    # Used to save some horrible frontend code to reformat date on
+    # bookings form.
+    url(r'^time/(?P<day>\d{2})/(?P<month>\d{2})/(?P<year>\d{4})/$',
+        views.BookingTimeView.as_view(),
+        name='booking_times_reversed'),
+
     url(r'^(?P<code>[\w-]+)/run/$',
         views.BookingRunView.as_view(),
         name="booking_run"),
