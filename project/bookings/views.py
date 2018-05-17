@@ -12,6 +12,7 @@ from django.http import Http404
 from django.shortcuts import redirect, get_object_or_404, render
 from django.utils.timezone import localtime, now
 from django.views import generic
+from django.conf import settings
 
 from . import settings
 from .forms import BookingForm, NewBookingForm, BlankForm
@@ -132,7 +133,7 @@ class TimeMixin(object):
                     this_dict['heat'] = settings.HEAT[tmp]
 
             # @@TODO get value from settings.HEAT
-            if this_dict['pax'] > 104:
+            if this_dict['pax'] > settings.FULL:
                 busy_night = True
 
             # Add `service` to dictionary
