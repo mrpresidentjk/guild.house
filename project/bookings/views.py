@@ -353,7 +353,7 @@ class BookingCreateView(BookingFormMixin, CalendarMixin, BookingQueryset,
             *args, **kwargs)
 
         try:
-            this_booking_date, _ = BookingDate.objects.get(date=datetime.date.today())
+            this_booking_date = BookingDate.objects.get(date=datetime.date.today())
             reservation_sheet_printed = this_booking_date.reservation_sheet_printed
         except BookingDate.DoesNotExist:
             reservation_sheet_printed = False
