@@ -168,7 +168,7 @@ PLEASE EMAIL: <a href="mailto:reservations@guild.house" style="color:white">rese
 
 $(document).ready(function(){
   $.ajax({
-    url: "/bookings/time{{ today|date:"/Y/m/d/" }}",
+    url: "/bookings/time/"+$("#id_reserved_date").val()+"/",
     success: function(result){$( "#time" ).html(result);}
   });
 });

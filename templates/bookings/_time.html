@@ -1,6 +1,6 @@
 {% if not object.code %}
 
-<h5 class="hidden-print">Time:</h5>
+<h5 class="hidden-print">Select Time:</h5>
 {% endif %}
 
 {% for time in time_list %}
@@ -13,7 +13,7 @@
 
 <div><b>{{ time.service|title }}</b><br>
 {% endif %}
-  <span data-time="{{ time.select_time|time:"H:i" }}"
+  <span data-time="{{ time.select_time|time:"H:i" }}:00"
         data-full="{% if time.pax > 105 %}full{% endif %}"
         class="time{% if time.heat %} {{ time.heat }}{% endif %}">
     {{ time.time }}

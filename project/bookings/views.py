@@ -12,6 +12,7 @@ from django.http import Http404
 from django.shortcuts import redirect, get_object_or_404, render
 from django.utils.timezone import localtime, now
 from django.views import generic
+from django.conf import settings
 
 from . import settings
 from .forms import BookingForm, NewBookingForm, BlankForm
@@ -114,8 +115,9 @@ class TimeMixin(object):
 
         select_time = datetime.datetime.combine(datetime.date(2000, 1, 1),
                                                 settings.BOOKING_TIMES[0])
-        while this_time <= datetime.datetime.combine(this_date,
-                                                     settings.BOOKING_TIMES[1]) - interval:
+        while this_time <= datetime.datetime.combine(
+                this_date,
+                settings.BOOKING_TIMES[1]) - interval:
             this_time = this_time + interval
             this_dict = {'pax': 0,
                          'date': this_time,
@@ -137,7 +139,7 @@ class TimeMixin(object):
                     this_dict['heat'] = settings.HEAT[tmp]
 
             # @@TODO get value from settings.HEAT
-            if this_dict['pax'] > 104:
+            if this_dict['pax'] > settings.VENUE_FULL:
                 busy_night = True
 
             # Add `service` to dictionary
@@ -464,7 +466,7 @@ class BookingCancelledView(BookingQueryset, generic.ListView):
 
     def get_queryset(self, *args, **kwargs):
         # queryset = super(BookingCancelledView, self).get_queryset(*args, **kwargs)
-        return Booking.objects.filter(status__in=['cancelled','no_show']).order_by('-updated_at')
+        return Booking.objects.filter(status__in=['cancelled', 'no_show']).order_by('-updated_at')
 
 
 class BookingYearArchiveView(BookingQueryset, generic.YearArchiveView):

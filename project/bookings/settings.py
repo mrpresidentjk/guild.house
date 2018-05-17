@@ -11,6 +11,8 @@ BOOKINGS_FEED = getattr(settings, 'BOOKINGS_BOOKING_FEED', 10)
 # If a booking is greater or equal to this number it is treated as a larger sized booking.
 BIG_BOOKING = getattr(settings, 'BOOKINGS_BIG_BOOKING', 7)
 
+VENUE_FULL = getattr(settings, 'VENUE_FULL', 105)
+
 TIME_ZONE = settings.TIME_ZONE
 
 DEFAULT_BOOKING_TIME = getattr(
@@ -67,7 +69,8 @@ SERVICE_TIMES = (
     (time(20, 30), 'late'),
 )
 
-BOOKING_TIMES = (time(12), time(23))
+# IMPORTANT SETTINGS! Actual booking range.
+BOOKING_TIMES = (time(12), time(21))
 BOOKING_INTERVAL = timedelta(minutes=30)
 
 
@@ -75,13 +78,13 @@ def generate_times():
     temp_date, time_list = datetime.date(2000, 1, 1), []
     this_time = BOOKING_TIMES[0]
     while this_time <= BOOKING_TIMES[1]:
-        
+
         # Choice fields values need the seconds portion, but this
         # is omitted for the displayed time
-        
+
         this_time_display_label = "{}:{:0>2}".format(
             this_time.hour, this_time.minute)
-        this_time_actual_value = this_time_display_label + ":00"    
+        this_time_actual_value = this_time_display_label + ":00"
         time_list.append((this_time_actual_value, this_time_display_label))
 
         # hack around timedelta not allowing time addition (on purpose)
@@ -111,10 +114,11 @@ DURATION_SELECTION = [
     ('6:00:00', 'more than 4 hours')
 ]
 
+
 HEAT = {
     50: 'warm',
     75: 'hot',
-    95: 'full',
+    VENUE_FULL: 'full',
 }
 
 # Note: hardcoded in booking_form.html
