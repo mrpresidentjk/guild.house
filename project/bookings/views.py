@@ -452,7 +452,7 @@ class BookingCancelledView(BookingQueryset, generic.ListView):
 
     def get_queryset(self, *args, **kwargs):
         # queryset = super(BookingCancelledView, self).get_queryset(*args, **kwargs)
-        return Booking.objects.filter(status__in=['cancelled','no_show']).order_by('-updated_at')
+        return Booking.objects.filter(status__in=['cancelled', 'no_show']).order_by('-updated_at')
 
 
 class BookingYearArchiveView(BookingQueryset, generic.YearArchiveView):

@@ -75,13 +75,13 @@ def generate_times():
     temp_date, time_list = datetime.date(2000, 1, 1), []
     this_time = BOOKING_TIMES[0]
     while this_time <= BOOKING_TIMES[1]:
-        
+
         # Choice fields values need the seconds portion, but this
         # is omitted for the displayed time
-        
+
         this_time_display_label = "{}:{:0>2}".format(
             this_time.hour, this_time.minute)
-        this_time_actual_value = this_time_display_label + ":00"    
+        this_time_actual_value = this_time_display_label + ":00"
         time_list.append((this_time_actual_value, this_time_display_label))
 
         # hack around timedelta not allowing time addition (on purpose)
