@@ -351,8 +351,13 @@ class BookingCreateView(BookingFormMixin, CalendarMixin, BookingQueryset,
     def get_context_data(self, *args, **kwargs):
         context = super(BookingCreateView, self).get_context_data(
             *args, **kwargs)
-        this_booking_date, _ = BookingDate.objects.get_or_create(date=datetime.date.today())
-        reservation_sheet_printed = this_booking_date.reservation_sheet_printed
+
+        try:
+            this_booking_date, _ = BookingDate.objects.get(date=datetime.date.today())
+            reservation_sheet_printed = this_booking_date.reservation_sheet_printed
+        except BookingDate.DoesNotExist:
+            reservation_sheet_printed = False
+
         start_date = datetime.date.today() if not reservation_sheet_printed else datetime.date.today() + datetime.timedelta(days=1)
         context = self.get_calendar(context, yr=start_date.year, mth=start_date.month, day=start_date.day)
         context['today'] = start_date
