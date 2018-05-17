@@ -99,7 +99,7 @@ class Booking(models.Model):
     name = models.CharField(max_length=200)
 
     party_size = models.PositiveIntegerField(validators=[MaxValueValidator(100),
-                                                           MinValueValidator(1)])
+                                                         MinValueValidator(1)])
 
     status = models.CharField(max_length=50, choices=settings.STATUS_CHOICE,
                               default=settings.STATUS_CHOICE[0][0])
@@ -241,7 +241,7 @@ class Booking(models.Model):
                 if (timesince(booking_end, this_end).encode('ascii', 'ignore').decode('ascii') == '0minutes'):
                     total_pax = total_pax + booking.party_size
                     continue
-            combined = self.party_size + total_pax;
+            combined = self.party_size + total_pax
             if combined > settings.FULL:
                 raise ValidationError(
                     "Unfortunately the time you have selected overlaps with a very busy period, please contact us directly for further options.")
@@ -279,9 +279,6 @@ class Booking(models.Model):
         if self.phone:
             Phone.objects.get_or_create(phone=self.phone)
 
-        if not self.created_at:
-            self.created_at = timezone.now()
-
         if (self.status == 'no_show' and not self.is_cancelled) or (self.status == 'cancelled' and not self.is_cancelled):
             self.is_cancelled = True
 
@@ -290,15 +287,18 @@ class Booking(models.Model):
         try:
             # Find the Booking and BookingDate objects relating to the booking before modification
             previous_booking = Booking.objects.get(code=self.code)
-            previous_booking_date = BookingDate.objects.get(date=previous_booking.reserved_date)
+            previous_booking_date = BookingDate.objects.get(
+                date=previous_booking.reserved_date)
 
             # Save the new values for the booking
             super(Booking, self).save(*args, **kwargs)
-            booking_date, is_created = BookingDate.objects.get_or_create(date=self.reserved_date)
+            booking_date, is_created = BookingDate.objects.get_or_create(
+                date=self.reserved_date)
             booking_date.set_values()
 
             # Check if there are no Booking objects relating to the previous BookingDate object
-            bookings_on_previous_date = Booking.objects.filter(reserved_date=previous_booking.reserved_date)
+            bookings_on_previous_date = Booking.objects.filter(
+                reserved_date=previous_booking.reserved_date)
 
             # Delete the previous BookingDate if there are no bookings
             if not bookings_on_previous_date:
@@ -310,14 +310,17 @@ class Booking(models.Model):
         except (Booking.DoesNotExist, BookingDate.DoesNotExist):
             # Just save, create and update the BookingDate object with the new Booking
             super(Booking, self).save(*args, **kwargs)
-            booking_date, is_created = BookingDate.objects.get_or_create(date=self.reserved_date)
+            booking_date, is_created = BookingDate.objects.get_or_create(
+                date=self.reserved_date)
             booking_date.set_values()
 
     def delete(self):
-       super(Booking, self).delete()
-       booking_date, is_created = BookingDate.objects.get_or_create(date=self.reserved_date)
-       bookings_on_date = Booking.objects.filter(reserved_date=self.reserved_date)
-       if not bookings_on_date:
-           booking_date.delete()
-       else:
-           booking_date.set_values()
+        super(Booking, self).delete()
+        booking_date, is_created = BookingDate.objects.get_or_create(
+            date=self.reserved_date)
+        bookings_on_date = Booking.objects.filter(
+            reserved_date=self.reserved_date)
+        if not bookings_on_date:
+            booking_date.delete()
+        else:
+            booking_date.set_values()
