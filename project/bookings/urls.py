@@ -40,12 +40,6 @@ urls = [
         ),
         name='booking_list_pagination'),
 
-    url(r'^time/(?P<year>\d{4})/(?P<month>\d{2})/(?P<day>\d{2})/$',
-        permission_required(BOOKINGS_PERMISSION_REQUIRED)(
-            views.BookingTimeView.as_view()
-        ),
-        name='booking_times'),
-
     url(r'^cancelled/$',
         permission_required(BOOKINGS_PERMISSION_REQUIRED)(
             views.BookingCancelledView.as_view()
@@ -97,6 +91,10 @@ urls = [
     url(r'^$',
         views.BookingCreateView.as_view(),
         name="booking_add"),
+
+    url(r'^time/(?P<year>\d{4})/(?P<month>\d{2})/(?P<day>\d{2})/$',
+        views.BookingTimeView.as_view(),
+        name='booking_times'),
 
     url(r'^(?P<code>[\w-]+)/run/$',
         views.BookingRunView.as_view(),
