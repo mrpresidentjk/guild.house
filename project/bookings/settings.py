@@ -69,7 +69,8 @@ SERVICE_TIMES = (
     (time(20, 30), 'late'),
 )
 
-BOOKING_TIMES = (time(12), time(23))
+# IMPORTANT SETTINGS! Actual booking range.
+BOOKING_TIMES = (time(12), time(21))
 BOOKING_INTERVAL = timedelta(minutes=30)
 
 
